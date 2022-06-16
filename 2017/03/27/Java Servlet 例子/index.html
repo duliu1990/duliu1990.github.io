@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <meta name="author" content="Darren Du">
+
+
+
+    <meta name="description" content="Dev">
+
+
+
+<title>Java Servlet 例子 | Du Liu&#39;s Blog</title>
+
+
+
+    <link rel="icon" href="/favicon.ico">
+
+
+
+
+    <!-- stylesheets list from _config.yml -->
+    
+    <link rel="stylesheet" href="/css/style.css">
+    
+
+
+
+    <!-- scripts list from _config.yml -->
+    
+    <script src="/js/script.js"></script>
+    
+    <script src="/js/tocbot.min.js"></script>
+    
+
+
+
+    
+    
+        
+    
+
+
+<meta name="generator" content="Hexo 6.2.0"></head>
+<body>
+    <div class="wrapper">
+        <header>
+    <nav class="navbar">
+        <div class="container">
+            <div class="navbar-header header-logo"><a href="/">Du Liu&#39;s Blog</a></div>
+            <div class="menu navbar-right">
+                
+                    <a class="menu-item" href="/archives">Posts</a>
+                
+                    <a class="menu-item" href="/category">Categories</a>
+                
+                    <a class="menu-item" href="/tag">Tags</a>
+                
+                    <a class="menu-item" href="/about">About</a>
+                
+                <input id="switch_default" type="checkbox" class="switch_default">
+                <label for="switch_default" class="toggleBtn"></label>
+            </div>
+
+        </div>
+    </nav>
+
+    
+    <nav class="navbar-mobile" id="nav-mobile">
+        <div class="container">
+            <div class="navbar-header">
+                <div>
+                    <a href="/">Du Liu&#39;s Blog</a><a id="mobile-toggle-theme">·&nbsp;Light</a>
+                </div>
+                <div class="menu-toggle" onclick="mobileBtn()">&#9776; Menu</div>
+            </div>
+            <div class="menu" id="mobile-menu">
+                
+                    <a class="menu-item" href="/archives">Posts</a>
+                
+                    <a class="menu-item" href="/category">Categories</a>
+                
+                    <a class="menu-item" href="/tag">Tags</a>
+                
+                    <a class="menu-item" href="/about">About</a>
+                
+            </div>
+        </div>
+    </nav>
+
+</header>
+<script>
+    var mobileBtn = function f() {
+        var toggleMenu = document.getElementsByClassName("menu-toggle")[0];
+        var mobileMenu = document.getElementById("mobile-menu");
+        if(toggleMenu.classList.contains("active")){
+           toggleMenu.classList.remove("active")
+            mobileMenu.classList.remove("active")
+        }else{
+            toggleMenu.classList.add("active")
+            mobileMenu.classList.add("active")
+        }
+    }
+</script>
+        <div class="main">
+            <div class="container">
+    
+    
+        <div class="post-toc">
+    <div class="tocbot-list">
+    </div>
+    <div class="tocbot-list-menu">
+        <a class="tocbot-toc-expand" onclick="expand_toc()">Expand all</a>
+        <a onclick="go_top()">Back to top</a>
+        <a onclick="go_bottom()">Go to bottom</a>
+    </div>
+</div>
+
+<script>
+    document.ready(
+        function () {
+            tocbot.init({
+                tocSelector: '.tocbot-list',
+                contentSelector: '.post-content',
+                headingSelector: 'h1, h2, h3, h4, h5',
+                collapseDepth: 1,
+                orderedList: false,
+                scrollSmooth: true,
+            })
+        }
+    )
+
+    function expand_toc() {
+        var b = document.querySelector(".tocbot-toc-expand");
+        tocbot.init({
+            tocSelector: '.tocbot-list',
+            contentSelector: '.post-content',
+            headingSelector: 'h1, h2, h3, h4, h5',
+            collapseDepth: 6,
+            orderedList: false,
+            scrollSmooth: true,
+        });
+        b.setAttribute("onclick", "collapse_toc()");
+        b.innerHTML = "Collapse all"
+    }
+
+    function collapse_toc() {
+        var b = document.querySelector(".tocbot-toc-expand");
+        tocbot.init({
+            tocSelector: '.tocbot-list',
+            contentSelector: '.post-content',
+            headingSelector: 'h1, h2, h3, h4, h5',
+            collapseDepth: 1,
+            orderedList: false,
+            scrollSmooth: true,
+        });
+        b.setAttribute("onclick", "expand_toc()");
+        b.innerHTML = "Expand all"
+    }
+
+    function go_top() {
+        window.scrollTo(0, 0);
+    }
+
+    function go_bottom() {
+        window.scrollTo(0, document.body.scrollHeight);
+    }
+
+</script>
+    
+
+    
+    <article class="post-wrap">
+        <header class="post-header">
+            <h1 class="post-title">Java Servlet 例子</h1>
+            
+                <div class="post-meta">
+                    
+                        Author: <a itemprop="author" rel="author" href="/">Darren Du</a>
+                    
+
+                    
+                        <span class="post-time">
+                        Date: <a href="#">March 27, 2017&nbsp;&nbsp;23:59:40</a>
+                        </span>
+                    
+                    
+                </div>
+            
+        </header>
+
+        <div class="post-content">
+            <p>Java Servlet ：是用Java编写的服务器端程序。其主要功能在于交互式地浏览和修改数据，生成动态Web内容。狭义的Servlet是指Java语言实现的一个接口，广义的Servlet是指任何实现了这个Servlet接口的类，一般情况下，人们将Servlet理解为后者。<br>Servlet运行于支持Java的应用服务器中。从实现上讲，Servlet可以响应任何类型的请求，但绝大多数情况下Servlet只用来扩展基于HTTP协议的Web服务器。</p>
+<p>工作流程图：<br><img class="alignnone" src="http://wp-qn.devnp.com/2017/03/27/java-servlet-%E4%BE%8B%E5%AD%90/servlet_url.png" width="1026" height="545" /></p>
+<h4>一，使用xml配置的方式</h4>
+1.HelloWrold
+<em>HelloWorld.java</em>
+
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> com.devnp.servlet;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> java.io.IOException;</span><br><span class="line"><span class="keyword">import</span> java.io.PrintWriter;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> javax.servlet.ServletConfig;</span><br><span class="line"><span class="keyword">import</span> javax.servlet.ServletException;</span><br><span class="line"><span class="keyword">import</span> javax.servlet.http.HttpServlet;</span><br><span class="line"><span class="keyword">import</span> javax.servlet.http.HttpServletRequest;</span><br><span class="line"><span class="keyword">import</span> javax.servlet.http.HttpServletResponse;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">HelloWorld</span> <span class="keyword">extends</span> <span class="title class_">HttpServlet</span>&#123;</span><br><span class="line"></span><br><span class="line">	<span class="comment">/**</span></span><br><span class="line"><span class="comment">	 * <span class="doctag">@author</span> duliu</span></span><br><span class="line"><span class="comment">	 */</span></span><br><span class="line">	<span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="type">long</span> <span class="variable">serialVersionUID</span> <span class="operator">=</span> <span class="number">1L</span>;</span><br><span class="line"></span><br><span class="line">	<span class="meta">@Override</span></span><br><span class="line">	<span class="keyword">protected</span> <span class="keyword">void</span> <span class="title function_">doGet</span><span class="params">(HttpServletRequest servletRequest, HttpServletResponse servletResponse)</span></span><br><span class="line">			<span class="keyword">throws</span> ServletException, IOException &#123;</span><br><span class="line">		<span class="comment">// TODO Auto-generated method stub</span></span><br><span class="line">		servletResponse.setContentType(<span class="string">&quot;text/html;charset=UTF-8&quot;</span>);</span><br><span class="line">		</span><br><span class="line">		<span class="type">PrintWriter</span> <span class="variable">out</span> <span class="operator">=</span> servletResponse.getWriter();</span><br><span class="line">		 </span><br><span class="line">	      <span class="comment">// Write the response message, in an HTML page</span></span><br><span class="line">	      <span class="keyword">try</span> &#123;</span><br><span class="line">	         out.println(<span class="string">&quot;&lt;!DOCTYPE html&gt;&quot;</span>);</span><br><span class="line">	         out.println(<span class="string">&quot;&lt;html&gt;&lt;head&gt;&quot;</span>);</span><br><span class="line">	         out.println(<span class="string">&quot;&lt;meta http-equiv=&#x27;Content-Type&#x27; content=&#x27;text/html; charset=UTF-8&#x27;&gt;&quot;</span>);</span><br><span class="line">	         out.println(<span class="string">&quot;&lt;title&gt;devnp.com&lt;/title&gt;&lt;/head&gt;&quot;</span>);</span><br><span class="line">	         out.println(<span class="string">&quot;&lt;body&gt;&quot;</span>);</span><br><span class="line">	         out.println(<span class="string">&quot;</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">&lt;h1&gt;Hello, world! This is Servlet.&lt;/h1&gt;</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">&quot;</span>); </span><br><span class="line">	         out.println(<span class="string">&quot;&lt;/body&gt;&quot;</span>);</span><br><span class="line">	         out.println(<span class="string">&quot;&lt;/html&gt;&quot;</span>);</span><br><span class="line">	      &#125; <span class="keyword">finally</span> &#123;</span><br><span class="line">	         out.close();</span><br><span class="line">	      &#125;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="meta">@Override</span></span><br><span class="line">	<span class="keyword">protected</span> <span class="keyword">void</span> <span class="title function_">doPost</span><span class="params">(HttpServletRequest servletRequest, HttpServletResponse servletResponse)</span></span><br><span class="line">			<span class="keyword">throws</span> ServletException, IOException &#123;</span><br><span class="line">		<span class="comment">// TODO Auto-generated method stub</span></span><br><span class="line">		<span class="comment">//doGet(servletRequest, servletResponse);</span></span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="meta">@Override</span></span><br><span class="line">	<span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">destroy</span><span class="params">()</span> &#123;</span><br><span class="line">		<span class="comment">// TODO Auto-generated method stub</span></span><br><span class="line">		<span class="built_in">super</span>.destroy();</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="meta">@Override</span></span><br><span class="line">	<span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">init</span><span class="params">(ServletConfig servletConfig)</span> <span class="keyword">throws</span> ServletException &#123;</span><br><span class="line">		<span class="comment">// TODO Auto-generated method stub</span></span><br><span class="line">		<span class="built_in">super</span>.init(servletConfig);</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><em>web.xml</em></p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">servlet</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">servlet-name</span>&gt;</span>HelloWorld<span class="tag">&lt;/<span class="name">servlet-name</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">servlet-class</span>&gt;</span>com.devnp.servlet.HelloWorld<span class="tag">&lt;/<span class="name">servlet-class</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">servlet</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;<span class="name">servlet-mapping</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">servlet-name</span>&gt;</span>HelloWorld<span class="tag">&lt;/<span class="name">servlet-name</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">url-pattern</span>&gt;</span>/HelloWorld<span class="tag">&lt;/<span class="name">url-pattern</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">servlet-mapping</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>访问：<em><a target="_blank" rel="noopener" href="http://localhost:7002/JavaServlet/HelloWorld">http://localhost:7002/JavaServlet/HelloWorld</a></em><br><img class="alignnone" src="http://wp-qn.devnp.com/2017/03/27/java-servlet-%E4%BE%8B%E5%AD%90/helloworld.png" width="690" height="520" /></p>
+<p>2.表单提交的例子<br><em>form_input.html</em></p>
+<p>[code lang=”html”]<br><!DOCTYPE html></p>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>first_form_input</title>
+</head>
+<body>
+
+
+
+<form action="../InputServlet" method="post">
+
+
+
+<fieldset>
+             Name: <input type="text" name="name">
+         </fieldset>
+
+
+
+
+
+
+
+<fieldset>
+
+
+
+<legend>Languages</legend>
+
+
+
+<pre><code>        &lt;input type=&quot;checkbox&quot; name=&quot;language&quot; value=&quot;java&quot; checked /&gt;Java
+        &lt;input type=&quot;checkbox&quot; name=&quot;language&quot; value=&quot;c&quot; /&gt;C/C++
+        &lt;input type=&quot;checkbox&quot; name=&quot;language&quot; value=&quot;cs&quot; /&gt;C#
+     &lt;/fieldset&gt;
+
+
+
+
+     &lt;input type=&quot;submit&quot; value=&quot;提交&quot; /&gt;
+&lt;/form&gt;</code></pre></body>
+</html>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">&lt;em&gt;InputServlet.java&lt;/em&gt;</span><br><span class="line"></span><br><span class="line">```java</span><br><span class="line">package com.devnp.servlet;</span><br><span class="line"></span><br><span class="line">import java.io.IOException;</span><br><span class="line">import java.io.PrintWriter;</span><br><span class="line"></span><br><span class="line">import javax.servlet.ServletConfig;</span><br><span class="line">import javax.servlet.ServletException;</span><br><span class="line">import javax.servlet.http.HttpServlet;</span><br><span class="line">import javax.servlet.http.HttpServletRequest;</span><br><span class="line">import javax.servlet.http.HttpServletResponse;</span><br><span class="line"></span><br><span class="line">public class InputServlet extends HttpServlet&#123;</span><br><span class="line"></span><br><span class="line">	/**</span><br><span class="line">	 * @author duliu</span><br><span class="line">	 */</span><br><span class="line">	private static final long serialVersionUID = 1L;</span><br><span class="line">	</span><br><span class="line">	@Override</span><br><span class="line">	public void init(ServletConfig servletConfig) throws ServletException &#123;</span><br><span class="line">		// TODO Auto-generated method stub</span><br><span class="line">		System.out.println(&quot;Servlet init.&quot;);</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	@Override</span><br><span class="line">	protected void doPost(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse)</span><br><span class="line">			throws ServletException, IOException &#123;</span><br><span class="line">		</span><br><span class="line">		String nameStr = httpServletRequest.getParameter(&quot;name&quot;);</span><br><span class="line">		</span><br><span class="line">		String [] languages = httpServletRequest.getParameterValues(&quot;language&quot;);</span><br><span class="line">		</span><br><span class="line">		StringBuilder stringBuilder = new StringBuilder() ;</span><br><span class="line">		if(languages != null)&#123;</span><br><span class="line">			for (int i = 0; i &lt; languages.length; i++) &#123;</span><br><span class="line">				String language = languages[i];</span><br><span class="line">				</span><br><span class="line">				stringBuilder.append(language + &quot; &quot;);</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">		</span><br><span class="line">		httpServletResponse.setContentType(&quot;text/html;charset=UTF-8&quot;);</span><br><span class="line">		</span><br><span class="line">		PrintWriter out = httpServletResponse.getWriter();</span><br><span class="line">		 </span><br><span class="line">	      // Write the response message, in an HTML page</span><br><span class="line">	      try &#123;</span><br><span class="line">	         out.println(&quot;&lt;!DOCTYPE html&gt;&quot;);</span><br><span class="line">	         out.println(&quot;&lt;html&gt;&lt;head&gt;&quot;);</span><br><span class="line">	         out.println(&quot;&lt;meta http-equiv=&#x27;Content-Type&#x27; content=&#x27;text/html; charset=UTF-8&#x27;&gt;&quot;);</span><br><span class="line">	         out.println(&quot;&lt;title&gt;first_form_input&lt;/title&gt;&lt;/head&gt;&quot;);</span><br><span class="line">	         out.println(&quot;&lt;body&gt;&quot;);</span><br><span class="line">	         out.println(&quot;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">&lt;h1&gt;Hello, &quot; +nameStr + &quot;, like &quot; + stringBuilder.toString() + &quot;&lt;/h1&gt;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">&quot;);  // says Hello</span><br><span class="line">	         out.println(&quot;&lt;/body&gt;&quot;);</span><br><span class="line">	         out.println(&quot;&lt;/html&gt;&quot;);</span><br><span class="line">	      &#125; finally &#123;</span><br><span class="line">	         out.close();  // Always close the output writer</span><br><span class="line">	      &#125;</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line"></span><br><span class="line">	@Override</span><br><span class="line">	public void destroy() &#123;</span><br><span class="line">		System.out.println(&quot;Servlet destroy.&quot;);</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><em>web.xml</em></p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">&lt;!-- input --&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">servlet</span>&gt;</span></span><br><span class="line">  	<span class="tag">&lt;<span class="name">servlet-name</span>&gt;</span>InputServlet<span class="tag">&lt;/<span class="name">servlet-name</span>&gt;</span></span><br><span class="line">  	<span class="tag">&lt;<span class="name">servlet-class</span>&gt;</span>com.devnp.servlet.InputServlet<span class="tag">&lt;/<span class="name">servlet-class</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;/<span class="name">servlet</span>&gt;</span></span><br><span class="line">  </span><br><span class="line">  <span class="tag">&lt;<span class="name">servlet-mapping</span>&gt;</span></span><br><span class="line">  	<span class="tag">&lt;<span class="name">servlet-name</span>&gt;</span>InputServlet<span class="tag">&lt;/<span class="name">servlet-name</span>&gt;</span></span><br><span class="line">  	<span class="tag">&lt;<span class="name">url-pattern</span>&gt;</span>/InputServlet<span class="tag">&lt;/<span class="name">url-pattern</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;/<span class="name">servlet-mapping</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>测试：<em><a target="_blank" rel="noopener" href="http://localhost:7002/JavaServlet/form_input.html">http://localhost:7002/JavaServlet/form_input.html</a></em><br><img class="alignnone" src="http://wp-qn.devnp.com/2017/03/27/java-servlet-%E4%BE%8B%E5%AD%90/input_form.png" width="685" height="517" /><br>提交<br><img class="alignnone" src="http://wp-qn.devnp.com/2017/03/27/java-servlet-%E4%BE%8B%E5%AD%90/input_form_2.png" width="682" height="510" /></p>
+<p>3.文件的上传<br>本例中，使用apache common-io,commom-upload 来完成文件的上传。<br>使用的版本在<em>pom.xml</em>的配置</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">groupId</span>&gt;</span>commons-fileupload<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>commons-fileupload<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">version</span>&gt;</span>1.2.2<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">groupId</span>&gt;</span>commons-io<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>commons-io<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">version</span>&gt;</span>2.4<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p><em>fileUpload_form.html</em></p>
+<p>[code lang=”html”]<br><!DOCTYPE html></p>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>FileUpload</title>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+</head>
+<body>
+
+
+
+<form action="../FileUploadServlet" method="post" enctype="multipart/form-data"> 
+
+<pre><code>    &lt;input type=&quot;file&quot; name=&quot;file&quot; size=&quot;50&quot; /&gt; 
+
+
+    &lt;input type=&quot;submit&quot; value=&quot;上传文件&quot; /&gt;
+
+&lt;/form&gt;</code></pre></body>
+</html>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">&lt;em&gt;FileUploadServlet.java&lt;/em&gt;</span><br><span class="line"></span><br><span class="line">```java</span><br><span class="line">package com.devnp.servlet;</span><br><span class="line"></span><br><span class="line">import java.io.File;</span><br><span class="line">import java.io.IOException;</span><br><span class="line">import java.io.PrintWriter;</span><br><span class="line">import java.util.List;</span><br><span class="line"></span><br><span class="line">import javax.servlet.ServletException;</span><br><span class="line">import javax.servlet.http.HttpServlet;</span><br><span class="line">import javax.servlet.http.HttpServletRequest;</span><br><span class="line">import javax.servlet.http.HttpServletResponse;</span><br><span class="line"></span><br><span class="line">import org.apache.commons.fileupload.FileItem;</span><br><span class="line">import org.apache.commons.fileupload.disk.DiskFileItemFactory;</span><br><span class="line">import org.apache.commons.fileupload.servlet.ServletFileUpload;</span><br><span class="line"></span><br><span class="line">public class FileUploadServlet extends HttpServlet&#123;</span><br><span class="line"></span><br><span class="line">	/**</span><br><span class="line">	 * @author duliu</span><br><span class="line">	 */</span><br><span class="line">	private static final long serialVersionUID = 1L;</span><br><span class="line">	</span><br><span class="line">	private static final String UPLOAD_DIRECTORY = &quot;D:\\Person-Test&quot; ;</span><br><span class="line"></span><br><span class="line">	@Override</span><br><span class="line">	protected void doPost(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse)</span><br><span class="line">			throws ServletException, IOException &#123;</span><br><span class="line">		// TODO Auto-generated method stub</span><br><span class="line">		</span><br><span class="line">		String message = null ;</span><br><span class="line">		</span><br><span class="line">		if(ServletFileUpload.isMultipartContent(httpServletRequest))&#123;</span><br><span class="line">            try &#123;</span><br><span class="line">                List&lt;FileItem&gt; multiparts = new ServletFileUpload(new DiskFileItemFactory()).parseRequest(httpServletRequest);</span><br><span class="line">              </span><br><span class="line">                for(FileItem item : multiparts)&#123;</span><br><span class="line">                    if(!item.isFormField())&#123;</span><br><span class="line">                        String name = new File(item.getName()).getName();</span><br><span class="line">                        item.write( new File(UPLOAD_DIRECTORY + File.separator + name));</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125;</span><br><span class="line">           </span><br><span class="line">               //File uploaded successfully</span><br><span class="line">                message = &quot;File Uploaded Successfully&quot;;</span><br><span class="line">            &#125; catch (Exception ex) &#123;</span><br><span class="line">            	message = &quot;File Upload Failed due to &quot; + ex;</span><br><span class="line">            &#125;          </span><br><span class="line">         </span><br><span class="line">        &#125;else&#123;</span><br><span class="line">        	message = &quot;Sorry this Servlet only handles file upload request&quot;;</span><br><span class="line">        &#125;</span><br><span class="line">    </span><br><span class="line">		PrintWriter out = httpServletResponse.getWriter();</span><br><span class="line">		out.print(message);</span><br><span class="line">		</span><br><span class="line">		out.close();</span><br><span class="line">    &#125;</span><br><span class="line">	</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><em>web.xml</em></p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">&lt;!-- file upload --&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">servlet</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">servlet-name</span>&gt;</span>FileUploadServlet<span class="tag">&lt;/<span class="name">servlet-name</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">servlet-class</span>&gt;</span>com.devnp.servlet.FileUploadServlet<span class="tag">&lt;/<span class="name">servlet-class</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">servlet</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;<span class="name">servlet-mapping</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">servlet-name</span>&gt;</span>FileUploadServlet<span class="tag">&lt;/<span class="name">servlet-name</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">url-pattern</span>&gt;</span>/FileUploadServlet<span class="tag">&lt;/<span class="name">url-pattern</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">servlet-mapping</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>测试：<em><a target="_blank" rel="noopener" href="http://localhost:7002/JavaServlet/fileUpload_form.html">http://localhost:7002/JavaServlet/fileUpload_form.html</a></em><br><img class="alignnone" src="http://wp-qn.devnp.com/2017/03/27/java-servlet-%E4%BE%8B%E5%AD%90/file_upload_1.png" width="674" height="315" /><br>上传文件<br><img class="alignnone" src="http://wp-qn.devnp.com/2017/03/27/java-servlet-%E4%BE%8B%E5%AD%90/file_upload_2.png" width="973" height="355" /></p>
+<h4>二、注解的方式</h4>
+1.HelloWolrd
+在servlet 3.0之后引用注解的方式，减少xml配置的方式，轻松完成配置
+<em>HelloWorldAnnotation.java</em>
+
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> com.devnp.servlet3;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> java.io.IOException;</span><br><span class="line"><span class="keyword">import</span> java.io.PrintWriter;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> javax.servlet.ServletException;</span><br><span class="line"><span class="keyword">import</span> javax.servlet.annotation.WebServlet;</span><br><span class="line"><span class="keyword">import</span> javax.servlet.http.HttpServlet;</span><br><span class="line"><span class="keyword">import</span> javax.servlet.http.HttpServletRequest;</span><br><span class="line"><span class="keyword">import</span> javax.servlet.http.HttpServletResponse;</span><br><span class="line"></span><br><span class="line"><span class="meta">@WebServlet(name = &quot;HelloWorldAnnotation&quot;, urlPatterns = &#123;&quot;/HelloWorldAnnotation&quot;&#125;)</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">HelloWorldAnnotation</span> <span class="keyword">extends</span> <span class="title class_">HttpServlet</span>&#123;</span><br><span class="line"></span><br><span class="line">	<span class="comment">/**</span></span><br><span class="line"><span class="comment">	 * <span class="doctag">@author</span> duliu</span></span><br><span class="line"><span class="comment">	 */</span></span><br><span class="line">	<span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="type">long</span> <span class="variable">serialVersionUID</span> <span class="operator">=</span> <span class="number">1L</span>;</span><br><span class="line"></span><br><span class="line">	<span class="meta">@Override</span></span><br><span class="line">	<span class="keyword">protected</span> <span class="keyword">void</span> <span class="title function_">doGet</span><span class="params">(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse)</span></span><br><span class="line">			<span class="keyword">throws</span> ServletException, IOException &#123;</span><br><span class="line">		<span class="comment">// TODO Auto-generated method stub</span></span><br><span class="line">		httpServletResponse.setContentType(<span class="string">&quot;text/html;charset=UTF-8&quot;</span>);</span><br><span class="line">		</span><br><span class="line">		<span class="type">PrintWriter</span> <span class="variable">out</span> <span class="operator">=</span> httpServletResponse.getWriter();</span><br><span class="line">		 </span><br><span class="line">	      <span class="comment">// Write the response message, in an HTML page</span></span><br><span class="line">	      <span class="keyword">try</span> &#123;</span><br><span class="line">	         out.println(<span class="string">&quot;&lt;!DOCTYPE html&gt;&quot;</span>);</span><br><span class="line">	         out.println(<span class="string">&quot;&lt;html&gt;&lt;head&gt;&quot;</span>);</span><br><span class="line">	         out.println(<span class="string">&quot;&lt;meta http-equiv=&#x27;Content-Type&#x27; content=&#x27;text/html; charset=UTF-8&#x27;&gt;&quot;</span>);</span><br><span class="line">	         out.println(<span class="string">&quot;&lt;title&gt;devnp.com&lt;/title&gt;&lt;/head&gt;&quot;</span>);</span><br><span class="line">	         out.println(<span class="string">&quot;&lt;body&gt;&quot;</span>);</span><br><span class="line">	         out.println(<span class="string">&quot;</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">&lt;h1&gt;Hello, world! This is Servlet 3.0.&lt;/h1&gt;</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">&quot;</span>); </span><br><span class="line">	         out.println(<span class="string">&quot;&lt;/body&gt;&quot;</span>);</span><br><span class="line">	         out.println(<span class="string">&quot;&lt;/html&gt;&quot;</span>);</span><br><span class="line">	      &#125; <span class="keyword">finally</span> &#123;</span><br><span class="line">	         out.close();</span><br><span class="line">	      &#125;</span><br><span class="line">		</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>访问：<em><a target="_blank" rel="noopener" href="http://localhost:7002/JavaServlet/HelloWorldAnnotation">http://localhost:7002/JavaServlet/HelloWorldAnnotation</a></em><br><img class="alignnone" src="http://wp-qn.devnp.com/2017/03/27/java-servlet-%E4%BE%8B%E5%AD%90/helloworld%203.0.png" width="681" height="347" /></p>
+<p>2.文件的上传<br><em>fileUpload_form2.html</em></p>
+<p>[code lang=”html”]<br><!DOCTYPE html></p>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>FileUpload</title>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+</head>
+<body>
+
+
+
+<form action="../FileUploadServletAnnotation" method="post" enctype="multipart/form-data"> 
+
+<pre><code>    &lt;input type=&quot;file&quot; name=&quot;file&quot; size=&quot;50&quot; /&gt; 
+
+
+    &lt;input type=&quot;submit&quot; value=&quot;上传文件&quot; /&gt;
+
+&lt;/form&gt;</code></pre></body>
+</html>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">&lt;em&gt;FileUploadServletAnnotation.java&lt;/em&gt;</span><br><span class="line"></span><br><span class="line">```java</span><br><span class="line">package com.devnp.servlet3;</span><br><span class="line"></span><br><span class="line">import java.io.File;</span><br><span class="line">import java.io.FileNotFoundException;</span><br><span class="line">import java.io.FileOutputStream;</span><br><span class="line">import java.io.IOException;</span><br><span class="line">import java.io.InputStream;</span><br><span class="line">import java.io.OutputStream;</span><br><span class="line">import java.io.PrintWriter;</span><br><span class="line"></span><br><span class="line">import javax.servlet.ServletException;</span><br><span class="line">import javax.servlet.annotation.MultipartConfig;</span><br><span class="line">import javax.servlet.annotation.WebServlet;</span><br><span class="line">import javax.servlet.http.HttpServlet;</span><br><span class="line">import javax.servlet.http.HttpServletRequest;</span><br><span class="line">import javax.servlet.http.HttpServletResponse;</span><br><span class="line">import javax.servlet.http.Part;</span><br><span class="line"></span><br><span class="line">@WebServlet(name = &quot;FileUploadServletAnnotation&quot;, urlPatterns = &#123;&quot;/FileUploadServletAnnotation&quot;&#125;)</span><br><span class="line">@MultipartConfig</span><br><span class="line">public class FileUploadServletAnnotation extends HttpServlet&#123;</span><br><span class="line"></span><br><span class="line">	/**</span><br><span class="line">	 * @author duliu</span><br><span class="line">	 */</span><br><span class="line">	private static final long serialVersionUID = 1L;</span><br><span class="line"></span><br><span class="line">	@Override</span><br><span class="line">	protected void doPost(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse)</span><br><span class="line">			throws ServletException, IOException &#123;</span><br><span class="line">		// TODO Auto-generated method stub</span><br><span class="line">		</span><br><span class="line">		Part filePart = httpServletRequest.getPart(&quot;file&quot;);</span><br><span class="line">		</span><br><span class="line">		String fileName = getFileName(filePart);</span><br><span class="line">		</span><br><span class="line">		OutputStream out = null;</span><br><span class="line">	    InputStream filecontent = null;</span><br><span class="line">	    PrintWriter writer = httpServletResponse.getWriter();</span><br><span class="line"></span><br><span class="line">	    try &#123;</span><br><span class="line">	    	File file = new File(&quot;D:\\Person-Test&quot; + File.separator + fileName);</span><br><span class="line">	    	</span><br><span class="line">	        out = new FileOutputStream(file);</span><br><span class="line">	        filecontent = filePart.getInputStream();</span><br><span class="line"></span><br><span class="line">	        int read = 0;</span><br><span class="line">	        final byte[] bytes = new byte[1024];</span><br><span class="line"></span><br><span class="line">	        while ((read = filecontent.read(bytes)) != -1) &#123;</span><br><span class="line">	            out.write(bytes, 0, read);</span><br><span class="line">	        &#125;</span><br><span class="line">	        </span><br><span class="line">	        writer.println(&quot;New file &quot; + fileName + &quot; created at &quot; + &quot;D:\\Person-Test&quot;);</span><br><span class="line">	        </span><br><span class="line">	    &#125; catch (FileNotFoundException fne) &#123;</span><br><span class="line">	        writer.println(&quot;You either did not specify a file to upload or are &quot;</span><br><span class="line">	                + &quot;trying to upload a file to a protected or nonexistent &quot;</span><br><span class="line">	                + &quot;location.&quot;);</span><br><span class="line">	        writer.println(&quot;</span><br><span class="line"> ERROR: &quot; + fne.getMessage());</span><br><span class="line"></span><br><span class="line">	    &#125; finally &#123;</span><br><span class="line">	        if (out != null) &#123;</span><br><span class="line">	            out.close();</span><br><span class="line">	        &#125;</span><br><span class="line">	        if (filecontent != null) &#123;</span><br><span class="line">	            filecontent.close();</span><br><span class="line">	        &#125;</span><br><span class="line">	        if (writer != null) &#123;</span><br><span class="line">	            writer.close();</span><br><span class="line">	        &#125;</span><br><span class="line">	    &#125;</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line">	private String getFileName(Part part) &#123;</span><br><span class="line">	    for (String content : part.getHeader(&quot;Content-Disposition&quot;).split(&quot;;&quot;)) &#123;</span><br><span class="line">	        if (content.trim().startsWith(&quot;filename&quot;)) &#123;</span><br><span class="line">	            return content.substring(</span><br><span class="line">	                    content.indexOf(&#x27;=&#x27;) + 1).trim().replace(&quot;\&quot;&quot;, &quot;&quot;);</span><br><span class="line">	        &#125;</span><br><span class="line">	    &#125;</span><br><span class="line">	    </span><br><span class="line">	    return null;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>测试：<em><a target="_blank" rel="noopener" href="http://localhost:7002/JavaServlet/FileUploadServletAnnotation">http://localhost:7002/JavaServlet/FileUploadServletAnnotation</a></em><br><img class="alignnone" src="http://wp-qn.devnp.com/2017/03/27/java-servlet-%E4%BE%8B%E5%AD%90/file_upload_3_1.png" width="676" height="184" /><br>上传文件<br><img class="alignnone" src="http://wp-qn.devnp.com/2017/03/27/java-servlet-%E4%BE%8B%E5%AD%90/file_upload_3_2.png" width="942" height="336" /></p>
+<p>三、代码下载<br><img class="alignnone size-full wp-image-217 alignleft" src="http://www.devnp.com/wp-content/uploads/2016/12/d-logo.png" alt="d-logo" width="77" height="77" /> <a target="_blank" rel="noopener" href="http://wp-qn.devnp.com/2017/03/27/java-servlet-%E4%BE%8B%E5%AD%90/JavaServlet.zip">JavaServlet.zip</a></p>
+
+        </div>
+
+        
+            <section class="post-copyright">
+                
+                    <p class="copyright-item">
+                        <span>Author:</span>
+                        <span>Darren Du</span>
+                    </p>
+                
+                
+                
+                    <p class="copyright-item">
+                        <span>License:</span>
+                        <span>Copyright (c) 2019 MIT LICENSE</span>
+                    </p>
+                
+                
+
+            </section>
+        
+        <section class="post-tags">
+            <div>
+                <span>Tag(s):</span>
+                <span class="tag">
+                    
+                </span>
+            </div>
+            <div>
+                <a href="javascript:window.history.back();">back</a>
+                <span>· </span>
+                <a href="/">home</a>
+            </div>
+        </section>
+        <section class="post-nav">
+            
+                <a class="prev" rel="prev" href="/2017/03/29/JAVA%20Oracle%20%E8%BF%9E%E6%8E%A5/">JAVA Oracle 连接</a>
+            
+            
+            <a class="next" rel="next" href="/2017/03/19/SPRING4%20MVC%20Maven%20Hello%20XML%E9%85%8D%E7%BD%AE%E6%96%B9%E5%BC%8F/">SPRING4 MVC Maven Hello XML配置方式</a>
+            
+        </section>
+
+
+    </article>
+</div>
+
+        </div>
+        <footer id="footer" class="footer">
+    <div class="copyright">
+        <span>© Darren Du | Powered by <a href="https://hexo.io" target="_blank">Hexo</a> & <a href="https://github.com/Siricee/hexo-theme-Chic" target="_blank">Chic</a></span>
+    </div>
+</footer>
+
+    </div>
+</body>
+</html>

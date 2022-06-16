@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <meta name="author" content="Darren Du">
+
+
+
+    <meta name="description" content="Dev">
+
+
+
+<title>Spring Boot Validation 验证 | Du Liu&#39;s Blog</title>
+
+
+
+    <link rel="icon" href="/favicon.ico">
+
+
+
+
+    <!-- stylesheets list from _config.yml -->
+    
+    <link rel="stylesheet" href="/css/style.css">
+    
+
+
+
+    <!-- scripts list from _config.yml -->
+    
+    <script src="/js/script.js"></script>
+    
+    <script src="/js/tocbot.min.js"></script>
+    
+
+
+
+    
+    
+        
+    
+
+
+<meta name="generator" content="Hexo 6.2.0"></head>
+<body>
+    <div class="wrapper">
+        <header>
+    <nav class="navbar">
+        <div class="container">
+            <div class="navbar-header header-logo"><a href="/">Du Liu&#39;s Blog</a></div>
+            <div class="menu navbar-right">
+                
+                    <a class="menu-item" href="/archives">Posts</a>
+                
+                    <a class="menu-item" href="/category">Categories</a>
+                
+                    <a class="menu-item" href="/tag">Tags</a>
+                
+                    <a class="menu-item" href="/about">About</a>
+                
+                <input id="switch_default" type="checkbox" class="switch_default">
+                <label for="switch_default" class="toggleBtn"></label>
+            </div>
+
+        </div>
+    </nav>
+
+    
+    <nav class="navbar-mobile" id="nav-mobile">
+        <div class="container">
+            <div class="navbar-header">
+                <div>
+                    <a href="/">Du Liu&#39;s Blog</a><a id="mobile-toggle-theme">·&nbsp;Light</a>
+                </div>
+                <div class="menu-toggle" onclick="mobileBtn()">&#9776; Menu</div>
+            </div>
+            <div class="menu" id="mobile-menu">
+                
+                    <a class="menu-item" href="/archives">Posts</a>
+                
+                    <a class="menu-item" href="/category">Categories</a>
+                
+                    <a class="menu-item" href="/tag">Tags</a>
+                
+                    <a class="menu-item" href="/about">About</a>
+                
+            </div>
+        </div>
+    </nav>
+
+</header>
+<script>
+    var mobileBtn = function f() {
+        var toggleMenu = document.getElementsByClassName("menu-toggle")[0];
+        var mobileMenu = document.getElementById("mobile-menu");
+        if(toggleMenu.classList.contains("active")){
+           toggleMenu.classList.remove("active")
+            mobileMenu.classList.remove("active")
+        }else{
+            toggleMenu.classList.add("active")
+            mobileMenu.classList.add("active")
+        }
+    }
+</script>
+        <div class="main">
+            <div class="container">
+    
+    
+        <div class="post-toc">
+    <div class="tocbot-list">
+    </div>
+    <div class="tocbot-list-menu">
+        <a class="tocbot-toc-expand" onclick="expand_toc()">Expand all</a>
+        <a onclick="go_top()">Back to top</a>
+        <a onclick="go_bottom()">Go to bottom</a>
+    </div>
+</div>
+
+<script>
+    document.ready(
+        function () {
+            tocbot.init({
+                tocSelector: '.tocbot-list',
+                contentSelector: '.post-content',
+                headingSelector: 'h1, h2, h3, h4, h5',
+                collapseDepth: 1,
+                orderedList: false,
+                scrollSmooth: true,
+            })
+        }
+    )
+
+    function expand_toc() {
+        var b = document.querySelector(".tocbot-toc-expand");
+        tocbot.init({
+            tocSelector: '.tocbot-list',
+            contentSelector: '.post-content',
+            headingSelector: 'h1, h2, h3, h4, h5',
+            collapseDepth: 6,
+            orderedList: false,
+            scrollSmooth: true,
+        });
+        b.setAttribute("onclick", "collapse_toc()");
+        b.innerHTML = "Collapse all"
+    }
+
+    function collapse_toc() {
+        var b = document.querySelector(".tocbot-toc-expand");
+        tocbot.init({
+            tocSelector: '.tocbot-list',
+            contentSelector: '.post-content',
+            headingSelector: 'h1, h2, h3, h4, h5',
+            collapseDepth: 1,
+            orderedList: false,
+            scrollSmooth: true,
+        });
+        b.setAttribute("onclick", "expand_toc()");
+        b.innerHTML = "Expand all"
+    }
+
+    function go_top() {
+        window.scrollTo(0, 0);
+    }
+
+    function go_bottom() {
+        window.scrollTo(0, document.body.scrollHeight);
+    }
+
+</script>
+    
+
+    
+    <article class="post-wrap">
+        <header class="post-header">
+            <h1 class="post-title">Spring Boot Validation 验证</h1>
+            
+                <div class="post-meta">
+                    
+                        Author: <a itemprop="author" rel="author" href="/">Darren Du</a>
+                    
+
+                    
+                        <span class="post-time">
+                        Date: <a href="#">April 9, 2018&nbsp;&nbsp;15:27:12</a>
+                        </span>
+                    
+                    
+                        <span class="post-category">
+                    Category:
+                            
+                                <a href="/categories/Java-Framework/">Java Framework</a>
+                            
+                                <a href="/categories/Java-Framework/Spring-Boot/">Spring Boot</a>
+                            
+                        </span>
+                    
+                </div>
+            
+        </header>
+
+        <div class="post-content">
+            <p>本示例使用JDK1.8, Spring Boot 1.5.9.RELEASE, hibernate-validator-5.3.6.Final。</p>
+<h2 id="1-功能需求"><a href="#1-功能需求" class="headerlink" title="1.功能需求"></a>1.功能需求</h2><p>在提交的表单服务端需要验证提交的表单，验证的主要功能主要有：</p>
+<ol>
+<li><p>对提交的表单字段进行常用验证<br>例如：字段是否为空，字段长度</p>
+</li>
+<li><p>自定义错误信息，消息的国际化支持<br>例如：需要显示个性的消息</p>
+</li>
+<li><p>自定义验证方式<br>例如：需要根据一定的逻辑验证</p>
+</li>
+</ol>
+<p>假设：<br>  现有一学生对象，需要进去添加操作，需要对其字段有名字，年龄和生日，先有如下验证：<br>   a.所有字段必须有值<br>   b.年龄在18-130岁<br>   c.名字不能重复</p>
+<h2 id="2-常用验证"><a href="#2-常用验证" class="headerlink" title="2.常用验证"></a>2.常用验证</h2><p><em>hibernate-validator-<em>.jar</em> 和 <em>validation-api-</em>.jar</em> 有为我们提供一些常用的验证注解：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@NotNull</span></span><br><span class="line"><span class="meta">@NotBlank</span></span><br><span class="line"><span class="meta">@Size(min=, max=)</span></span><br><span class="line">......</span><br></pre></td></tr></table></figure>
+
+<p>更多方法：<br><a href="https://docs.jboss.org/hibernate/validator/5.3/reference/en-US/html_single/" rel="noopener" target="_blank">https://docs.jboss.org/hibernate/validator/5.3/reference/en-US/html_single/</a></p>
+<h2 id="3-项目结构"><a href="#3-项目结构" class="headerlink" title="3.项目结构"></a>3.项目结构</h2><p>针对如上的需求，创建 spring-boot-hibernate-validation-demo 项目：<br><img src="http://wp-qn.devnp.com/2018/04/09/spring-boot-validation-%E9%AA%8C%E8%AF%81/structure.png" width="406" height="632" class="alignnone" /></p>
+<h2 id="4-自定义验证注解"><a href="#4-自定义验证注解" class="headerlink" title="4.自定义验证注解"></a>4.自定义验证注解</h2><p>1.定义业务逻辑的类和方法：<em>StudentService.java</em></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="keyword">package</span> com.devnp.springboothibernatevalidationdemo.service;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> org.springframework.stereotype.Component;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@author</span> duliu</span></span><br><span class="line"><span class="comment"> *</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="meta">@Component(&quot;studentService&quot;)</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">StudentService</span> &#123;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">public</span> <span class="type">boolean</span> <span class="title function_">nameUniqueCheck</span><span class="params">(String name)</span> &#123;</span><br><span class="line">		</span><br><span class="line">		<span class="keyword">if</span>(<span class="string">&quot;Tom&quot;</span>.equals(name))</span><br><span class="line">			<span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">		</span><br><span class="line">		<span class="keyword">return</span> <span class="literal">true</span> ;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>2.创建验证的注解：<em>StudentNameUnique.java</em></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> com.devnp.springboothibernatevalidationdemo.validation;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> <span class="keyword">static</span> java.lang.annotation.ElementType.FIELD;</span><br><span class="line"><span class="keyword">import</span> <span class="keyword">static</span> java.lang.annotation.ElementType.METHOD;</span><br><span class="line"><span class="keyword">import</span> <span class="keyword">static</span> java.lang.annotation.RetentionPolicy.RUNTIME;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> java.lang.annotation.Retention;</span><br><span class="line"><span class="keyword">import</span> java.lang.annotation.Target;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> javax.validation.Constraint;</span><br><span class="line"><span class="keyword">import</span> javax.validation.Payload;</span><br><span class="line"></span><br><span class="line"><span class="meta">@Target(&#123; METHOD, FIELD&#125;)</span></span><br><span class="line"><span class="meta">@Retention(RUNTIME)</span></span><br><span class="line"><span class="meta">@Constraint(validatedBy = &#123;StudentNameUniqueValidation.class &#125;)</span></span><br><span class="line"><span class="keyword">public</span> <span class="meta">@interface</span> StudentNameUnique &#123;</span><br><span class="line">	</span><br><span class="line">	String <span class="title function_">message</span><span class="params">()</span> <span class="keyword">default</span> <span class="string">&quot;&#123;stu.name.unique&#125;&quot;</span>;</span><br><span class="line"></span><br><span class="line">	Class&lt;?&gt;[] groups() <span class="keyword">default</span> &#123; &#125;;</span><br><span class="line"></span><br><span class="line">	Class&lt;? <span class="keyword">extends</span> <span class="title class_">Payload</span>&gt;[] payload() <span class="keyword">default</span> &#123; &#125;;</span><br><span class="line">	</span><br><span class="line">	</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>3.实现验证：<em>StudentNameUniqueValidation.java</em></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="keyword">package</span> com.devnp.springboothibernatevalidationdemo.validation;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> javax.validation.ConstraintValidator;</span><br><span class="line"><span class="keyword">import</span> javax.validation.ConstraintValidatorContext;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> org.springframework.beans.factory.annotation.Autowired;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> com.devnp.springboothibernatevalidationdemo.service.StudentService;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@author</span> duliu</span></span><br><span class="line"><span class="comment"> *</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">StudentNameUniqueValidation</span> <span class="keyword">implements</span> <span class="title class_">ConstraintValidator</span>&lt;StudentNameUnique, Object&gt;&#123;</span><br><span class="line"></span><br><span class="line">	</span><br><span class="line">	<span class="meta">@Autowired</span></span><br><span class="line">	<span class="keyword">private</span> StudentService studentService ;</span><br><span class="line">	</span><br><span class="line">	<span class="meta">@Override</span></span><br><span class="line">	<span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">initialize</span><span class="params">(StudentNameUnique constraintAnnotation)</span> &#123;</span><br><span class="line">		<span class="comment">// TODO Auto-generated method stub</span></span><br><span class="line">		System.out.println(<span class="string">&quot;Student Name Unique Validation Init...&quot;</span>);</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="meta">@Override</span></span><br><span class="line">	<span class="keyword">public</span> <span class="type">boolean</span> <span class="title function_">isValid</span><span class="params">(Object value, ConstraintValidatorContext context)</span> &#123;</span><br><span class="line">		<span class="comment">// TODO Auto-generated method stub</span></span><br><span class="line">		<span class="keyword">return</span> studentService.nameUniqueCheck((String) value);</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="5-验证对象-Object"><a href="#5-验证对象-Object" class="headerlink" title="5.验证对象 Object"></a>5.验证对象 Object</h2><p>先有一学生对象，对其的属性设置相应注解：<em>StudentDto.java</em></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="keyword">package</span> com.devnp.springboothibernatevalidationdemo.dto;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> java.io.Serializable;</span><br><span class="line"><span class="keyword">import</span> java.util.Date;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> javax.validation.constraints.NotNull;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> org.hibernate.validator.constraints.NotBlank;</span><br><span class="line"><span class="keyword">import</span> org.hibernate.validator.constraints.Range;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> com.devnp.springboothibernatevalidationdemo.validation.StudentNameUnique;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@author</span> duliu</span></span><br><span class="line"><span class="comment"> *</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">StudentDto</span> <span class="keyword">implements</span> <span class="title class_">Serializable</span>&#123;</span><br><span class="line"></span><br><span class="line">	<span class="comment">/**</span></span><br><span class="line"><span class="comment">	 * </span></span><br><span class="line"><span class="comment">	 */</span></span><br><span class="line">	<span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="type">long</span> <span class="variable">serialVersionUID</span> <span class="operator">=</span> <span class="number">1L</span>;</span><br><span class="line">	</span><br><span class="line">	<span class="comment">/**</span></span><br><span class="line"><span class="comment">	 * </span></span><br><span class="line"><span class="comment">	 */</span></span><br><span class="line">	<span class="meta">@NotBlank(message=&quot;&#123;stu.name.not.blank&#125;&quot;)</span></span><br><span class="line">	<span class="meta">@StudentNameUnique</span></span><br><span class="line">	<span class="keyword">private</span> String stuName ;</span><br><span class="line">	</span><br><span class="line">	</span><br><span class="line">	<span class="comment">/**</span></span><br><span class="line"><span class="comment">	 * Student age should be &gt; 18 and &lt; 130</span></span><br><span class="line"><span class="comment">	 */</span></span><br><span class="line">	<span class="meta">@Range(min= 18, max=130, message=&quot;&#123;stu.age.range&#125;&quot;)</span></span><br><span class="line">	<span class="meta">@NotNull(message=&quot;&#123;stu.age.not.blank&#125;&quot;)</span></span><br><span class="line">	<span class="keyword">private</span> Integer stuAge ;</span><br><span class="line">	</span><br><span class="line">	<span class="comment">/**</span></span><br><span class="line"><span class="comment">	 * </span></span><br><span class="line"><span class="comment">	 */</span></span><br><span class="line">	<span class="meta">@NotNull(message=&quot;&#123;stu.birth.not.blank&#125;&quot;)</span></span><br><span class="line">	<span class="keyword">private</span> Date stuBirth ;</span><br><span class="line">	</span><br><span class="line"></span><br><span class="line">	<span class="keyword">public</span> <span class="title function_">StudentDto</span><span class="params">()</span> &#123;</span><br><span class="line">		<span class="built_in">super</span>();</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">public</span> <span class="title function_">StudentDto</span><span class="params">(String stuName, Integer stuAge, Date stuBirth)</span> &#123;</span><br><span class="line">		<span class="built_in">super</span>();</span><br><span class="line">		<span class="built_in">this</span>.stuName = stuName;</span><br><span class="line">		<span class="built_in">this</span>.stuAge = stuAge;</span><br><span class="line">		<span class="built_in">this</span>.stuBirth = stuBirth;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">public</span> String <span class="title function_">getStuName</span><span class="params">()</span> &#123;</span><br><span class="line">		<span class="keyword">return</span> stuName;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">setStuName</span><span class="params">(String stuName)</span> &#123;</span><br><span class="line">		<span class="built_in">this</span>.stuName = stuName;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">public</span> Integer <span class="title function_">getStuAge</span><span class="params">()</span> &#123;</span><br><span class="line">		<span class="keyword">return</span> stuAge;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">setStuAge</span><span class="params">(Integer stuAge)</span> &#123;</span><br><span class="line">		<span class="built_in">this</span>.stuAge = stuAge;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">public</span> Date <span class="title function_">getStuBirth</span><span class="params">()</span> &#123;</span><br><span class="line">		<span class="keyword">return</span> stuBirth;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">setStuBirth</span><span class="params">(Date stuBirth)</span> &#123;</span><br><span class="line">		<span class="built_in">this</span>.stuBirth = stuBirth;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="meta">@Override</span></span><br><span class="line">	<span class="keyword">public</span> String <span class="title function_">toString</span><span class="params">()</span> &#123;</span><br><span class="line">		<span class="keyword">return</span> <span class="string">&quot;StudentDto [stuName=&quot;</span> + stuName + <span class="string">&quot;, stuAge=&quot;</span> + stuAge + <span class="string">&quot;, stuBirth=&quot;</span> + stuBirth + <span class="string">&quot;]&quot;</span>;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="6-消息配置"><a href="#6-消息配置" class="headerlink" title="6.消息配置"></a>6.消息配置</h2><p>关于Spring Boot对国际化的配置：<br><a href="http://www.devnp.com/2018/04/03/spring-boot-%e5%9b%bd%e9%99%85%e5%8c%96-spring-boot-internationalization-demo/" rel="noopener" target="_blank">Spring Boot 国际化 (Spring Boot Internationalization Demo)</a></p>
+<p>1..properties文件</p>
+<p><em>StudentMessages.properties</em></p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">return.msg = 请求成功</span><br><span class="line"></span><br><span class="line">stu.name.not.blank = 学生姓名不能为空</span><br><span class="line">stu.name.unique = 学生姓名不能重复</span><br><span class="line">stu.age.not.blank = 学生年龄不能为空</span><br><span class="line">stu.age.range = 学生年龄应该在18到130岁</span><br><span class="line">stu.birth.not.blank = 学生生日不能为空</span><br></pre></td></tr></table></figure>
+
+<p><em>StudentMessages_zh_CN.properties</em></p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">return.msg = 请求成功</span><br><span class="line"></span><br><span class="line">stu.name.not.blank = 学生姓名不能为空</span><br><span class="line">stu.name.unique = 学生姓名不能重复</span><br><span class="line">stu.age.not.blank = 学生年龄不能为空</span><br><span class="line">stu.age.range = 学生年龄应该在18到130岁</span><br><span class="line">stu.birth.not.blank = 学生生日不能为空</span><br></pre></td></tr></table></figure>
+
+<p><em>StudentMessages_en_US.properties</em></p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">return.msg = Success</span><br><span class="line"></span><br><span class="line">stu.name.not.blank = Student Name cannot be blank.</span><br><span class="line">stu.name.unique = Student Name must be Unique.</span><br><span class="line">stu.age.not.blank = Student Age cannot be blank.</span><br><span class="line">stu.age.range = Student Age should be 18 to 130.</span><br><span class="line">stu.birth.not.blank = Student Birth cannot be blank.</span><br></pre></td></tr></table></figure>
+
+<p>2.配置<br>将消息文件添加到Spring Boot中：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">spring:</span><br><span class="line">    messages:</span><br><span class="line">     fallback-to-system-locale: false</span><br><span class="line">     encoding: UTF-8</span><br><span class="line">     basename: com/devnp/message/StudentMessages</span><br></pre></td></tr></table></figure>
+
+<p>设置加载和国际化：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> com.devnp.springboothibernatevalidationdemo.config;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> java.util.Locale;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> org.springframework.beans.factory.annotation.Autowired;</span><br><span class="line"><span class="keyword">import</span> org.springframework.context.MessageSource;</span><br><span class="line"><span class="keyword">import</span> org.springframework.context.annotation.Bean;</span><br><span class="line"><span class="keyword">import</span> org.springframework.context.annotation.Configuration;</span><br><span class="line"><span class="keyword">import</span> org.springframework.validation.Validator;</span><br><span class="line"><span class="keyword">import</span> org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;</span><br><span class="line"><span class="keyword">import</span> org.springframework.web.servlet.LocaleResolver;</span><br><span class="line"><span class="keyword">import</span> org.springframework.web.servlet.config.annotation.InterceptorRegistry;</span><br><span class="line"><span class="keyword">import</span> org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;</span><br><span class="line"><span class="keyword">import</span> org.springframework.web.servlet.i18n.LocaleChangeInterceptor;</span><br><span class="line"><span class="keyword">import</span> org.springframework.web.servlet.i18n.SessionLocaleResolver;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@author</span> duliu</span></span><br><span class="line"><span class="comment"> *</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="meta">@Configuration</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">MessageConfig</span> <span class="keyword">extends</span> <span class="title class_">WebMvcConfigurerAdapter</span> &#123;</span><br><span class="line">	</span><br><span class="line">	<span class="meta">@Autowired</span></span><br><span class="line">	<span class="keyword">private</span> MessageSource messageSource;</span><br><span class="line"></span><br><span class="line">	<span class="meta">@Bean</span></span><br><span class="line">	<span class="keyword">public</span> LocalValidatorFactoryBean <span class="title function_">validator</span><span class="params">()</span> &#123;</span><br><span class="line">		<span class="type">LocalValidatorFactoryBean</span> <span class="variable">localValidatorFactoryBean</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">LocalValidatorFactoryBean</span>();</span><br><span class="line">		</span><br><span class="line">		localValidatorFactoryBean.setValidationMessageSource(messageSource);</span><br><span class="line">		</span><br><span class="line">		<span class="keyword">return</span> localValidatorFactoryBean;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="meta">@Override</span>  </span><br><span class="line">    <span class="keyword">public</span> Validator <span class="title function_">getValidator</span><span class="params">()</span> &#123;  </span><br><span class="line">        <span class="keyword">return</span> validator();  </span><br><span class="line">    &#125;</span><br><span class="line">	</span><br><span class="line">	<span class="meta">@Bean</span></span><br><span class="line">    <span class="keyword">public</span> LocaleResolver <span class="title function_">localeResolver</span><span class="params">()</span> &#123;</span><br><span class="line">        <span class="type">SessionLocaleResolver</span> <span class="variable">slr</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">SessionLocaleResolver</span>();</span><br><span class="line">        slr.setDefaultLocale(Locale.CHINESE);</span><br><span class="line">        <span class="keyword">return</span> slr;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Bean</span></span><br><span class="line">    <span class="keyword">public</span> LocaleChangeInterceptor <span class="title function_">localeChangeInterceptor</span><span class="params">()</span> &#123;</span><br><span class="line">        <span class="type">LocaleChangeInterceptor</span> <span class="variable">lci</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">LocaleChangeInterceptor</span>();</span><br><span class="line">        lci.setParamName(<span class="string">&quot;lang&quot;</span>);</span><br><span class="line">        <span class="keyword">return</span> lci;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">addInterceptors</span><span class="params">(InterceptorRegistry registry)</span> &#123;</span><br><span class="line">        registry.addInterceptor(localeChangeInterceptor());</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="7-控制器-Controller"><a href="#7-控制器-Controller" class="headerlink" title="7.控制器 Controller"></a>7.控制器 Controller</h2><p>表单提交的控制器：<em>StudentController.java</em></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> com.devnp.springboothibernatevalidationdemo.web;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> javax.validation.Valid;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> org.springframework.beans.factory.annotation.Autowired;</span><br><span class="line"><span class="keyword">import</span> org.springframework.context.MessageSource;</span><br><span class="line"><span class="keyword">import</span> org.springframework.context.i18n.LocaleContextHolder;</span><br><span class="line"><span class="keyword">import</span> org.springframework.validation.BindingResult;</span><br><span class="line"><span class="keyword">import</span> org.springframework.web.bind.annotation.RequestBody;</span><br><span class="line"><span class="keyword">import</span> org.springframework.web.bind.annotation.RequestMapping;</span><br><span class="line"><span class="keyword">import</span> org.springframework.web.bind.annotation.RequestMethod;</span><br><span class="line"><span class="keyword">import</span> org.springframework.web.bind.annotation.RestController;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> com.devnp.springboothibernatevalidationdemo.dto.StudentDto;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@author</span> duliu</span></span><br><span class="line"><span class="comment"> *</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="meta">@RestController</span></span><br><span class="line"><span class="meta">@RequestMapping(&quot;/student&quot;)</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">StudentController</span> &#123;</span><br><span class="line">	</span><br><span class="line">	<span class="meta">@Autowired</span></span><br><span class="line">	<span class="keyword">private</span> MessageSource messageSource;</span><br><span class="line"></span><br><span class="line">	<span class="meta">@RequestMapping(path=&quot;/add&quot;, method= &#123;RequestMethod.POST&#125;)</span></span><br><span class="line">	<span class="keyword">public</span> String <span class="title function_">add</span><span class="params">(<span class="meta">@Valid</span> <span class="meta">@RequestBody</span> StudentDto studentDto, BindingResult bindingResult)</span> &#123;</span><br><span class="line">		</span><br><span class="line">		<span class="keyword">if</span>(bindingResult.hasErrors()) &#123;</span><br><span class="line">			bindingResult.getAllErrors().stream().forEach(error -&gt; &#123;System.out.println(error.getDefaultMessage());&#125;);</span><br><span class="line">		&#125;</span><br><span class="line">		</span><br><span class="line">		System.out.println(studentDto);</span><br><span class="line">		</span><br><span class="line">		<span class="keyword">return</span> messageSource.getMessage(<span class="string">&quot;return.msg&quot;</span>, <span class="literal">null</span>, LocaleContextHolder.getLocale()) ;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+
+<h2 id="8-测试"><a href="#8-测试" class="headerlink" title="8.测试"></a>8.测试</h2><p>撰写单元测试的类和方法：<em>StudentControllerTests.java</em></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="keyword">package</span> com.devnp.springboothibernatevalidationdemo.web;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> java.util.Date;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> org.junit.Before;</span><br><span class="line"><span class="keyword">import</span> org.junit.Test;</span><br><span class="line"><span class="keyword">import</span> org.junit.runner.RunWith;</span><br><span class="line"><span class="keyword">import</span> org.springframework.beans.factory.annotation.Autowired;</span><br><span class="line"><span class="keyword">import</span> org.springframework.boot.test.context.SpringBootTest;</span><br><span class="line"><span class="keyword">import</span> org.springframework.http.MediaType;</span><br><span class="line"><span class="keyword">import</span> org.springframework.test.context.junit4.SpringRunner;</span><br><span class="line"><span class="keyword">import</span> org.springframework.test.web.servlet.MockMvc;</span><br><span class="line"><span class="keyword">import</span> org.springframework.test.web.servlet.request.MockMvcRequestBuilders;</span><br><span class="line"><span class="keyword">import</span> org.springframework.test.web.servlet.result.MockMvcResultMatchers;</span><br><span class="line"><span class="keyword">import</span> org.springframework.test.web.servlet.setup.MockMvcBuilders;</span><br><span class="line"><span class="keyword">import</span> org.springframework.web.context.WebApplicationContext;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@author</span> duliu</span></span><br><span class="line"><span class="comment"> *</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="meta">@RunWith(SpringRunner.class)</span></span><br><span class="line"><span class="meta">@SpringBootTest</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">StudentControllerTests</span> &#123;</span><br><span class="line"></span><br><span class="line">	<span class="meta">@Autowired</span></span><br><span class="line">	<span class="keyword">private</span> WebApplicationContext context;</span><br><span class="line">	</span><br><span class="line">	<span class="keyword">private</span> MockMvc mvc;</span><br><span class="line"></span><br><span class="line">	<span class="meta">@Before</span></span><br><span class="line">	<span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">before</span><span class="params">()</span> &#123;</span><br><span class="line">		<span class="built_in">this</span>.mvc = MockMvcBuilders.webAppContextSetup(<span class="built_in">this</span>.context).build();</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="meta">@Test</span></span><br><span class="line">	<span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">testAdd</span><span class="params">()</span> <span class="keyword">throws</span> Exception &#123;</span><br><span class="line"></span><br><span class="line">		<span class="type">Date</span> <span class="variable">date</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">Date</span>();</span><br><span class="line"></span><br><span class="line">		<span class="type">String</span> <span class="variable">enResult</span> <span class="operator">=</span> <span class="built_in">this</span>.mvc</span><br><span class="line">				.perform(MockMvcRequestBuilders.post(<span class="string">&quot;/student/add?lang=en_US&quot;</span>).contentType(MediaType.APPLICATION_JSON_UTF8)</span><br><span class="line">						.content(<span class="string">&quot;&#123;\&quot;stuName\&quot;:\&quot;jack\&quot;,\&quot;stuAge\&quot;:null, \&quot;stuBirth\&quot;:\&quot;&quot;</span> + date.getTime() + <span class="string">&quot;\&quot;&#125;&quot;</span>))</span><br><span class="line">				.andExpect(MockMvcResultMatchers.status().isOk()).andReturn().getResponse().getContentAsString();</span><br><span class="line"></span><br><span class="line">		System.out.println(<span class="string">&quot;Result : &quot;</span> + enResult);</span><br><span class="line">		</span><br><span class="line">		<span class="type">String</span> <span class="variable">zhResult</span> <span class="operator">=</span> <span class="built_in">this</span>.mvc</span><br><span class="line">				.perform(MockMvcRequestBuilders.post(<span class="string">&quot;/student/add?lang=zh_CN&quot;</span>).contentType(MediaType.APPLICATION_JSON_UTF8)</span><br><span class="line">						.content(<span class="string">&quot;&#123;\&quot;stuName\&quot;:\&quot;Tom\&quot;,\&quot;stuAge\&quot;:12, \&quot;stuBirth\&quot;:\&quot;&quot;</span> + date.getTime() + <span class="string">&quot;\&quot;&#125;&quot;</span>))</span><br><span class="line">				.andExpect(MockMvcResultMatchers.status().isOk()).andReturn().getResponse().getContentAsString();</span><br><span class="line"></span><br><span class="line">		System.out.println(<span class="string">&quot;结果 : &quot;</span> + zhResult);</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><strong>运行结果：</strong></p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">Student Name Unique Validation Init...</span><br><span class="line">Student Age cannot be blank.</span><br><span class="line">StudentDto [stuName=jack, stuAge=null, stuBirth=Mon Apr 09 15:24:51 SGT 2018]</span><br><span class="line">Result : Success</span><br><span class="line"></span><br><span class="line">学生姓名不能重复</span><br><span class="line">学生年龄应该在18到130岁</span><br><span class="line">StudentDto [stuName=Tom, stuAge=12, stuBirth=Mon Apr 09 15:24:51 SGT 2018]</span><br><span class="line">结果 : 请求成功</span><br></pre></td></tr></table></figure>
+
+<h2 id="9-代码下载"><a href="#9-代码下载" class="headerlink" title="9.代码下载"></a>9.代码下载</h2><p><a href="http://wp-qn.devnp.com/2018/04/09/spring-boot-validation-%E9%AA%8C%E8%AF%81/spring-boot-hibernate-validation-demo.zip" rel="noopener" target="_blank">spring-boot-hibernate-validation-demo.zip</a></p>
+
+        </div>
+
+        
+            <section class="post-copyright">
+                
+                    <p class="copyright-item">
+                        <span>Author:</span>
+                        <span>Darren Du</span>
+                    </p>
+                
+                
+                
+                    <p class="copyright-item">
+                        <span>License:</span>
+                        <span>Copyright (c) 2019 MIT LICENSE</span>
+                    </p>
+                
+                
+
+            </section>
+        
+        <section class="post-tags">
+            <div>
+                <span>Tag(s):</span>
+                <span class="tag">
+                    
+                    
+                        <a href="/tags/Java/"># Java</a>
+                    
+                        <a href="/tags/Spring/"># Spring</a>
+                    
+                        <a href="/tags/Spring-Boot/"># Spring Boot</a>
+                    
+                        <a href="/tags/Validation/"># Validation</a>
+                    
+                        
+                </span>
+            </div>
+            <div>
+                <a href="javascript:window.history.back();">back</a>
+                <span>· </span>
+                <a href="/">home</a>
+            </div>
+        </section>
+        <section class="post-nav">
+            
+                <a class="prev" rel="prev" href="/2018/04/21/Spring%20Boot%20+%20Spring%20Security%20%E8%87%AA%E5%AE%9A%E4%B9%89%E8%A1%A8%E5%8D%95%E7%99%BB%E5%BD%95/">Spring Boot + Spring Security 自定义表单登录</a>
+            
+            
+            <a class="next" rel="next" href="/2018/04/08/Spring%20Boot%20%E9%85%8D%E7%BD%AE%E5%B1%9E%E6%80%A7%20(@ConfigurationProperties)/">Spring Boot 配置属性 (@ConfigurationProperties)</a>
+            
+        </section>
+
+
+    </article>
+</div>
+
+        </div>
+        <footer id="footer" class="footer">
+    <div class="copyright">
+        <span>© Darren Du | Powered by <a href="https://hexo.io" target="_blank">Hexo</a> & <a href="https://github.com/Siricee/hexo-theme-Chic" target="_blank">Chic</a></span>
+    </div>
+</footer>
+
+    </div>
+</body>
+</html>

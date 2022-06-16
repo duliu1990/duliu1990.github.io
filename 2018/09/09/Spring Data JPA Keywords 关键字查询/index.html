@@ -1,0 +1,567 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <meta name="author" content="Darren Du">
+
+
+
+    <meta name="description" content="Dev">
+
+
+
+<title>Spring Data JPA Keywords 关键字查询 | Du Liu&#39;s Blog</title>
+
+
+
+    <link rel="icon" href="/favicon.ico">
+
+
+
+
+    <!-- stylesheets list from _config.yml -->
+    
+    <link rel="stylesheet" href="/css/style.css">
+    
+
+
+
+    <!-- scripts list from _config.yml -->
+    
+    <script src="/js/script.js"></script>
+    
+    <script src="/js/tocbot.min.js"></script>
+    
+
+
+
+    
+    
+        
+    
+
+
+<meta name="generator" content="Hexo 6.2.0"></head>
+<body>
+    <div class="wrapper">
+        <header>
+    <nav class="navbar">
+        <div class="container">
+            <div class="navbar-header header-logo"><a href="/">Du Liu&#39;s Blog</a></div>
+            <div class="menu navbar-right">
+                
+                    <a class="menu-item" href="/archives">Posts</a>
+                
+                    <a class="menu-item" href="/category">Categories</a>
+                
+                    <a class="menu-item" href="/tag">Tags</a>
+                
+                    <a class="menu-item" href="/about">About</a>
+                
+                <input id="switch_default" type="checkbox" class="switch_default">
+                <label for="switch_default" class="toggleBtn"></label>
+            </div>
+
+        </div>
+    </nav>
+
+    
+    <nav class="navbar-mobile" id="nav-mobile">
+        <div class="container">
+            <div class="navbar-header">
+                <div>
+                    <a href="/">Du Liu&#39;s Blog</a><a id="mobile-toggle-theme">·&nbsp;Light</a>
+                </div>
+                <div class="menu-toggle" onclick="mobileBtn()">&#9776; Menu</div>
+            </div>
+            <div class="menu" id="mobile-menu">
+                
+                    <a class="menu-item" href="/archives">Posts</a>
+                
+                    <a class="menu-item" href="/category">Categories</a>
+                
+                    <a class="menu-item" href="/tag">Tags</a>
+                
+                    <a class="menu-item" href="/about">About</a>
+                
+            </div>
+        </div>
+    </nav>
+
+</header>
+<script>
+    var mobileBtn = function f() {
+        var toggleMenu = document.getElementsByClassName("menu-toggle")[0];
+        var mobileMenu = document.getElementById("mobile-menu");
+        if(toggleMenu.classList.contains("active")){
+           toggleMenu.classList.remove("active")
+            mobileMenu.classList.remove("active")
+        }else{
+            toggleMenu.classList.add("active")
+            mobileMenu.classList.add("active")
+        }
+    }
+</script>
+        <div class="main">
+            <div class="container">
+    
+    
+        <div class="post-toc">
+    <div class="tocbot-list">
+    </div>
+    <div class="tocbot-list-menu">
+        <a class="tocbot-toc-expand" onclick="expand_toc()">Expand all</a>
+        <a onclick="go_top()">Back to top</a>
+        <a onclick="go_bottom()">Go to bottom</a>
+    </div>
+</div>
+
+<script>
+    document.ready(
+        function () {
+            tocbot.init({
+                tocSelector: '.tocbot-list',
+                contentSelector: '.post-content',
+                headingSelector: 'h1, h2, h3, h4, h5',
+                collapseDepth: 1,
+                orderedList: false,
+                scrollSmooth: true,
+            })
+        }
+    )
+
+    function expand_toc() {
+        var b = document.querySelector(".tocbot-toc-expand");
+        tocbot.init({
+            tocSelector: '.tocbot-list',
+            contentSelector: '.post-content',
+            headingSelector: 'h1, h2, h3, h4, h5',
+            collapseDepth: 6,
+            orderedList: false,
+            scrollSmooth: true,
+        });
+        b.setAttribute("onclick", "collapse_toc()");
+        b.innerHTML = "Collapse all"
+    }
+
+    function collapse_toc() {
+        var b = document.querySelector(".tocbot-toc-expand");
+        tocbot.init({
+            tocSelector: '.tocbot-list',
+            contentSelector: '.post-content',
+            headingSelector: 'h1, h2, h3, h4, h5',
+            collapseDepth: 1,
+            orderedList: false,
+            scrollSmooth: true,
+        });
+        b.setAttribute("onclick", "expand_toc()");
+        b.innerHTML = "Expand all"
+    }
+
+    function go_top() {
+        window.scrollTo(0, 0);
+    }
+
+    function go_bottom() {
+        window.scrollTo(0, document.body.scrollHeight);
+    }
+
+</script>
+    
+
+    
+    <article class="post-wrap">
+        <header class="post-header">
+            <h1 class="post-title">Spring Data JPA Keywords 关键字查询</h1>
+            
+                <div class="post-meta">
+                    
+                        Author: <a itemprop="author" rel="author" href="/">Darren Du</a>
+                    
+
+                    
+                        <span class="post-time">
+                        Date: <a href="#">September 9, 2018&nbsp;&nbsp;12:37:38</a>
+                        </span>
+                    
+                    
+                        <span class="post-category">
+                    Category:
+                            
+                                <a href="/categories/Java-Framework/">Java Framework</a>
+                            
+                                <a href="/categories/Java-Framework/Spring-Framework/">Spring Framework</a>
+                            
+                        </span>
+                    
+                </div>
+            
+        </header>
+
+        <div class="post-content">
+            <p>在编写查询条件的时候，实用关键字的方式可以快速实现查询，Spring Data JPA 提供了很多可供使用的关键字，对于常用条件的查询都能得到满足。本示例使用Spring Boot + JPA + My SQL来演示在Spring Data JPA中对关键字查询方式的使用：</p>
+<p>演示的版本：</p>
+<ol>
+<li>Spring Boot 2.0.4.RELEASE</li>
+<li>My SQL 5.*</li>
+</ol>
+<h2 id="语法"><a href="#语法" class="headerlink" title="语法"></a>语法</h2><p>关键的字使用方式，要注意字段的名称需要以小写开头，而编写方法的时候，以大写字母开头，其方式主要是 “字段” + “关键字”+ 的形式，也可能有“字段”+“关键字”+“字段”等一些其他的形式：</p>
+<p>例如：</p>
+<ol>
+<li>查询人的名字是Jack Chen
+
+<p><code>Iterable<Person> findByFirstNameAndLastName(String firstName, String lastName);</code></p></li></p>
+<li><p>查询年龄大于18岁
+
+<p><code>Iterable<Person> findByAgeGreaterThan(<strong>int</strong> age);</code></p></li></p>
+<li><p>查询第一名称以**开头（MySQL 默认自动会忽略大小写）
+
+<p><code>Iterable<Person> findByFirstNameStartingWith(String firstName);</code></p></li></p>
+<li><p>查询薪水在2000到3000之间，并以从小到大排序
+
+<p><code>Iterable<Person> findBySalaryBetweenOrderBySalaryAsc(<strong>double</strong> start, <strong>double</strong> end);</code></p></li></p>
+<li><p>查询1990/01/01之后出生的
+
+<p><code>Iterable<Person> findByBirthAfter(Date birth);</code></p></li></p>
+<li><p>查询第一名字包含“chen”，并忽略大小写（MySQL 默认自动会忽略大小写）
+
+<p><code>Iterable<Person> findByFirstNameContainingIgnoreCase(String firstName);</code></p></li></p>
+</ol>
+
+<h2 id="示例"><a href="#示例" class="headerlink" title="示例"></a>示例</h2><h3 id="Repository"><a href="#Repository" class="headerlink" title="Repository"></a>Repository</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> com.devnp.repository;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> java.util.Date;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> org.springframework.data.jpa.repository.JpaRepository;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> com.devnp.entity.Person;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">interface</span> <span class="title class_">PersonRepository</span> <span class="keyword">extends</span> <span class="title class_">JpaRepository</span>&lt;Person, Integer&gt; &#123;</span><br><span class="line"></span><br><span class="line">    <span class="comment">//查询人的名字</span></span><br><span class="line">    Iterable&lt;Person&gt; <span class="title function_">findByFirstNameAndLastName</span><span class="params">(String firstName, String lastName)</span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment">//查询年龄大于18岁</span></span><br><span class="line">    Iterable&lt;Person&gt; <span class="title function_">findByAgeGreaterThan</span><span class="params">(<span class="type">int</span> age)</span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment">//查询第一名称以**开头</span></span><br><span class="line">    Iterable&lt;Person&gt; <span class="title function_">findByFirstNameStartingWith</span><span class="params">(String firstName)</span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment">//查询薪水在2000到3000之间，并以从小到大排序</span></span><br><span class="line">    Iterable&lt;Person&gt; <span class="title function_">findBySalaryBetweenOrderBySalaryAsc</span><span class="params">(<span class="type">double</span> start, <span class="type">double</span> end)</span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment">//查询1990/01/01之后出生的</span></span><br><span class="line">    Iterable&lt;Person&gt; <span class="title function_">findByBirthAfter</span><span class="params">(Date birth)</span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment">//查询第一名字包含“chen”，并忽略大小写</span></span><br><span class="line">    Iterable&lt;Person&gt; <span class="title function_">findByFirstNameContainingIgnoreCase</span><span class="params">(String firstName)</span>;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="测试"><a href="#测试" class="headerlink" title="测试"></a>测试</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> com.devnp;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> java.time.LocalDate;</span><br><span class="line"><span class="keyword">import</span> java.time.ZoneId;</span><br><span class="line"><span class="keyword">import</span> java.util.ArrayList;</span><br><span class="line"><span class="keyword">import</span> java.util.Date;</span><br><span class="line"><span class="keyword">import</span> java.util.List;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> org.junit.Test;</span><br><span class="line"><span class="keyword">import</span> org.junit.runner.RunWith;</span><br><span class="line"><span class="keyword">import</span> org.springframework.beans.factory.annotation.Autowired;</span><br><span class="line"><span class="keyword">import</span> org.springframework.boot.test.context.SpringBootTest;</span><br><span class="line"><span class="keyword">import</span> org.springframework.test.context.junit4.SpringRunner;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> com.devnp.entity.Person;</span><br><span class="line"><span class="keyword">import</span> com.devnp.repository.PersonRepository;</span><br><span class="line"></span><br><span class="line"><span class="meta">@RunWith(SpringRunner.class)</span></span><br><span class="line"><span class="meta">@SpringBootTest</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">SpringBootJpaKeywordApplicationTests</span> &#123;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Autowired</span></span><br><span class="line">    <span class="keyword">private</span> PersonRepository personRepository;</span><br><span class="line"></span><br><span class="line">    <span class="comment">//先添加一些数据</span></span><br><span class="line">    <span class="meta">@Test</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">save</span><span class="params">()</span> &#123;</span><br><span class="line">        List&lt;Person&gt; list = <span class="keyword">new</span> <span class="title class_">ArrayList</span>&lt;&gt;();</span><br><span class="line"></span><br><span class="line">        <span class="type">LocalDate</span> <span class="variable">localDate</span> <span class="operator">=</span> LocalDate.of(<span class="number">1900</span>, <span class="number">1</span>, <span class="number">1</span>);</span><br><span class="line">        <span class="type">Date</span> <span class="variable">date</span> <span class="operator">=</span> Date.from(localDate.atStartOfDay().atZone(ZoneId.systemDefault()).toInstant());</span><br><span class="line"></span><br><span class="line">        list.add(<span class="keyword">new</span> <span class="title class_">Person</span>(<span class="string">&quot;NAME-1&quot;</span>, <span class="string">&quot;JACK&quot;</span> , <span class="number">20</span>, <span class="keyword">new</span> <span class="title class_">Date</span>(), <span class="number">2000.00</span>));</span><br><span class="line">        list.add(<span class="keyword">new</span> <span class="title class_">Person</span>(<span class="string">&quot;NAME-2&quot;</span>, <span class="string">&quot;chen&quot;</span> , <span class="number">20</span>, date, <span class="number">2000.12</span>));</span><br><span class="line">        list.add(<span class="keyword">new</span> <span class="title class_">Person</span>(<span class="string">&quot;NAME-3&quot;</span>, <span class="string">&quot;TOME&quot;</span> , <span class="number">25</span>, <span class="keyword">new</span> <span class="title class_">Date</span>(), <span class="number">1500.12</span>));</span><br><span class="line">        list.add(<span class="keyword">new</span> <span class="title class_">Person</span>(<span class="string">&quot;NAME-4&quot;</span>, <span class="string">&quot;Chen&quot;</span> , <span class="number">11</span>, date, <span class="number">3000.12</span>));</span><br><span class="line">        list.add(<span class="keyword">new</span> <span class="title class_">Person</span>(<span class="string">&quot;NAME-5&quot;</span>, <span class="string">&quot;Li&quot;</span> , <span class="number">29</span>, <span class="keyword">new</span> <span class="title class_">Date</span>(), <span class="number">4000.52</span>));</span><br><span class="line"></span><br><span class="line">        personRepository.saveAll(list);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">//查询人的名字</span></span><br><span class="line">    <span class="meta">@Test</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">testFindByFirstNameAndLastName</span><span class="params">()</span> &#123;</span><br><span class="line">        Iterable&lt;Person&gt; persons = personRepository.findByFirstNameAndLastName(<span class="string">&quot;JACK&quot;</span>, <span class="string">&quot;NAME-1&quot;</span>);</span><br><span class="line"></span><br><span class="line">        persons.forEach(System.out::println);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">//查询年龄大于18岁</span></span><br><span class="line">    <span class="meta">@Test</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">testFindByAgeGreaterThan</span><span class="params">()</span> &#123;</span><br><span class="line">        Iterable&lt;Person&gt; persons = personRepository.findByAgeGreaterThan(<span class="number">18</span>);</span><br><span class="line">        persons.forEach(System.out::println);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">//查询第一名称以**开头</span></span><br><span class="line">    <span class="meta">@Test</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">testFindByFirstNameStartingWith</span><span class="params">()</span> &#123;</span><br><span class="line">        Iterable&lt;Person&gt; persons = personRepository.findByFirstNameStartingWith(<span class="string">&quot;chen&quot;</span>);</span><br><span class="line">        persons.forEach(System.out::println);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">//查询薪水在2000到3000之间，并以从小到大排序</span></span><br><span class="line">    <span class="meta">@Test</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">testFindBySalaryBetweenOrderBySalaryAsc</span><span class="params">()</span> &#123;</span><br><span class="line">        Iterable&lt;Person&gt; persons = personRepository.findBySalaryBetweenOrderBySalaryAsc(<span class="number">2000.00</span>, <span class="number">3000.00</span>);</span><br><span class="line">        persons.forEach(System.out::println);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">//查询1990/01/01之后出生的</span></span><br><span class="line">    <span class="meta">@Test</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">testFindByBirthAfter</span><span class="params">()</span> &#123;</span><br><span class="line">        <span class="type">LocalDate</span> <span class="variable">localDate</span> <span class="operator">=</span> LocalDate.of(<span class="number">1990</span>, <span class="number">1</span>, <span class="number">1</span>);</span><br><span class="line">        <span class="type">Date</span> <span class="variable">date</span> <span class="operator">=</span> Date.from(localDate.atStartOfDay().atZone(ZoneId.systemDefault()).toInstant());</span><br><span class="line"></span><br><span class="line">        Iterable&lt;Person&gt; persons = personRepository.findByBirthAfter(date);</span><br><span class="line">        persons.forEach(System.out::println);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">//查询第一名字包含“chen”，并忽略大小写</span></span><br><span class="line">    <span class="meta">@Test</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">testFindByFirstNameContainingIgnoreCase</span><span class="params">()</span> &#123;</span><br><span class="line">        Iterable&lt;Person&gt; persons = personRepository.findByFirstNameContainingIgnoreCase(<span class="string">&quot;chen&quot;</span>);</span><br><span class="line">        persons.forEach(System.out::println);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="项目地址"><a href="#项目地址" class="headerlink" title="项目地址"></a>项目地址</h2><p>完整演示代码可以通过GitHub : <a target="_blank" rel="noopener" href="https://github.com/duliu1990/spring-boot-jpa-demo/tree/master/spring-boot-jpa-keyword" title="spring-boot-jpa-keyword">spring-boot-jpa-keyword</a>
+
+<h2 id="附录"><a href="#附录" class="headerlink" title="附录"></a>附录</h2><h3 id="关键字常用形式"><a href="#关键字常用形式" class="headerlink" title="关键字常用形式"></a>关键字常用形式</h3><table>
+<thead>
+<tr>
+  <th>Keyword</th>
+  <th>Sample</th>
+  <th>JPQL snippet</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td><code>And</code></td>
+  <td><code>findByLastnameAndFirstname</code></td>
+  <td><code>… where x.lastname = ?1 and x.firstname = ?2</code></td>
+</tr>
+<tr>
+  <td><code>Or</code></td>
+  <td><code>findByLastnameOrFirstname</code></td>
+  <td><code>… where x.lastname = ?1 or x.firstname = ?2</code></td>
+</tr>
+<tr>
+  <td><code>Is,Equals</code></td>
+  <td><code>findByFirstname</code>,<code>findByFirstnameIs</code>,<br /><code>findByFirstnameEquals</code></td>
+  <td><code>… where x.firstname = ?1</code></td>
+</tr>
+<tr>
+  <td><code>Between</code></td>
+  <td><code>findByStartDateBetween</code></td>
+  <td><code>… where x.startDate between ?1 and ?2</code></td>
+</tr>
+<tr>
+  <td><code>LessThan</code></td>
+  <td><code>findByAgeLessThan</code></td>
+  <td><code>… where x.age < ?1</code></td>
+</tr>
+<tr>
+  <td><code>LessThanEqual</code></td>
+  <td><code>findByAgeLessThanEqual</code></td>
+  <td><code>… where x.age <= ?1</code></td>
+</tr>
+<tr>
+  <td><code>GreaterThan</code></td>
+  <td><code>findByAgeGreaterThan</code></td>
+  <td><code>… where x.age > ?1</code></td>
+</tr>
+<tr>
+  <td><code>GreaterThanEqual</code></td>
+  <td><code>findByAgeGreaterThanEqual</code></td>
+  <td><code>… where x.age >= ?1</code></td>
+</tr>
+<tr>
+  <td><code>After</code></td>
+  <td><code>findByStartDateAfter</code></td>
+  <td><code>… where x.startDate > ?1</code></td>
+</tr>
+<tr>
+  <td><code>Before</code></td>
+  <td><code>findByStartDateBefore</code></td>
+  <td><code>… where x.startDate < ?1</code></td>
+</tr>
+<tr>
+  <td><code>IsNull</code></td>
+  <td><code>findByAgeIsNull</code></td>
+  <td><code>… where x.age is null</code></td>
+</tr>
+<tr>
+  <td><code>IsNotNull,NotNull</code></td>
+  <td><code>findByAge(Is)NotNull</code></td>
+  <td><code>… where x.age not null</code></td>
+</tr>
+<tr>
+  <td><code>Like</code></td>
+  <td><code>findByFirstnameLike</code></td>
+  <td><code>… where x.firstname like ?1</code></td>
+</tr>
+<tr>
+  <td><code>NotLike</code></td>
+  <td><code>findByFirstnameNotLike</code></td>
+  <td><code>… where x.firstname not like ?1</code></td>
+</tr>
+<tr>
+  <td><code>StartingWith</code></td>
+  <td><code>findByFirstnameStartingWith</code></td>
+  <td><code>… where x.firstname like ?1</code> (parameter bound with appended <code>%</code>)</td>
+</tr>
+<tr>
+  <td><code>EndingWith</code></td>
+  <td><code>findByFirstnameEndingWith</code></td>
+  <td><code>… where x.firstname like ?1</code> (parameter bound with prepended <code>%</code>)</td>
+</tr>
+<tr>
+  <td><code>Containing</code></td>
+  <td><code>findByFirstnameContaining</code></td>
+  <td><code>… where x.firstname like ?1</code> (parameter bound wrapped in <code>%</code>)</td>
+</tr>
+<tr>
+  <td><code>OrderBy</code></td>
+  <td><code>findByAgeOrderByLastnameDesc</code></td>
+  <td><code>… where x.age = ?1 order by x.lastname desc</code></td>
+</tr>
+<tr>
+  <td><code>Not</code></td>
+  <td><code>findByLastnameNot</code></td>
+  <td><code>… where x.lastname <> ?1</code></td>
+</tr>
+<tr>
+  <td><code>In</code></td>
+  <td><code>findByAgeIn(Collection<Age> ages)</code></td>
+  <td><code>… where x.age in ?1</code></td>
+</tr>
+<tr>
+  <td><code>NotIn</code></td>
+  <td><code>findByAgeNotIn(Collection<Age> ages)</code></td>
+  <td><code>… where x.age not in ?1</code></td>
+</tr>
+<tr>
+  <td><code>True</code></td>
+  <td><code>findByActiveTrue()</code></td>
+  <td><code>… where x.active = true</code></td>
+</tr>
+<tr>
+  <td><code>False</code></td>
+  <td><code>findByActiveFalse()</code></td>
+  <td><code>… where x.active = false</code></td>
+</tr>
+<tr>
+  <td><code>IgnoreCase</code></td>
+  <td><code>findByFirstnameIgnoreCase</code></td>
+  <td><code>… where UPPER(x.firstame) = UPPER(?1)</code></td>
+</tr>
+</tbody>
+</table>
+
+<h3 id="关键字列表"><a href="#关键字列表" class="headerlink" title="关键字列表"></a>关键字列表</h3><table>
+<thead>
+<tr>
+  <th>Logical keyword</th>
+  <th>Keyword expressions</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td><code>AND</code></td>
+  <td><code>And</code></td>
+</tr>
+<tr>
+  <td><code>OR</code></td>
+  <td><code>Or</code></td>
+</tr>
+<tr>
+  <td><code>AFTER</code></td>
+  <td><code>After</code>, <code>IsAfter</code></td>
+</tr>
+<tr>
+  <td><code>BEFORE</code></td>
+  <td><code>Before</code>, <code>IsBefore</code></td>
+</tr>
+<tr>
+  <td><code>CONTAINING</code></td>
+  <td><code>Containing</code>, <code>IsContaining</code>, <code>Contains</code></td>
+</tr>
+<tr>
+  <td><code>BETWEEN</code></td>
+  <td><code>Between</code>, <code>IsBetween</code></td>
+</tr>
+<tr>
+  <td><code>ENDING_WITH</code></td>
+  <td><code>EndingWith</code>, <code>IsEndingWith</code>, <code>EndsWith</code></td>
+</tr>
+<tr>
+  <td><code>EXISTS</code></td>
+  <td><code>Exists</code></td>
+</tr>
+<tr>
+  <td><code>FALSE</code></td>
+  <td><code>False</code>, <code>IsFalse</code></td>
+</tr>
+<tr>
+  <td><code>GREATER_THAN</code></td>
+  <td><code>GreaterThan</code>, <code>IsGreaterThan</code></td>
+</tr>
+<tr>
+  <td><code>GREATER_THAN_EQUALS</code></td>
+  <td><code>GreaterThanEqual</code>, <code>IsGreaterThanEqual</code></td>
+</tr>
+<tr>
+  <td><code>IN</code></td>
+  <td><code>In</code>, <code>IsIn</code></td>
+</tr>
+<tr>
+  <td><code>IS</code></td>
+  <td><code>Is</code>, <code>Equals</code>, (or no keyword)</td>
+</tr>
+<tr>
+  <td><code>IS_EMPTY</code></td>
+  <td><code>IsEmpty</code>, <code>Empty</code></td>
+</tr>
+<tr>
+  <td><code>IS_NOT_EMPTY</code></td>
+  <td><code>IsNotEmpty</code>, <code>NotEmpty</code></td>
+</tr>
+<tr>
+  <td><code>IS_NOT_NULL</code></td>
+  <td><code>NotNull</code>, <code>IsNotNull</code></td>
+</tr>
+<tr>
+  <td><code>IS_NULL</code></td>
+  <td><code>Null</code>, <code>IsNull</code></td>
+</tr>
+<tr>
+  <td><code>LESS_THAN</code></td>
+  <td><code>LessThan</code>, <code>IsLessThan</code></td>
+</tr>
+<tr>
+  <td><code>LESS_THAN_EQUAL</code></td>
+  <td><code>LessThanEqual</code>, <code>IsLessThanEqual</code></td>
+</tr>
+<tr>
+  <td><code>LIKE</code></td>
+  <td><code>Like</code>, <code>IsLike</code></td>
+</tr>
+<tr>
+  <td><code>NEAR</code></td>
+  <td><code>Near</code>, <code>IsNear</code></td>
+</tr>
+<tr>
+  <td><code>NOT</code></td>
+  <td><code>Not</code>, <code>IsNot</code></td>
+</tr>
+<tr>
+  <td><code>NOT_IN</code></td>
+  <td><code>NotIn</code>, <code>IsNotIn</code></td>
+</tr>
+<tr>
+  <td><code>NOT_LIKE</code></td>
+  <td><code>NotLike</code>, <code>IsNotLike</code></td>
+</tr>
+<tr>
+  <td><code>REGEX</code></td>
+  <td><code>Regex</code>, <code>MatchesRegex</code>, <code>Matches</code></td>
+</tr>
+<tr>
+  <td><code>STARTING_WITH</code></td>
+  <td><code>StartingWith</code>, <code>IsStartingWith</code>, <code>StartsWith</code></td>
+</tr>
+<tr>
+  <td><code>TRUE</code></td>
+  <td><code>True</code>, <code>IsTrue</code></td>
+</tr>
+<tr>
+  <td><code>WITHIN</code></td>
+  <td><code>Within</code>, <code>IsWithin</code></td>
+</tr>
+<tr>
+  <td><code>ORDERBY</code></td>
+  <td><code>OrderBy</code></td>
+</tr>
+<tr>
+  <td><code>IgnoreCase</code></td>
+  <td><code>IgnoreCase</code></td>
+</tr>
+</tbody>
+</table>
+        </div>
+
+        
+            <section class="post-copyright">
+                
+                    <p class="copyright-item">
+                        <span>Author:</span>
+                        <span>Darren Du</span>
+                    </p>
+                
+                
+                
+                    <p class="copyright-item">
+                        <span>License:</span>
+                        <span>Copyright (c) 2019 MIT LICENSE</span>
+                    </p>
+                
+                
+
+            </section>
+        
+        <section class="post-tags">
+            <div>
+                <span>Tag(s):</span>
+                <span class="tag">
+                    
+                    
+                        <a href="/tags/Java/"># Java</a>
+                    
+                        <a href="/tags/Spring/"># Spring</a>
+                    
+                        <a href="/tags/Spring-JPA/"># Spring JPA</a>
+                    
+                        
+                </span>
+            </div>
+            <div>
+                <a href="javascript:window.history.back();">back</a>
+                <span>· </span>
+                <a href="/">home</a>
+            </div>
+        </section>
+        <section class="post-nav">
+            
+                <a class="prev" rel="prev" href="/2018/12/30/Spring%20Data%20JPA%20Query%20%E8%AF%AD%E5%8F%A5%E6%9F%A5%E8%AF%A2/">Spring Data JPA Query 语句查询</a>
+            
+            
+            <a class="next" rel="next" href="/2018/08/29/Spring%20Data%20JPA%20%E5%9F%BA%E7%A1%80%E6%93%8D%E4%BD%9C/">Spring Data JPA 基础操作</a>
+            
+        </section>
+
+
+    </article>
+</div>
+
+        </div>
+        <footer id="footer" class="footer">
+    <div class="copyright">
+        <span>© Darren Du | Powered by <a href="https://hexo.io" target="_blank">Hexo</a> & <a href="https://github.com/Siricee/hexo-theme-Chic" target="_blank">Chic</a></span>
+    </div>
+</footer>
+
+    </div>
+</body>
+</html>

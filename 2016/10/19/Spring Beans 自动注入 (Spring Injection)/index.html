@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <meta name="author" content="Darren Du">
+
+
+
+    <meta name="description" content="Dev">
+
+
+
+<title>Spring Beans 自动注入 (Spring Injection) | Du Liu&#39;s Blog</title>
+
+
+
+    <link rel="icon" href="/favicon.ico">
+
+
+
+
+    <!-- stylesheets list from _config.yml -->
+    
+    <link rel="stylesheet" href="/css/style.css">
+    
+
+
+
+    <!-- scripts list from _config.yml -->
+    
+    <script src="/js/script.js"></script>
+    
+    <script src="/js/tocbot.min.js"></script>
+    
+
+
+
+    
+    
+        
+    
+
+
+<meta name="generator" content="Hexo 6.2.0"></head>
+<body>
+    <div class="wrapper">
+        <header>
+    <nav class="navbar">
+        <div class="container">
+            <div class="navbar-header header-logo"><a href="/">Du Liu&#39;s Blog</a></div>
+            <div class="menu navbar-right">
+                
+                    <a class="menu-item" href="/archives">Posts</a>
+                
+                    <a class="menu-item" href="/category">Categories</a>
+                
+                    <a class="menu-item" href="/tag">Tags</a>
+                
+                    <a class="menu-item" href="/about">About</a>
+                
+                <input id="switch_default" type="checkbox" class="switch_default">
+                <label for="switch_default" class="toggleBtn"></label>
+            </div>
+
+        </div>
+    </nav>
+
+    
+    <nav class="navbar-mobile" id="nav-mobile">
+        <div class="container">
+            <div class="navbar-header">
+                <div>
+                    <a href="/">Du Liu&#39;s Blog</a><a id="mobile-toggle-theme">·&nbsp;Light</a>
+                </div>
+                <div class="menu-toggle" onclick="mobileBtn()">&#9776; Menu</div>
+            </div>
+            <div class="menu" id="mobile-menu">
+                
+                    <a class="menu-item" href="/archives">Posts</a>
+                
+                    <a class="menu-item" href="/category">Categories</a>
+                
+                    <a class="menu-item" href="/tag">Tags</a>
+                
+                    <a class="menu-item" href="/about">About</a>
+                
+            </div>
+        </div>
+    </nav>
+
+</header>
+<script>
+    var mobileBtn = function f() {
+        var toggleMenu = document.getElementsByClassName("menu-toggle")[0];
+        var mobileMenu = document.getElementById("mobile-menu");
+        if(toggleMenu.classList.contains("active")){
+           toggleMenu.classList.remove("active")
+            mobileMenu.classList.remove("active")
+        }else{
+            toggleMenu.classList.add("active")
+            mobileMenu.classList.add("active")
+        }
+    }
+</script>
+        <div class="main">
+            <div class="container">
+    
+    
+        <div class="post-toc">
+    <div class="tocbot-list">
+    </div>
+    <div class="tocbot-list-menu">
+        <a class="tocbot-toc-expand" onclick="expand_toc()">Expand all</a>
+        <a onclick="go_top()">Back to top</a>
+        <a onclick="go_bottom()">Go to bottom</a>
+    </div>
+</div>
+
+<script>
+    document.ready(
+        function () {
+            tocbot.init({
+                tocSelector: '.tocbot-list',
+                contentSelector: '.post-content',
+                headingSelector: 'h1, h2, h3, h4, h5',
+                collapseDepth: 1,
+                orderedList: false,
+                scrollSmooth: true,
+            })
+        }
+    )
+
+    function expand_toc() {
+        var b = document.querySelector(".tocbot-toc-expand");
+        tocbot.init({
+            tocSelector: '.tocbot-list',
+            contentSelector: '.post-content',
+            headingSelector: 'h1, h2, h3, h4, h5',
+            collapseDepth: 6,
+            orderedList: false,
+            scrollSmooth: true,
+        });
+        b.setAttribute("onclick", "collapse_toc()");
+        b.innerHTML = "Collapse all"
+    }
+
+    function collapse_toc() {
+        var b = document.querySelector(".tocbot-toc-expand");
+        tocbot.init({
+            tocSelector: '.tocbot-list',
+            contentSelector: '.post-content',
+            headingSelector: 'h1, h2, h3, h4, h5',
+            collapseDepth: 1,
+            orderedList: false,
+            scrollSmooth: true,
+        });
+        b.setAttribute("onclick", "expand_toc()");
+        b.innerHTML = "Expand all"
+    }
+
+    function go_top() {
+        window.scrollTo(0, 0);
+    }
+
+    function go_bottom() {
+        window.scrollTo(0, document.body.scrollHeight);
+    }
+
+</script>
+    
+
+    
+    <article class="post-wrap">
+        <header class="post-header">
+            <h1 class="post-title">Spring Beans 自动注入 (Spring Injection)</h1>
+            
+                <div class="post-meta">
+                    
+                        Author: <a itemprop="author" rel="author" href="/">Darren Du</a>
+                    
+
+                    
+                        <span class="post-time">
+                        Date: <a href="#">October 19, 2016&nbsp;&nbsp;23:12:30</a>
+                        </span>
+                    
+                    
+                        <span class="post-category">
+                    Category:
+                            
+                                <a href="/categories/Java-Framework/">Java Framework</a>
+                            
+                                <a href="/categories/Java-Framework/Spring-Framework/">Spring Framework</a>
+                            
+                        </span>
+                    
+                </div>
+            
+        </header>
+
+        <div class="post-content">
+            <p>Spring Bean 的注入可以使用xml配置或者使用注解的形式来完成，其中注解是现在开发的主流，本文就以注解的形式对Bean装配进行简单的总结。</p>
+<h2 id="1-注解的优势"><a href="#1-注解的优势" class="headerlink" title="1.注解的优势"></a>1.注解的优势</h2><p>注解和xml各有个的优势，xml可以清晰看出依赖的关系，但是bean过多导致配置过多，注解申明在代码，使其更加简单和简洁。<br>添加注解申明在xml文件，通常我们添加如下的代码：</p>
+<p><a href="context:annotation-config/">context:annotation-config/</a></p>
+<p>此隐式注解重在申明AutowiredAnnotationBeanPostProcessor, CommonAnnotationBeanPostProcessor,PersistenceAnnotationBeanPostProcessor,<br>RequiredAnnotationBeanPostProcessor.注册这4个 BeanPostProcessor的作用，系统能够识别相应的注解。</p>
+<h2 id="2-Required"><a href="#2-Required" class="headerlink" title="2.@Required"></a>2.@Required</h2><p>此注解拥有bean属性setter方法，设置之后表示此属性必须设置，如果没有则抛出BeanInitializationException异常</p>
+<h2 id="3-Autowired"><a href="#3-Autowired" class="headerlink" title="3.@Autowired"></a>3.@Autowired</h2><p>可以用于属性，方法，构造器为其装配bean.<br>属性上面：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Autowired</span></span><br><span class="line"><span class="keyword">private</span> AssemblyDAO assemblyDAO ;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>setter方法</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Autowired</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">setAssemblyDAO</span><span class="params">(AssemblyDAO assemblyDAO)</span> &#123;</span><br><span class="line"><span class="built_in">this</span>.assemblyDAO = assemblyDAO;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>构造器：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Autowired</span></span><br><span class="line"><span class="keyword">public</span> <span class="title function_">AssemblyServiceImpl</span><span class="params">(AssemblyDAO assemblyDAO)</span>&#123;</span><br><span class="line"><span class="built_in">this</span>.assemblyDAO = assemblyDAO ;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>a)同时也可以根据上下文将所有同类型的bean收集到集合，数组当中</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Autowired</span></span><br><span class="line"><span class="keyword">private</span> AssemblyDAO [] assemblyDAOs ;</span><br><span class="line"><span class="meta">@Autowired</span></span><br><span class="line"><span class="keyword">private</span> List&lt;AssemblyDAO&gt; assemblyDAOs ;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>还可以装配到map&lt;String, Object&gt;当中去，其中string为bean的名字</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Autowired</span></span><br><span class="line"><span class="keyword">private</span> Map&lt;String, AssemblyDAO&gt; assemblyDAOMaps ;</span><br></pre></td></tr></table></figure>
+
+<p>在Autowired接口中有且只有一个方法 required()，其默认为true.在注入找不到对应的Bean就会抛出BeanCreationException异常，如果设置@Autowired(required=false),当在当前容器找不到对应的bean也不会抛错。</p>
+<p>@Autowired 还可以用来注入Spring提供的依赖的接口BeanFactory, ApplicationContext, Environment, ResourceLoader, ApplicationEventPublisher, and MessageSource,扩展接口ConfigurableApplicationContext or ResourcePatternResolver</p>
+<p><code>注意</code>：@Autowired 是由BeanPostProcessor实现过来的，所有在BeanPostProcessor or BeanFactoryPostProcessor 这些中不能使用，使用会出现循环死。在这些类中可以通过xml配置实现注入或者使用Spring @Bean。</p>
+<h2 id="4-Qualifier"><a href="#4-Qualifier" class="headerlink" title="4.@Qualifier"></a>4.@Qualifier</h2><p>当一个接口被多个类继续的时候，我们为借口自动注入值的时候就会出现BeanCreationException异常，因为存在多个Bean，spring并不难知道应该注入那个一个Bean，这个时候就可以使用@Qualifier注解，为其需要的注入对应的bean 名字</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Autowired</span></span><br><span class="line"><span class="meta">@Qualifier(&quot;assemblyDAOImpl&quot;)</span></span><br><span class="line"><span class="keyword">private</span> AssemblyDAO assemblyDAO ;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>同样@Qualifier注解也可以用于方法和构造器上面：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Autowired</span></span><br><span class="line"><span class="keyword">public</span> <span class="title function_">AssemblyServiceImpl</span><span class="params">(<span class="meta">@Qualifier(&quot;assemblyDAOImpl&quot;)</span> AssemblyDAO assemblyDAO)</span>&#123;</span><br><span class="line"><span class="built_in">this</span>.assemblyDAO = assemblyDAO ;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>a)在xml配置中为bean设置Qualifier 名字方法：</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">bean</span> <span class="attr">class</span>=<span class="string">&quot;example.SimpleMovieCatalog&quot;</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">qualifier</span> <span class="attr">value</span>=<span class="string">&quot;main&quot;</span>/&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">bean</span>&gt;</span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>b)自定义Qualifier<br>通过 文章查看自定义Qualifier的使用和效果</p>
+<p>5.@Bean<br>@Bean 通常和@Configuration搭配一起使用，@Configuration等价于xml整体配置文件，@Bean 类似于为其中的bean</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Configuration</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">MyConfiguration</span> &#123;</span><br><span class="line"><span class="meta">@Bean</span></span><br><span class="line"><span class="keyword">public</span> StringStore <span class="title function_">stringStore</span><span class="params">()</span> &#123;</span><br><span class="line"><span class="keyword">return</span> <span class="keyword">new</span> <span class="title class_">StringStore</span>();</span><br><span class="line">&#125;</span><br><span class="line"><span class="meta">@Bean</span></span><br><span class="line"><span class="keyword">public</span> IntegerStore <span class="title function_">integerStore</span><span class="params">()</span> &#123;</span><br><span class="line"><span class="keyword">return</span> <span class="keyword">new</span> <span class="title class_">IntegerStore</span>();</span><br><span class="line">&#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>本类中分别配置了两个Bean，bean的id 默认是方法名称。</p>
+<h2 id="6-Resource"><a href="#6-Resource" class="headerlink" title="6.@Resource"></a>6.@Resource</h2><p>Spring 同样支持JSR-250,可以使用@Resource为其字段和stter方法注入.<br>@Resource 注解方法在JSR250的包中，使用在使用的时候需要添加相应的jar包，maven依赖添加如下：</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">groupId</span>&gt;</span>javax.annotation<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>jsr250-api<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">version</span>&gt;</span>1.0<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>在setter方法中使用：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Resource</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">setMovieFinder</span><span class="params">(MovieFinder movieFinder)</span> &#123;</span><br><span class="line"><span class="built_in">this</span>.movieFinder = movieFinder;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>在属性上：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Resource</span></span><br><span class="line"><span class="keyword">private</span> MovieFinder movieFinder ;</span><br></pre></td></tr></table></figure>
+
+<h2 id="7-PostConstruct-和-PreDestroy"><a href="#7-PostConstruct-和-PreDestroy" class="headerlink" title="7.@PostConstruct 和 @PreDestroy"></a>7.@PostConstruct 和 @PreDestroy</h2><p>在JSR-250的标准中，@PostConstruct 用于Bean的初始化执行，@PreDestroy在bean销毁的时候执行。</p>
+<h2 id="8-Inject"><a href="#8-Inject" class="headerlink" title="8.@Inject"></a>8.@Inject</h2><p>@Inject 属于java上下文依赖注入，所有在使用@Inject还需要一如另外jar包，maven配置如下：</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">groupId</span>&gt;</span>javax.inject<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>inject<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">version</span>&gt;</span>1.0<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>在属性上使用：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Inject</span></span><br><span class="line"><span class="keyword">private</span> InjectionDAO injectionDAO ;</span><br></pre></td></tr></table></figure>
+
+<p>当然@Inject也可以用在方法上面。</p>
+
+        </div>
+
+        
+            <section class="post-copyright">
+                
+                    <p class="copyright-item">
+                        <span>Author:</span>
+                        <span>Darren Du</span>
+                    </p>
+                
+                
+                
+                    <p class="copyright-item">
+                        <span>License:</span>
+                        <span>Copyright (c) 2019 MIT LICENSE</span>
+                    </p>
+                
+                
+
+            </section>
+        
+        <section class="post-tags">
+            <div>
+                <span>Tag(s):</span>
+                <span class="tag">
+                    
+                    
+                        <a href="/tags/Spring-Framework/"># Spring Framework</a>
+                    
+                        <a href="/tags/Java/"># Java</a>
+                    
+                        <a href="/tags/Spring/"># Spring</a>
+                    
+                        
+                </span>
+            </div>
+            <div>
+                <a href="javascript:window.history.back();">back</a>
+                <span>· </span>
+                <a href="/">home</a>
+            </div>
+        </section>
+        <section class="post-nav">
+            
+                <a class="prev" rel="prev" href="/2016/10/19/Spring%20XML%20%E6%96%87%E4%BB%B6%E5%A4%B4%E4%BF%A1%E6%81%AF/">Spring XML 文件头信息</a>
+            
+            
+            <a class="next" rel="next" href="/2016/10/19/CSS-%E9%80%89%E6%8B%A9%E5%99%A8/">CSS 选择器</a>
+            
+        </section>
+
+
+    </article>
+</div>
+
+        </div>
+        <footer id="footer" class="footer">
+    <div class="copyright">
+        <span>© Darren Du | Powered by <a href="https://hexo.io" target="_blank">Hexo</a> & <a href="https://github.com/Siricee/hexo-theme-Chic" target="_blank">Chic</a></span>
+    </div>
+</footer>
+
+    </div>
+</body>
+</html>

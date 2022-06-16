@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <meta name="author" content="Darren Du">
+
+
+
+    <meta name="description" content="Dev">
+
+
+
+<title>zxing 生成二维码 (zxing Generate QRCode) | Du Liu&#39;s Blog</title>
+
+
+
+    <link rel="icon" href="/favicon.ico">
+
+
+
+
+    <!-- stylesheets list from _config.yml -->
+    
+    <link rel="stylesheet" href="/css/style.css">
+    
+
+
+
+    <!-- scripts list from _config.yml -->
+    
+    <script src="/js/script.js"></script>
+    
+    <script src="/js/tocbot.min.js"></script>
+    
+
+
+
+    
+    
+        
+    
+
+
+<meta name="generator" content="Hexo 6.2.0"></head>
+<body>
+    <div class="wrapper">
+        <header>
+    <nav class="navbar">
+        <div class="container">
+            <div class="navbar-header header-logo"><a href="/">Du Liu&#39;s Blog</a></div>
+            <div class="menu navbar-right">
+                
+                    <a class="menu-item" href="/archives">Posts</a>
+                
+                    <a class="menu-item" href="/category">Categories</a>
+                
+                    <a class="menu-item" href="/tag">Tags</a>
+                
+                    <a class="menu-item" href="/about">About</a>
+                
+                <input id="switch_default" type="checkbox" class="switch_default">
+                <label for="switch_default" class="toggleBtn"></label>
+            </div>
+
+        </div>
+    </nav>
+
+    
+    <nav class="navbar-mobile" id="nav-mobile">
+        <div class="container">
+            <div class="navbar-header">
+                <div>
+                    <a href="/">Du Liu&#39;s Blog</a><a id="mobile-toggle-theme">·&nbsp;Light</a>
+                </div>
+                <div class="menu-toggle" onclick="mobileBtn()">&#9776; Menu</div>
+            </div>
+            <div class="menu" id="mobile-menu">
+                
+                    <a class="menu-item" href="/archives">Posts</a>
+                
+                    <a class="menu-item" href="/category">Categories</a>
+                
+                    <a class="menu-item" href="/tag">Tags</a>
+                
+                    <a class="menu-item" href="/about">About</a>
+                
+            </div>
+        </div>
+    </nav>
+
+</header>
+<script>
+    var mobileBtn = function f() {
+        var toggleMenu = document.getElementsByClassName("menu-toggle")[0];
+        var mobileMenu = document.getElementById("mobile-menu");
+        if(toggleMenu.classList.contains("active")){
+           toggleMenu.classList.remove("active")
+            mobileMenu.classList.remove("active")
+        }else{
+            toggleMenu.classList.add("active")
+            mobileMenu.classList.add("active")
+        }
+    }
+</script>
+        <div class="main">
+            <div class="container">
+    
+    
+        <div class="post-toc">
+    <div class="tocbot-list">
+    </div>
+    <div class="tocbot-list-menu">
+        <a class="tocbot-toc-expand" onclick="expand_toc()">Expand all</a>
+        <a onclick="go_top()">Back to top</a>
+        <a onclick="go_bottom()">Go to bottom</a>
+    </div>
+</div>
+
+<script>
+    document.ready(
+        function () {
+            tocbot.init({
+                tocSelector: '.tocbot-list',
+                contentSelector: '.post-content',
+                headingSelector: 'h1, h2, h3, h4, h5',
+                collapseDepth: 1,
+                orderedList: false,
+                scrollSmooth: true,
+            })
+        }
+    )
+
+    function expand_toc() {
+        var b = document.querySelector(".tocbot-toc-expand");
+        tocbot.init({
+            tocSelector: '.tocbot-list',
+            contentSelector: '.post-content',
+            headingSelector: 'h1, h2, h3, h4, h5',
+            collapseDepth: 6,
+            orderedList: false,
+            scrollSmooth: true,
+        });
+        b.setAttribute("onclick", "collapse_toc()");
+        b.innerHTML = "Collapse all"
+    }
+
+    function collapse_toc() {
+        var b = document.querySelector(".tocbot-toc-expand");
+        tocbot.init({
+            tocSelector: '.tocbot-list',
+            contentSelector: '.post-content',
+            headingSelector: 'h1, h2, h3, h4, h5',
+            collapseDepth: 1,
+            orderedList: false,
+            scrollSmooth: true,
+        });
+        b.setAttribute("onclick", "expand_toc()");
+        b.innerHTML = "Expand all"
+    }
+
+    function go_top() {
+        window.scrollTo(0, 0);
+    }
+
+    function go_bottom() {
+        window.scrollTo(0, document.body.scrollHeight);
+    }
+
+</script>
+    
+
+    
+    <article class="post-wrap">
+        <header class="post-header">
+            <h1 class="post-title">zxing 生成二维码 (zxing Generate QRCode)</h1>
+            
+                <div class="post-meta">
+                    
+                        Author: <a itemprop="author" rel="author" href="/">Darren Du</a>
+                    
+
+                    
+                        <span class="post-time">
+                        Date: <a href="#">March 10, 2018&nbsp;&nbsp;23:14:10</a>
+                        </span>
+                    
+                    
+                        <span class="post-category">
+                    Category:
+                            
+                                <a href="/categories/zxing/">zxing</a>
+                            
+                        </span>
+                    
+                </div>
+            
+        </header>
+
+        <div class="post-content">
+            <p>二维码（QRCode）在生活中已经是非常的常见，生成的方式也有很多种，本实例以<a href="https://github.com/zxing/zxing" target="_blank" rel="noopener">zxing</a>(3.3.2)为例，来演示二维码（QRCode）的生成和读取。</p>
+<h2 id="演示效果"><a href="#演示效果" class="headerlink" title="演示效果"></a>演示效果</h2><p>先来看看效果：<br><img class="alignnone" src="http://wp-qn.devnp.com/2018/03/10/zxing-%E7%94%9F%E6%88%90%E4%BA%8C%E7%BB%B4%E7%A0%81zxing-generate-qrcode/noramlqrcode.png" width="60" height="60" /> </p>
+<img class="alignnone" src="http://wp-qn.devnp.com/2018/03/10/zxing-%E7%94%9F%E6%88%90%E4%BA%8C%E7%BB%B4%E7%A0%81zxing-generate-qrcode/qricocode.png" width="120" height="120" />
+Note:zxing除了生成二维码，还可以生成例如条形码等等。
+
+<h2 id="POM-xml配置"><a href="#POM-xml配置" class="headerlink" title="POM.xml配置"></a>POM.xml配置</h2><p>本实例采用<a href="https://maven.apache.org" target="_blank" rel="noopener">maven</a>构建，所以在pom.xml中添加依赖jar包</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?xml version=<span class="string">&quot;1.0&quot;</span> encoding=<span class="string">&quot;UTF-8&quot;</span>?&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">project</span> <span class="attr">xmlns</span>=<span class="string">&quot;http://maven.apache.org/POM/4.0.0&quot;</span> <span class="attr">xmlns:xsi</span>=<span class="string">&quot;http://www.w3.org/2001/XMLSchema-instance&quot;</span> <span class="attr">xsi:schemaLocation</span>=<span class="string">&quot;http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd&quot;</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">modelVersion</span>&gt;</span>4.0.0<span class="tag">&lt;/<span class="name">modelVersion</span>&gt;</span></span><br><span class="line"></span><br><span class="line">    <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>com.devnp<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>zxing-demo<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">version</span>&gt;</span>1.0-SNAPSHOT<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">build</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">plugins</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">plugin</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.apache.maven.plugins<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>maven-compiler-plugin<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">configuration</span>&gt;</span></span><br><span class="line">                    <span class="tag">&lt;<span class="name">source</span>&gt;</span>1.7<span class="tag">&lt;/<span class="name">source</span>&gt;</span></span><br><span class="line">                    <span class="tag">&lt;<span class="name">target</span>&gt;</span>1.7<span class="tag">&lt;/<span class="name">target</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;/<span class="name">configuration</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;/<span class="name">plugin</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">plugins</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">build</span>&gt;</span></span><br><span class="line"></span><br><span class="line">    <span class="tag">&lt;<span class="name">dependencies</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>com.google.zxing<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>core<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">version</span>&gt;</span>3.3.2<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line"></span><br><span class="line">        <span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>com.google.zxing<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>javase<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">version</span>&gt;</span>3.3.2<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line"></span><br><span class="line">        <span class="comment">&lt;!--junit--&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>junit<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>junit<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">version</span>&gt;</span>4.12<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line"></span><br><span class="line">    <span class="tag">&lt;/<span class="name">dependencies</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;/<span class="name">project</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="Java-Code"><a href="#Java-Code" class="headerlink" title="Java Code"></a>Java Code</h2><p>a. zxing生成code</p>
+<p><em>GenerateQRCode.java</em></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> com.devnp.qrcode;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> com.google.zxing.*;</span><br><span class="line"><span class="keyword">import</span> com.google.zxing.client.j2se.BufferedImageLuminanceSource;</span><br><span class="line"><span class="keyword">import</span> com.google.zxing.client.j2se.MatrixToImageWriter;</span><br><span class="line"><span class="keyword">import</span> com.google.zxing.common.BitMatrix;</span><br><span class="line"><span class="keyword">import</span> com.google.zxing.common.HybridBinarizer;</span><br><span class="line"><span class="keyword">import</span> com.google.zxing.datamatrix.DataMatrixReader;</span><br><span class="line"><span class="keyword">import</span> com.google.zxing.qrcode.QRCodeReader;</span><br><span class="line"><span class="keyword">import</span> com.google.zxing.qrcode.QRCodeWriter;</span><br><span class="line"><span class="keyword">import</span> com.google.zxing.qrcode.decoder.ErrorCorrectionLevel;</span><br><span class="line"><span class="keyword">import</span> sun.jvm.hotspot.utilities.BitMap;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> javax.imageio.ImageIO;</span><br><span class="line"><span class="keyword">import</span> javax.print.DocFlavor;</span><br><span class="line"><span class="keyword">import</span> java.awt.*;</span><br><span class="line"><span class="keyword">import</span> java.awt.image.BufferedImage;</span><br><span class="line"><span class="keyword">import</span> java.io.File;</span><br><span class="line"><span class="keyword">import</span> java.io.IOException;</span><br><span class="line"><span class="keyword">import</span> java.nio.file.FileSystems;</span><br><span class="line"><span class="keyword">import</span> java.nio.file.Path;</span><br><span class="line"><span class="keyword">import</span> java.util.HashMap;</span><br><span class="line"><span class="keyword">import</span> java.util.Map;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@author</span> duliu</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">GenerateQRCode</span> &#123;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 生成最基本的二维码</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> text</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> width</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> height</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> filePath</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@throws</span> WriterException</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@throws</span> IOException</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">generateImage</span><span class="params">(String text, <span class="type">int</span> width, <span class="type">int</span> height, String filePath)</span> <span class="keyword">throws</span> WriterException, IOException &#123;</span><br><span class="line"></span><br><span class="line">        <span class="type">QRCodeWriter</span> <span class="variable">qrCodeWriter</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">QRCodeWriter</span>();</span><br><span class="line"></span><br><span class="line">        <span class="type">BitMatrix</span> <span class="variable">bitMatrix</span> <span class="operator">=</span> qrCodeWriter.encode(text, BarcodeFormat.QR_CODE, width, height);</span><br><span class="line"></span><br><span class="line">        <span class="type">Path</span> <span class="variable">path</span> <span class="operator">=</span> FileSystems.getDefault().getPath(filePath);</span><br><span class="line"></span><br><span class="line">        MatrixToImageWriter.writeToPath(bitMatrix, <span class="string">&quot;PNG&quot;</span>, path);</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 生成带有参数的二维码</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> text</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> width</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> height</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> filePath</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@throws</span> WriterException</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@throws</span> IOException</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">encodeImage</span><span class="params">(String text, <span class="type">int</span> width, <span class="type">int</span> height, String filePath)</span> <span class="keyword">throws</span> WriterException, IOException &#123;</span><br><span class="line"></span><br><span class="line">        <span class="type">Path</span> <span class="variable">path</span> <span class="operator">=</span> FileSystems.getDefault().getPath(filePath);</span><br><span class="line"></span><br><span class="line">        <span class="type">MultiFormatWriter</span> <span class="variable">multiFormatWriter</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">MultiFormatWriter</span>();</span><br><span class="line"></span><br><span class="line">        Map&lt;EncodeHintType, Object&gt; map = <span class="keyword">new</span> <span class="title class_">HashMap</span>&lt;&gt;();</span><br><span class="line"></span><br><span class="line">        map.put(EncodeHintType.CHARACTER_SET, <span class="string">&quot;utf-8&quot;</span>); <span class="comment">//设置字符集</span></span><br><span class="line">        map.put(EncodeHintType.ERROR_CORRECTION, ErrorCorrectionLevel.M); <span class="comment">//设置纠错等级</span></span><br><span class="line">        map.put(EncodeHintType.MARGIN, <span class="number">2</span>); <span class="comment">//设置边距</span></span><br><span class="line"></span><br><span class="line">        <span class="type">BitMatrix</span> <span class="variable">bitMatrix</span> <span class="operator">=</span> multiFormatWriter.encode(text, BarcodeFormat.QR_CODE, width, height, map) ;</span><br><span class="line"></span><br><span class="line">        MatrixToImageWriter.writeToPath(bitMatrix, <span class="string">&quot;PNG&quot;</span>, path);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 生成带有logo的二维码</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> icoPath</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> text</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> width</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> height</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> filePath</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@throws</span> WriterException</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@throws</span> IOException</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">generateIcoImage</span><span class="params">(String icoPath, String text, <span class="type">int</span> width, <span class="type">int</span> height, String filePath)</span> <span class="keyword">throws</span> WriterException, IOException &#123;</span><br><span class="line"></span><br><span class="line">        <span class="type">QRCodeWriter</span> <span class="variable">qrCodeWriter</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">QRCodeWriter</span>();</span><br><span class="line"></span><br><span class="line">        Map&lt;EncodeHintType, Object&gt; map = <span class="keyword">new</span> <span class="title class_">HashMap</span>&lt;&gt;();</span><br><span class="line"></span><br><span class="line">        map.put(EncodeHintType.CHARACTER_SET, <span class="string">&quot;utf-8&quot;</span>); <span class="comment">//设置字符集</span></span><br><span class="line">        map.put(EncodeHintType.ERROR_CORRECTION, ErrorCorrectionLevel.H); <span class="comment">//设置纠错等级</span></span><br><span class="line">        map.put(EncodeHintType.MARGIN, <span class="number">1</span>); <span class="comment">//设置边距</span></span><br><span class="line"></span><br><span class="line">        <span class="type">BitMatrix</span> <span class="variable">bitMatrix</span> <span class="operator">=</span> qrCodeWriter.encode(text, BarcodeFormat.QR_CODE, width, height, map);</span><br><span class="line"></span><br><span class="line">        <span class="type">BufferedImage</span> <span class="variable">qrImage</span> <span class="operator">=</span> MatrixToImageWriter.toBufferedImage(bitMatrix);</span><br><span class="line"></span><br><span class="line">        <span class="type">int</span> <span class="variable">qrHeight</span> <span class="operator">=</span> qrImage.getHeight();</span><br><span class="line">        <span class="type">int</span> <span class="variable">qrWidth</span> <span class="operator">=</span> qrImage.getWidth();</span><br><span class="line"></span><br><span class="line">        <span class="type">BufferedImage</span> <span class="variable">logoImage</span> <span class="operator">=</span> adjustSize(qrHeight, qrWidth, icoPath);</span><br><span class="line"></span><br><span class="line">        <span class="comment">//初始化新的二维码的生成</span></span><br><span class="line">        <span class="type">BufferedImage</span> <span class="variable">combined</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">BufferedImage</span>(qrImage.getHeight(), qrImage.getWidth(), BufferedImage.TYPE_INT_ARGB);</span><br><span class="line">        <span class="type">Graphics2D</span> <span class="variable">g2d</span> <span class="operator">=</span> (Graphics2D) combined.getGraphics();</span><br><span class="line"></span><br><span class="line">        <span class="comment">//画新的图片</span></span><br><span class="line">        g2d.drawImage(qrImage, <span class="number">0</span>, <span class="number">0</span>, <span class="literal">null</span>);</span><br><span class="line">        g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, <span class="number">1f</span>));</span><br><span class="line"></span><br><span class="line">        g2d.drawImage(logoImage, (<span class="type">int</span>) Math.round((qrWidth -logoImage.getWidth())/<span class="number">2</span>), (<span class="type">int</span>) Math.round((qrHeight-logoImage.getHeight())/<span class="number">2</span>), <span class="literal">null</span>);</span><br><span class="line"></span><br><span class="line">        <span class="comment">//</span></span><br><span class="line">        ImageIO.write(combined, <span class="string">&quot;png&quot;</span>, <span class="keyword">new</span> <span class="title class_">File</span>(filePath));</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> BufferedImage <span class="title function_">adjustSize</span><span class="params">(<span class="type">int</span> qrHeight, <span class="type">int</span> qrWidth, String logoPath)</span> <span class="keyword">throws</span> IOException &#123;</span><br><span class="line">        <span class="comment">//读取LOGO ICO</span></span><br><span class="line">        <span class="type">File</span> <span class="variable">file</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">File</span>(logoPath);</span><br><span class="line"></span><br><span class="line">        <span class="type">BufferedImage</span> <span class="variable">logoImage</span> <span class="operator">=</span> ImageIO.read(file);</span><br><span class="line"></span><br><span class="line">        <span class="comment">//对logo进行缩放 将logo的大小设置为整个图片的1/5</span></span><br><span class="line">        <span class="type">int</span> <span class="variable">icoHeight</span> <span class="operator">=</span> qrHeight / <span class="number">5</span> ;</span><br><span class="line">        <span class="type">int</span> <span class="variable">icoWidth</span> <span class="operator">=</span> qrWidth / <span class="number">5</span> ;</span><br><span class="line"></span><br><span class="line">        <span class="type">BufferedImage</span> <span class="variable">newLogoImage</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">BufferedImage</span>(icoWidth, icoHeight,logoImage.getType());</span><br><span class="line">        <span class="type">Graphics</span> <span class="variable">g</span> <span class="operator">=</span> newLogoImage.getGraphics();</span><br><span class="line">        g.drawImage(logoImage, <span class="number">0</span>,<span class="number">0</span>,icoWidth, icoHeight,<span class="literal">null</span>);</span><br><span class="line"></span><br><span class="line">        g.dispose();</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> newLogoImage ;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>b. zxing读取code</p>
+<p><em>ReaderQRCode.java</em></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> com.devnp.qrcode;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> com.google.zxing.*;</span><br><span class="line"><span class="keyword">import</span> com.google.zxing.client.j2se.BufferedImageLuminanceSource;</span><br><span class="line"><span class="keyword">import</span> com.google.zxing.common.HybridBinarizer;</span><br><span class="line"><span class="keyword">import</span> com.google.zxing.qrcode.QRCodeReader;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> javax.imageio.ImageIO;</span><br><span class="line"><span class="keyword">import</span> java.awt.image.BufferedImage;</span><br><span class="line"><span class="keyword">import</span> java.io.File;</span><br><span class="line"><span class="keyword">import</span> java.io.IOException;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@author</span>  duliu</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">ReaderQRCode</span> &#123;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 读取二维码的信息</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> filePath</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@return</span></span></span><br><span class="line"><span class="comment">     * <span class="doctag">@throws</span> FormatException</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@throws</span> ChecksumException</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@throws</span> NotFoundException</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@throws</span> IOException</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> String <span class="title function_">readImage</span><span class="params">(String  filePath)</span> <span class="keyword">throws</span> FormatException, ChecksumException, NotFoundException, IOException &#123;</span><br><span class="line"></span><br><span class="line">        <span class="type">BufferedImage</span> <span class="variable">bufferedImage</span> <span class="operator">=</span> ImageIO.read(<span class="keyword">new</span> <span class="title class_">File</span>(filePath));</span><br><span class="line"></span><br><span class="line">        <span class="type">LuminanceSource</span> <span class="variable">source</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">BufferedImageLuminanceSource</span>(bufferedImage);</span><br><span class="line"></span><br><span class="line">        <span class="type">Binarizer</span> <span class="variable">binarizer</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">HybridBinarizer</span>(source);</span><br><span class="line">        <span class="type">BinaryBitmap</span> <span class="variable">bitmap</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">BinaryBitmap</span>(binarizer);</span><br><span class="line"></span><br><span class="line">        <span class="type">QRCodeReader</span> <span class="variable">qrCodeReader</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">QRCodeReader</span>();</span><br><span class="line"></span><br><span class="line">        <span class="type">Result</span> <span class="variable">result</span> <span class="operator">=</span> qrCodeReader.decode(bitmap);</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> result.getText() ;</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>c.测试code<br><em>GenerateQRCodeTest.java</em></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> com.devnp.qrcode.test;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> com.devnp.qrcode.GenerateQRCode;</span><br><span class="line"><span class="keyword">import</span> com.google.zxing.ChecksumException;</span><br><span class="line"><span class="keyword">import</span> com.google.zxing.FormatException;</span><br><span class="line"><span class="keyword">import</span> com.google.zxing.NotFoundException;</span><br><span class="line"><span class="keyword">import</span> com.google.zxing.WriterException;</span><br><span class="line"><span class="keyword">import</span> org.junit.Test;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> javax.imageio.ImageIO;</span><br><span class="line"><span class="keyword">import</span> java.awt.image.BufferedImage;</span><br><span class="line"><span class="keyword">import</span> java.io.File;</span><br><span class="line"><span class="keyword">import</span> java.io.IOException;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">GenerateQRCodeTest</span> &#123;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Test</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">generateImageTest</span><span class="params">()</span> <span class="keyword">throws</span> IOException, WriterException &#123;</span><br><span class="line">        GenerateQRCode.generateImage(<span class="string">&quot;www.devnp.com&quot;</span>, <span class="number">60</span>, <span class="number">60</span>, <span class="string">&quot;simpleqrcode.png&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Test</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">encodeImageTest</span><span class="params">()</span> <span class="keyword">throws</span> IOException, WriterException &#123;</span><br><span class="line">        GenerateQRCode.encodeImage(<span class="string">&quot;www.devnp.com&quot;</span>, <span class="number">60</span>, <span class="number">60</span>, <span class="string">&quot;noramlqrcode.png&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Test</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">generateIcoImage</span><span class="params">()</span> <span class="keyword">throws</span> IOException, WriterException &#123;</span><br><span class="line">        GenerateQRCode.generateIcoImage(<span class="string">&quot;a476a0d05b33f3d9b76a780c9bd31d0f.jpeg&quot;</span>,<span class="string">&quot;www.devnp.com&quot;</span>, <span class="number">120</span>, <span class="number">120</span>, <span class="string">&quot;qricocode.png&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Test</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">adjustSizeTest</span><span class="params">()</span> <span class="keyword">throws</span> IOException &#123;</span><br><span class="line">        <span class="type">BufferedImage</span> <span class="variable">bufferedImages</span> <span class="operator">=</span> GenerateQRCode.adjustSize(<span class="number">120</span>, <span class="number">120</span>, <span class="string">&quot;a476a0d05b33f3d9b76a780c9bd31d0f.jpeg&quot;</span>);</span><br><span class="line"></span><br><span class="line">        ImageIO.write(bufferedImages, <span class="string">&quot;png&quot;</span>, <span class="keyword">new</span> <span class="title class_">File</span>(<span class="string">&quot;logo.png&quot;</span>));</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><em>ReaderQRCodeTest.java</em></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> com.devnp.qrcode.test;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> com.devnp.qrcode.GenerateQRCode;</span><br><span class="line"><span class="keyword">import</span> com.devnp.qrcode.ReaderQRCode;</span><br><span class="line"><span class="keyword">import</span> com.google.zxing.ChecksumException;</span><br><span class="line"><span class="keyword">import</span> com.google.zxing.FormatException;</span><br><span class="line"><span class="keyword">import</span> com.google.zxing.NotFoundException;</span><br><span class="line"><span class="keyword">import</span> org.junit.Test;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> java.io.IOException;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">ReaderQRCodeTest</span> &#123;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Test</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">readImageTest</span><span class="params">()</span> <span class="keyword">throws</span> IOException, ChecksumException, NotFoundException, FormatException &#123;</span><br><span class="line">        <span class="type">String</span> <span class="variable">content</span> <span class="operator">=</span> ReaderQRCode.readImage(<span class="string">&quot;qrcode.png&quot;</span>);</span><br><span class="line"></span><br><span class="line">        System.out.println(content);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="3，代码下载"><a href="#3，代码下载" class="headerlink" title="3，代码下载"></a>3，代码下载</h2><p><a href="http://wp-qn.devnp.com/2018/03/10/zxing-%E7%94%9F%E6%88%90%E4%BA%8C%E7%BB%B4%E7%A0%81zxing-generate-qrcode/zxing-demo.zip" target="_blank" rel="noopener">zxing-demo.zip</a></p>
+
+        </div>
+
+        
+            <section class="post-copyright">
+                
+                    <p class="copyright-item">
+                        <span>Author:</span>
+                        <span>Darren Du</span>
+                    </p>
+                
+                
+                
+                    <p class="copyright-item">
+                        <span>License:</span>
+                        <span>Copyright (c) 2019 MIT LICENSE</span>
+                    </p>
+                
+                
+
+            </section>
+        
+        <section class="post-tags">
+            <div>
+                <span>Tag(s):</span>
+                <span class="tag">
+                    
+                    
+                        <a href="/tags/zxing/"># zxing</a>
+                    
+                        
+                </span>
+            </div>
+            <div>
+                <a href="javascript:window.history.back();">back</a>
+                <span>· </span>
+                <a href="/">home</a>
+            </div>
+        </section>
+        <section class="post-nav">
+            
+                <a class="prev" rel="prev" href="/2018/03/26/Web%E5%BC%80%E5%8F%91%E5%B7%A5%E5%85%B7%E5%92%8C%E8%B5%84%E6%BA%90(Tools%20and%20Resources%20for%20Web%20Developers)/">Web开发工具和资源(Tools and Resources for Web Developers)</a>
+            
+            
+            <a class="next" rel="next" href="/2018/01/31/Spring%20Boot%20%20TLSSSL%20%E9%85%8D%E7%BD%AE/">Spring Boot  TLS/SSL 配置</a>
+            
+        </section>
+
+
+    </article>
+</div>
+
+        </div>
+        <footer id="footer" class="footer">
+    <div class="copyright">
+        <span>© Darren Du | Powered by <a href="https://hexo.io" target="_blank">Hexo</a> & <a href="https://github.com/Siricee/hexo-theme-Chic" target="_blank">Chic</a></span>
+    </div>
+</footer>
+
+    </div>
+</body>
+</html>

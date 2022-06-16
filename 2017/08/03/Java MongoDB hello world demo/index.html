@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <meta name="author" content="Darren Du">
+
+
+
+    <meta name="description" content="Dev">
+
+
+
+<title>Java MongoDB hello world demo | Du Liu&#39;s Blog</title>
+
+
+
+    <link rel="icon" href="/favicon.ico">
+
+
+
+
+    <!-- stylesheets list from _config.yml -->
+    
+    <link rel="stylesheet" href="/css/style.css">
+    
+
+
+
+    <!-- scripts list from _config.yml -->
+    
+    <script src="/js/script.js"></script>
+    
+    <script src="/js/tocbot.min.js"></script>
+    
+
+
+
+    
+    
+        
+    
+
+
+<meta name="generator" content="Hexo 6.2.0"></head>
+<body>
+    <div class="wrapper">
+        <header>
+    <nav class="navbar">
+        <div class="container">
+            <div class="navbar-header header-logo"><a href="/">Du Liu&#39;s Blog</a></div>
+            <div class="menu navbar-right">
+                
+                    <a class="menu-item" href="/archives">Posts</a>
+                
+                    <a class="menu-item" href="/category">Categories</a>
+                
+                    <a class="menu-item" href="/tag">Tags</a>
+                
+                    <a class="menu-item" href="/about">About</a>
+                
+                <input id="switch_default" type="checkbox" class="switch_default">
+                <label for="switch_default" class="toggleBtn"></label>
+            </div>
+
+        </div>
+    </nav>
+
+    
+    <nav class="navbar-mobile" id="nav-mobile">
+        <div class="container">
+            <div class="navbar-header">
+                <div>
+                    <a href="/">Du Liu&#39;s Blog</a><a id="mobile-toggle-theme">·&nbsp;Light</a>
+                </div>
+                <div class="menu-toggle" onclick="mobileBtn()">&#9776; Menu</div>
+            </div>
+            <div class="menu" id="mobile-menu">
+                
+                    <a class="menu-item" href="/archives">Posts</a>
+                
+                    <a class="menu-item" href="/category">Categories</a>
+                
+                    <a class="menu-item" href="/tag">Tags</a>
+                
+                    <a class="menu-item" href="/about">About</a>
+                
+            </div>
+        </div>
+    </nav>
+
+</header>
+<script>
+    var mobileBtn = function f() {
+        var toggleMenu = document.getElementsByClassName("menu-toggle")[0];
+        var mobileMenu = document.getElementById("mobile-menu");
+        if(toggleMenu.classList.contains("active")){
+           toggleMenu.classList.remove("active")
+            mobileMenu.classList.remove("active")
+        }else{
+            toggleMenu.classList.add("active")
+            mobileMenu.classList.add("active")
+        }
+    }
+</script>
+        <div class="main">
+            <div class="container">
+    
+    
+        <div class="post-toc">
+    <div class="tocbot-list">
+    </div>
+    <div class="tocbot-list-menu">
+        <a class="tocbot-toc-expand" onclick="expand_toc()">Expand all</a>
+        <a onclick="go_top()">Back to top</a>
+        <a onclick="go_bottom()">Go to bottom</a>
+    </div>
+</div>
+
+<script>
+    document.ready(
+        function () {
+            tocbot.init({
+                tocSelector: '.tocbot-list',
+                contentSelector: '.post-content',
+                headingSelector: 'h1, h2, h3, h4, h5',
+                collapseDepth: 1,
+                orderedList: false,
+                scrollSmooth: true,
+            })
+        }
+    )
+
+    function expand_toc() {
+        var b = document.querySelector(".tocbot-toc-expand");
+        tocbot.init({
+            tocSelector: '.tocbot-list',
+            contentSelector: '.post-content',
+            headingSelector: 'h1, h2, h3, h4, h5',
+            collapseDepth: 6,
+            orderedList: false,
+            scrollSmooth: true,
+        });
+        b.setAttribute("onclick", "collapse_toc()");
+        b.innerHTML = "Collapse all"
+    }
+
+    function collapse_toc() {
+        var b = document.querySelector(".tocbot-toc-expand");
+        tocbot.init({
+            tocSelector: '.tocbot-list',
+            contentSelector: '.post-content',
+            headingSelector: 'h1, h2, h3, h4, h5',
+            collapseDepth: 1,
+            orderedList: false,
+            scrollSmooth: true,
+        });
+        b.setAttribute("onclick", "expand_toc()");
+        b.innerHTML = "Expand all"
+    }
+
+    function go_top() {
+        window.scrollTo(0, 0);
+    }
+
+    function go_bottom() {
+        window.scrollTo(0, document.body.scrollHeight);
+    }
+
+</script>
+    
+
+    
+    <article class="post-wrap">
+        <header class="post-header">
+            <h1 class="post-title">Java MongoDB hello world demo</h1>
+            
+                <div class="post-meta">
+                    
+                        Author: <a itemprop="author" rel="author" href="/">Darren Du</a>
+                    
+
+                    
+                        <span class="post-time">
+                        Date: <a href="#">August 3, 2017&nbsp;&nbsp;0:41:45</a>
+                        </span>
+                    
+                    
+                </div>
+            
+        </header>
+
+        <div class="post-content">
+            <p>本例以Windows, JDK1.8, MongoDB v3.4.6 为基础，演示使用<em>Java</em> 对 <em>MongoDB</em> 数据库的常用的增删查改操作。</p>
+<h2 id="用到的技术和工具"><a href="#用到的技术和工具" class="headerlink" title="用到的技术和工具"></a>用到的技术和工具</h2><ol>
+<li>Java 8</li>
+<li>MongoDB v3.4.6</li>
+<li>Maven 3.10</li>
+<li>IntelliJ IDEA</li>
+</ol>
+<h2 id="Maven-pom-xml"><a href="#Maven-pom-xml" class="headerlink" title="Maven pom.xml"></a>Maven <em>pom.xml</em></h2><p>本例以Maven创建项目,所以在<em>pom.xml</em>中需要添加对应的依赖jar包.<br>添加<em>MongoDB</em>驱动包:</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">dependencies</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.mongodb<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>mongodb-driver<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">version</span>&gt;</span>3.4.0-beta1<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependencies</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="Mongo-Connection-获取连接"><a href="#Mongo-Connection-获取连接" class="headerlink" title="Mongo Connection 获取连接"></a>Mongo Connection 获取连接</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//create connection</span></span><br><span class="line"><span class="comment">//MongoClient mongoClient = new MongoClient(&quot;localhost&quot;, 27001); //old</span></span><br><span class="line"></span><br><span class="line"><span class="type">MongoClientURI</span> <span class="variable">mongoClientURI</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">MongoClientURI</span>(<span class="string">&quot;mongodb://localhost:27001&quot;</span>);</span><br><span class="line"><span class="type">MongoClient</span> <span class="variable">mongoClient</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">MongoClient</span>(mongoClientURI);</span><br></pre></td></tr></table></figure>
+
+<h2 id="Access-Database-获取数据库"><a href="#Access-Database-获取数据库" class="headerlink" title="Access Database 获取数据库"></a>Access Database 获取数据库</h2><p>获取”test”数据库:</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//access database</span></span><br><span class="line"><span class="type">MongoDatabase</span> <span class="variable">mongoDatabase</span> <span class="operator">=</span> mongoClient.getDatabase(<span class="string">&quot;test&quot;</span>);</span><br></pre></td></tr></table></figure>
+
+<h2 id="Access-Collection"><a href="#Access-Collection" class="headerlink" title="Access Collection"></a>Access Collection</h2><p>获取”test” Collection:</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//access collection</span></span><br><span class="line">MongoCollection&lt;Document&gt; collection  = mongoDatabase.getCollection(<span class="string">&quot;test&quot;</span>);</span><br></pre></td></tr></table></figure>
+
+<h2 id="Save-example-保存数据"><a href="#Save-example-保存数据" class="headerlink" title="Save example 保存数据"></a>Save example 保存数据</h2><p>包括一条数据和一次性保存多条数据:</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//save</span></span><br><span class="line"><span class="comment">//insert one</span></span><br><span class="line"><span class="type">Document</span> <span class="variable">document</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">Document</span>();</span><br><span class="line">document.append(<span class="string">&quot;name&quot;</span>, <span class="string">&quot;Jack Chen&quot;</span>);</span><br><span class="line">document.append(<span class="string">&quot;age&quot;</span>, <span class="number">22</span>);</span><br><span class="line"></span><br><span class="line">collection.insertOne(document);</span><br><span class="line"></span><br><span class="line"><span class="comment">//insert many</span></span><br><span class="line">List&lt;Document&gt; documents = <span class="keyword">new</span> <span class="title class_">ArrayList</span>&lt;Document&gt;();</span><br><span class="line"></span><br><span class="line">documents.add(<span class="keyword">new</span> <span class="title class_">Document</span>(<span class="string">&quot;name&quot;</span>, <span class="string">&quot;Jhone Du&quot;</span>).append(<span class="string">&quot;age&quot;</span>, <span class="number">20</span>));</span><br><span class="line">documents.add(<span class="keyword">new</span> <span class="title class_">Document</span>(<span class="string">&quot;name&quot;</span>, <span class="string">&quot;Tom Wang&quot;</span>).append(<span class="string">&quot;age&quot;</span>, <span class="number">30</span>));</span><br><span class="line"></span><br><span class="line">collection.insertMany(documents);</span><br></pre></td></tr></table></figure>
+
+<h2 id="Find-example-查询数据"><a href="#Find-example-查询数据" class="headerlink" title="Find example 查询数据"></a>Find example 查询数据</h2><p>根据条件查询和一次性查询出全部的数据:</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//select</span></span><br><span class="line"><span class="comment">//find one</span></span><br><span class="line"><span class="type">Document</span> <span class="variable">document1</span> <span class="operator">=</span> collection.find(eq(<span class="string">&quot;name&quot;</span>, <span class="string">&quot;Jack Chen&quot;</span>)).first();</span><br><span class="line">System.out.println(document1.toJson());</span><br><span class="line"></span><br><span class="line"><span class="comment">//find all</span></span><br><span class="line">MongoCursor&lt;Document&gt; cursor = collection.find().iterator();</span><br><span class="line"><span class="keyword">while</span> (cursor.hasNext()) &#123;</span><br><span class="line">    System.out.println(cursor.next().toJson());</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> (Document cur : collection.find()) &#123;</span><br><span class="line">    System.out.println(cur.toJson());</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="Update-example-更新数据"><a href="#Update-example-更新数据" class="headerlink" title="Update example 更新数据"></a>Update example 更新数据</h2><p>根据条件更新一条数据:</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//update</span></span><br><span class="line">collection.updateOne(eq(<span class="string">&quot;name&quot;</span>, <span class="string">&quot;Tom Wang&quot;</span>), <span class="keyword">new</span> <span class="title class_">Document</span>(<span class="string">&quot;$set&quot;</span>, <span class="keyword">new</span> <span class="title class_">Document</span>(<span class="string">&quot;name&quot;</span>, <span class="string">&quot;Tom Cheng&quot;</span>)));</span><br></pre></td></tr></table></figure>
+
+
+<h2 id="Delete-example-删除数据"><a href="#Delete-example-删除数据" class="headerlink" title="Delete example 删除数据"></a>Delete example 删除数据</h2><p>根据条件删除一条数据:</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//delete</span></span><br><span class="line">collection.deleteOne(eq(<span class="string">&quot;name&quot;</span>, <span class="string">&quot;Jhone Du&quot;</span>));</span><br></pre></td></tr></table></figure>
+
+<h2 id="Hello-Wolrd-完整实例"><a href="#Hello-Wolrd-完整实例" class="headerlink" title="Hello Wolrd 完整实例"></a>Hello Wolrd 完整实例</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> com.devnp;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> com.mongodb.MongoClient;</span><br><span class="line"><span class="keyword">import</span> com.mongodb.MongoClientURI;</span><br><span class="line"><span class="keyword">import</span> com.mongodb.client.FindIterable;</span><br><span class="line"><span class="keyword">import</span> com.mongodb.client.MongoCollection;</span><br><span class="line"><span class="keyword">import</span> com.mongodb.client.MongoCursor;</span><br><span class="line"><span class="keyword">import</span> com.mongodb.client.MongoDatabase;</span><br><span class="line"><span class="keyword">import</span> org.bson.Document;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> java.util.ArrayList;</span><br><span class="line"><span class="keyword">import</span> java.util.List;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> <span class="keyword">static</span> com.mongodb.client.model.Filters.eq;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * Created by duliu on 31/7/2017.</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">MongoDBHelloWorld</span> &#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String [] args)</span>&#123;</span><br><span class="line">        <span class="comment">//create connection</span></span><br><span class="line">        <span class="comment">//MongoClient mongoClient = new MongoClient(&quot;localhost&quot;, 27001); //old</span></span><br><span class="line"></span><br><span class="line">        <span class="type">MongoClientURI</span> <span class="variable">mongoClientURI</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">MongoClientURI</span>(<span class="string">&quot;mongodb://localhost:27001&quot;</span>);</span><br><span class="line">        <span class="type">MongoClient</span> <span class="variable">mongoClient</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">MongoClient</span>(mongoClientURI);</span><br><span class="line"></span><br><span class="line">        <span class="comment">//access database</span></span><br><span class="line">        <span class="type">MongoDatabase</span> <span class="variable">mongoDatabase</span> <span class="operator">=</span> mongoClient.getDatabase(<span class="string">&quot;test&quot;</span>);</span><br><span class="line"></span><br><span class="line">        <span class="comment">//access collection</span></span><br><span class="line">        MongoCollection&lt;Document&gt; collection  = mongoDatabase.getCollection(<span class="string">&quot;test&quot;</span>);</span><br><span class="line"></span><br><span class="line">        <span class="comment">//save</span></span><br><span class="line">        <span class="comment">//insert one</span></span><br><span class="line">        <span class="type">Document</span> <span class="variable">document</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">Document</span>();</span><br><span class="line">        document.append(<span class="string">&quot;name&quot;</span>, <span class="string">&quot;Jack Chen&quot;</span>);</span><br><span class="line">        document.append(<span class="string">&quot;age&quot;</span>, <span class="number">22</span>);</span><br><span class="line"></span><br><span class="line">        collection.insertOne(document);</span><br><span class="line"></span><br><span class="line">        <span class="comment">//insert many</span></span><br><span class="line">        List&lt;Document&gt; documents = <span class="keyword">new</span> <span class="title class_">ArrayList</span>&lt;Document&gt;();</span><br><span class="line"></span><br><span class="line">        documents.add(<span class="keyword">new</span> <span class="title class_">Document</span>(<span class="string">&quot;name&quot;</span>, <span class="string">&quot;Jhone Du&quot;</span>).append(<span class="string">&quot;age&quot;</span>, <span class="number">20</span>));</span><br><span class="line">        documents.add(<span class="keyword">new</span> <span class="title class_">Document</span>(<span class="string">&quot;name&quot;</span>, <span class="string">&quot;Tom Wang&quot;</span>).append(<span class="string">&quot;age&quot;</span>, <span class="number">30</span>));</span><br><span class="line"></span><br><span class="line">        collection.insertMany(documents);</span><br><span class="line"></span><br><span class="line">        <span class="comment">//select</span></span><br><span class="line">        <span class="comment">//find one</span></span><br><span class="line">        <span class="type">Document</span> <span class="variable">document1</span> <span class="operator">=</span> collection.find(eq(<span class="string">&quot;name&quot;</span>, <span class="string">&quot;Jack Chen&quot;</span>)).first();</span><br><span class="line">        System.out.println(document1.toJson());</span><br><span class="line"></span><br><span class="line">        <span class="comment">//find all</span></span><br><span class="line">        MongoCursor&lt;Document&gt; cursor = collection.find().iterator();</span><br><span class="line">        <span class="keyword">while</span> (cursor.hasNext()) &#123;</span><br><span class="line">            System.out.println(cursor.next().toJson());</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">for</span> (Document cur : collection.find()) &#123;</span><br><span class="line">            System.out.println(cur.toJson());</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="comment">//update</span></span><br><span class="line">        collection.updateOne(eq(<span class="string">&quot;name&quot;</span>, <span class="string">&quot;Tom Wang&quot;</span>), <span class="keyword">new</span> <span class="title class_">Document</span>(<span class="string">&quot;$set&quot;</span>, <span class="keyword">new</span> <span class="title class_">Document</span>(<span class="string">&quot;name&quot;</span>, <span class="string">&quot;Tom Cheng&quot;</span>)));</span><br><span class="line"></span><br><span class="line">        <span class="comment">//delete</span></span><br><span class="line">        collection.deleteOne(eq(<span class="string">&quot;name&quot;</span>, <span class="string">&quot;Jhone Du&quot;</span>));</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="Code-代码下载"><a href="#Code-代码下载" class="headerlink" title="Code 代码下载"></a>Code 代码下载</h2><p><img class="alignnone size-full wp-image-217 alignleft" src="http://www.devnp.com/wp-content/uploads/2016/12/d-logo.png" alt="d-logo" width="77" height="77" srcset="http://www.devnp.com/wp-content/uploads/2016/12/d-logo.png 128w, http://www.devnp.com/wp-content/uploads/2016/12/d-logo-90x90.png 90w" sizes="(max-width: 77px) 100vw, 77px"><a target="_blank" rel="noopener" href="http://wp-qn.devnp.com/2017/08/03/java-mongodb-hello-world-demo/java-mongodb-quick.zip">java-mongodb-quick.zip</a></p>
+
+        </div>
+
+        
+            <section class="post-copyright">
+                
+                    <p class="copyright-item">
+                        <span>Author:</span>
+                        <span>Darren Du</span>
+                    </p>
+                
+                
+                
+                    <p class="copyright-item">
+                        <span>License:</span>
+                        <span>Copyright (c) 2019 MIT LICENSE</span>
+                    </p>
+                
+                
+
+            </section>
+        
+        <section class="post-tags">
+            <div>
+                <span>Tag(s):</span>
+                <span class="tag">
+                    
+                </span>
+            </div>
+            <div>
+                <a href="javascript:window.history.back();">back</a>
+                <span>· </span>
+                <a href="/">home</a>
+            </div>
+        </section>
+        <section class="post-nav">
+            
+                <a class="prev" rel="prev" href="/2017/08/10/Java%208%20%E6%96%B0%E7%89%B9%E6%80%A7%E4%B9%8B%E6%96%B9%E6%B3%95%E5%BC%95%E7%94%A8/">Java 8 新特性之方法引用</a>
+            
+            
+            <a class="next" rel="next" href="/2017/07/24/Spring%20Boot%20+%20Spring%20Data%20JPA%20+%20MySQL%20Demo/">Spring Boot + Spring Data JPA + MySQL Demo</a>
+            
+        </section>
+
+
+    </article>
+</div>
+
+        </div>
+        <footer id="footer" class="footer">
+    <div class="copyright">
+        <span>© Darren Du | Powered by <a href="https://hexo.io" target="_blank">Hexo</a> & <a href="https://github.com/Siricee/hexo-theme-Chic" target="_blank">Chic</a></span>
+    </div>
+</footer>
+
+    </div>
+</body>
+</html>

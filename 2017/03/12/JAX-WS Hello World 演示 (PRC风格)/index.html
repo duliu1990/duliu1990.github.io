@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <meta name="author" content="Darren Du">
+
+
+
+    <meta name="description" content="Dev">
+
+
+
+<title>JAX-WS Hello World 演示 (PRC风格) | Du Liu&#39;s Blog</title>
+
+
+
+    <link rel="icon" href="/favicon.ico">
+
+
+
+
+    <!-- stylesheets list from _config.yml -->
+    
+    <link rel="stylesheet" href="/css/style.css">
+    
+
+
+
+    <!-- scripts list from _config.yml -->
+    
+    <script src="/js/script.js"></script>
+    
+    <script src="/js/tocbot.min.js"></script>
+    
+
+
+
+    
+    
+        
+    
+
+
+<meta name="generator" content="Hexo 6.2.0"></head>
+<body>
+    <div class="wrapper">
+        <header>
+    <nav class="navbar">
+        <div class="container">
+            <div class="navbar-header header-logo"><a href="/">Du Liu&#39;s Blog</a></div>
+            <div class="menu navbar-right">
+                
+                    <a class="menu-item" href="/archives">Posts</a>
+                
+                    <a class="menu-item" href="/category">Categories</a>
+                
+                    <a class="menu-item" href="/tag">Tags</a>
+                
+                    <a class="menu-item" href="/about">About</a>
+                
+                <input id="switch_default" type="checkbox" class="switch_default">
+                <label for="switch_default" class="toggleBtn"></label>
+            </div>
+
+        </div>
+    </nav>
+
+    
+    <nav class="navbar-mobile" id="nav-mobile">
+        <div class="container">
+            <div class="navbar-header">
+                <div>
+                    <a href="/">Du Liu&#39;s Blog</a><a id="mobile-toggle-theme">·&nbsp;Light</a>
+                </div>
+                <div class="menu-toggle" onclick="mobileBtn()">&#9776; Menu</div>
+            </div>
+            <div class="menu" id="mobile-menu">
+                
+                    <a class="menu-item" href="/archives">Posts</a>
+                
+                    <a class="menu-item" href="/category">Categories</a>
+                
+                    <a class="menu-item" href="/tag">Tags</a>
+                
+                    <a class="menu-item" href="/about">About</a>
+                
+            </div>
+        </div>
+    </nav>
+
+</header>
+<script>
+    var mobileBtn = function f() {
+        var toggleMenu = document.getElementsByClassName("menu-toggle")[0];
+        var mobileMenu = document.getElementById("mobile-menu");
+        if(toggleMenu.classList.contains("active")){
+           toggleMenu.classList.remove("active")
+            mobileMenu.classList.remove("active")
+        }else{
+            toggleMenu.classList.add("active")
+            mobileMenu.classList.add("active")
+        }
+    }
+</script>
+        <div class="main">
+            <div class="container">
+    
+    
+
+    
+    <article class="post-wrap">
+        <header class="post-header">
+            <h1 class="post-title">JAX-WS Hello World 演示 (PRC风格)</h1>
+            
+                <div class="post-meta">
+                    
+                        Author: <a itemprop="author" rel="author" href="/">Darren Du</a>
+                    
+
+                    
+                        <span class="post-time">
+                        Date: <a href="#">March 12, 2017&nbsp;&nbsp;16:19:53</a>
+                        </span>
+                    
+                    
+                        <span class="post-category">
+                    Category:
+                            
+                                <a href="/categories/Java-Framework/">Java Framework</a>
+                            
+                                <a href="/categories/Java-Framework/JAX-WS/">JAX-WS</a>
+                            
+                        </span>
+                    
+                </div>
+            
+        </header>
+
+        <div class="post-content">
+            <p>JAX-WS:Java API for XML Web Services是Java程序设计语言一个用来创建Web服务的API。JAX-WS是sun的Java企业平台一部分。和其它Java EE的API一样，JAX-WS使用了Java SE 5引入的Java标注机制来简化Web服务客户端和服务端的开发和部署。</p>
+<p>1.创建Web Services Endpoint Interface<br><em>HelloWolrd.java</em></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> com.devnp.jaxws;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> javax.jws.WebMethod;</span><br><span class="line"><span class="keyword">import</span> javax.jws.WebService;</span><br><span class="line"><span class="keyword">import</span> javax.jws.soap.SOAPBinding;</span><br><span class="line"><span class="keyword">import</span> javax.jws.soap.SOAPBinding.Style;</span><br><span class="line"></span><br><span class="line"><span class="meta">@WebService</span></span><br><span class="line"><span class="meta">@SOAPBinding(style = Style.RPC)</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">interface</span> <span class="title class_">HelloWorld</span> &#123;</span><br><span class="line"></span><br><span class="line">	<span class="meta">@WebMethod</span></span><br><span class="line">	String <span class="title function_">getHelloWorld</span><span class="params">(String name)</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>2.创建 Web Service Endpoint Implementation<br><em>HelloWolrdImpl.java</em></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> com.devnp.jaxws;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> javax.jws.WebService;</span><br><span class="line"></span><br><span class="line"><span class="meta">@WebService(endpointInterface = &quot;com.devnp.jaxws.HelloWorld&quot;)</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">HelloWorldImpl</span> <span class="keyword">implements</span> <span class="title class_">HelloWorld</span> &#123;</span><br><span class="line"></span><br><span class="line">	<span class="meta">@Override</span></span><br><span class="line">	<span class="keyword">public</span> String <span class="title function_">getHelloWorld</span><span class="params">(String name)</span> &#123;</span><br><span class="line">		<span class="comment">// TODO Auto-generated method stub</span></span><br><span class="line">		<span class="keyword">return</span> <span class="string">&quot;Hello, This is JAX-WS &quot;</span> + name;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>3.创建 Endpoint Publisher<br><em>HelloWolrdPublisher.java</em></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> com.devnp.endpoint;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> javax.xml.ws.Endpoint;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> com.devnp.jaxws.HelloWorldImpl;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">HelloWolrdPublisher</span> &#123;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String[] args)</span> &#123;</span><br><span class="line">		<span class="comment">// TODO Auto-generated method stub</span></span><br><span class="line"></span><br><span class="line">		Endpoint.publish(<span class="string">&quot;http://localhost:9999/ws/hello&quot;</span>, <span class="keyword">new</span> <span class="title class_">HelloWorldImpl</span>());</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>4.测试<br>Web Services的测试工具，可以使用SoapUI。<br>通过浏览器来访测试地址：<br><img src="http://wp-qn.devnp.com/2017/03/12/jax-ws-prc-hello-world-%E6%BC%94%E7%A4%BA/2017-03-12_154149.png" alt="" /><br><img src="http://wp-qn.devnp.com/2017/03/12/jax-ws-prc-hello-world-%E6%BC%94%E7%A4%BA/2017-03-12_154230.png" alt="" /><br>SoapUI 测试：<br><img src="http://wp-qn.devnp.com/2017/03/12/jax-ws-prc-hello-world-%E6%BC%94%E7%A4%BA/2017-03-12_154400.png" alt="" /></p>
+<p>4.1 通过代码来测试<br><em>HelloWolrdPublisherTest.java</em></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> com.devnp.endpoint;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> java.net.URL;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> javax.xml.namespace.QName;</span><br><span class="line"><span class="keyword">import</span> javax.xml.ws.Service;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> com.devnp.jaxws.HelloWorld;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">HelloWolrdPublisherTest</span> &#123;</span><br><span class="line">	<span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String[] args)</span> <span class="keyword">throws</span> Exception &#123;</span><br><span class="line"></span><br><span class="line">		<span class="type">URL</span> <span class="variable">url</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">URL</span>(<span class="string">&quot;http://localhost:9999/ws/hello?wsdl&quot;</span>);</span><br><span class="line"></span><br><span class="line">		<span class="type">QName</span> <span class="variable">qname</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">QName</span>(<span class="string">&quot;http://jaxws.devnp.com/&quot;</span>, <span class="string">&quot;HelloWolrdImplService&quot;</span>);</span><br><span class="line"></span><br><span class="line">		<span class="type">Service</span> <span class="variable">service</span> <span class="operator">=</span> Service.create(url, qname);</span><br><span class="line"></span><br><span class="line">		<span class="type">HelloWorld</span> <span class="variable">hello</span> <span class="operator">=</span> service.getPort(HelloWorld.class);</span><br><span class="line"></span><br><span class="line">		System.out.println(hello.getHelloWorld(<span class="string">&quot;Du Liu&quot;</span>));</span><br><span class="line"></span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><em>输出结果：</em><br>Hello, This is JAX-WS Du Liu</p>
+<p>4.2 使用wsimport 来创建客户端</p>
+<p>wsimport 常用命令：<a target="_blank" rel="noopener" href="https://docs.oracle.com/javase/6/docs/technotes/tools/share/wsimport.html">https://docs.oracle.com/javase/6/docs/technotes/tools/share/wsimport.html</a></p>
+<p>使用命令如下：<br>wsimport -keep <a target="_blank" rel="noopener" href="http://localhost:9999/ws/hello?wsdl">http://localhost:9999/ws/hello?wsdl</a></p>
+<p>需要注意的是生成的java类的路径和原路径是一样。<br>生成的代码如下：<br><em>HelloWolrd.java</em></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="keyword">package</span> com.devnp.client;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> javax.jws.WebMethod;</span><br><span class="line"><span class="keyword">import</span> javax.jws.WebParam;</span><br><span class="line"><span class="keyword">import</span> javax.jws.WebResult;</span><br><span class="line"><span class="keyword">import</span> javax.jws.WebService;</span><br><span class="line"><span class="keyword">import</span> javax.jws.soap.SOAPBinding;</span><br><span class="line"><span class="keyword">import</span> javax.xml.ws.Action;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * This class was generated by the JAX-WS RI.</span></span><br><span class="line"><span class="comment"> * JAX-WS RI 2.2.9-b130926.1035</span></span><br><span class="line"><span class="comment"> * Generated source version: 2.2</span></span><br><span class="line"><span class="comment"> * </span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="meta">@WebService(name = &quot;HelloWorld&quot;, targetNamespace = &quot;http://jaxws.devnp.com/&quot;)</span></span><br><span class="line"><span class="meta">@SOAPBinding(style = SOAPBinding.Style.RPC)</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">interface</span> <span class="title class_">HelloWorld</span> &#123;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * </span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> arg0</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@return</span></span></span><br><span class="line"><span class="comment">     *     returns java.lang.String</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="meta">@WebMethod</span></span><br><span class="line">    <span class="meta">@WebResult(partName = &quot;return&quot;)</span></span><br><span class="line">    <span class="meta">@Action(input = &quot;http://jaxws.devnp.com/HelloWorld/getHelloWorldRequest&quot;, output = &quot;http://jaxws.devnp.com/HelloWorld/getHelloWorldResponse&quot;)</span></span><br><span class="line">    <span class="keyword">public</span> String <span class="title function_">getHelloWorld</span><span class="params">(</span></span><br><span class="line"><span class="params">        <span class="meta">@WebParam(name = &quot;arg0&quot;, partName = &quot;arg0&quot;)</span></span></span><br><span class="line"><span class="params">        String arg0)</span>;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><em>HelloWolrdImplService.java</em></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="keyword">package</span> com.devnp.client;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> java.net.MalformedURLException;</span><br><span class="line"><span class="keyword">import</span> java.net.URL;</span><br><span class="line"><span class="keyword">import</span> javax.xml.namespace.QName;</span><br><span class="line"><span class="keyword">import</span> javax.xml.ws.Service;</span><br><span class="line"><span class="keyword">import</span> javax.xml.ws.WebEndpoint;</span><br><span class="line"><span class="keyword">import</span> javax.xml.ws.WebServiceClient;</span><br><span class="line"><span class="keyword">import</span> javax.xml.ws.WebServiceException;</span><br><span class="line"><span class="keyword">import</span> javax.xml.ws.WebServiceFeature;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * This class was generated by the JAX-WS RI.</span></span><br><span class="line"><span class="comment"> * JAX-WS RI 2.2.9-b130926.1035</span></span><br><span class="line"><span class="comment"> * Generated source version: 2.2</span></span><br><span class="line"><span class="comment"> * </span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="meta">@WebServiceClient(name = &quot;HelloWorldImplService&quot;, targetNamespace = &quot;http://jaxws.devnp.com/&quot;, wsdlLocation = &quot;http://localhost:9999/ws/hello?wsdl&quot;)</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">HelloWorldImplService</span></span><br><span class="line">    <span class="keyword">extends</span> <span class="title class_">Service</span></span><br><span class="line">&#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> <span class="keyword">static</span> URL HELLOWORLDIMPLSERVICE_WSDL_LOCATION;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> <span class="keyword">static</span> WebServiceException HELLOWORLDIMPLSERVICE_EXCEPTION;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> <span class="keyword">static</span> <span class="type">QName</span> <span class="variable">HELLOWORLDIMPLSERVICE_QNAME</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">QName</span>(<span class="string">&quot;http://jaxws.devnp.com/&quot;</span>, <span class="string">&quot;HelloWorldImplService&quot;</span>);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">static</span> &#123;</span><br><span class="line">        <span class="type">URL</span> <span class="variable">url</span> <span class="operator">=</span> <span class="literal">null</span>;</span><br><span class="line">        <span class="type">WebServiceException</span> <span class="variable">e</span> <span class="operator">=</span> <span class="literal">null</span>;</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            url = <span class="keyword">new</span> <span class="title class_">URL</span>(<span class="string">&quot;http://localhost:9999/ws/hello?wsdl&quot;</span>);</span><br><span class="line">        &#125; <span class="keyword">catch</span> (MalformedURLException ex) &#123;</span><br><span class="line">            e = <span class="keyword">new</span> <span class="title class_">WebServiceException</span>(ex);</span><br><span class="line">        &#125;</span><br><span class="line">        HELLOWORLDIMPLSERVICE_WSDL_LOCATION = url;</span><br><span class="line">        HELLOWORLDIMPLSERVICE_EXCEPTION = e;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="title function_">HelloWorldImplService</span><span class="params">()</span> &#123;</span><br><span class="line">        <span class="built_in">super</span>(__getWsdlLocation(), HELLOWORLDIMPLSERVICE_QNAME);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="title function_">HelloWorldImplService</span><span class="params">(WebServiceFeature... features)</span> &#123;</span><br><span class="line">        <span class="built_in">super</span>(__getWsdlLocation(), HELLOWORLDIMPLSERVICE_QNAME, features);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="title function_">HelloWorldImplService</span><span class="params">(URL wsdlLocation)</span> &#123;</span><br><span class="line">        <span class="built_in">super</span>(wsdlLocation, HELLOWORLDIMPLSERVICE_QNAME);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="title function_">HelloWorldImplService</span><span class="params">(URL wsdlLocation, WebServiceFeature... features)</span> &#123;</span><br><span class="line">        <span class="built_in">super</span>(wsdlLocation, HELLOWORLDIMPLSERVICE_QNAME, features);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="title function_">HelloWorldImplService</span><span class="params">(URL wsdlLocation, QName serviceName)</span> &#123;</span><br><span class="line">        <span class="built_in">super</span>(wsdlLocation, serviceName);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="title function_">HelloWorldImplService</span><span class="params">(URL wsdlLocation, QName serviceName, WebServiceFeature... features)</span> &#123;</span><br><span class="line">        <span class="built_in">super</span>(wsdlLocation, serviceName, features);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * </span></span><br><span class="line"><span class="comment">     * <span class="doctag">@return</span></span></span><br><span class="line"><span class="comment">     *     returns HelloWorld</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="meta">@WebEndpoint(name = &quot;HelloWorldImplPort&quot;)</span></span><br><span class="line">    <span class="keyword">public</span> HelloWorld <span class="title function_">getHelloWorldImplPort</span><span class="params">()</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="built_in">super</span>.getPort(<span class="keyword">new</span> <span class="title class_">QName</span>(<span class="string">&quot;http://jaxws.devnp.com/&quot;</span>, <span class="string">&quot;HelloWorldImplPort&quot;</span>), HelloWorld.class);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * </span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> features</span></span><br><span class="line"><span class="comment">     *     A list of &#123;<span class="doctag">@link</span> javax.xml.ws.WebServiceFeature&#125; to configure on the proxy.  Supported features not in the &lt;code&gt;features&lt;/code&gt; parameter will have their default values.</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@return</span></span></span><br><span class="line"><span class="comment">     *     returns HelloWorld</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="meta">@WebEndpoint(name = &quot;HelloWorldImplPort&quot;)</span></span><br><span class="line">    <span class="keyword">public</span> HelloWorld <span class="title function_">getHelloWorldImplPort</span><span class="params">(WebServiceFeature... features)</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="built_in">super</span>.getPort(<span class="keyword">new</span> <span class="title class_">QName</span>(<span class="string">&quot;http://jaxws.devnp.com/&quot;</span>, <span class="string">&quot;HelloWorldImplPort&quot;</span>), HelloWorld.class, features);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> URL <span class="title function_">__getWsdlLocation</span><span class="params">()</span> &#123;</span><br><span class="line">        <span class="keyword">if</span> (HELLOWORLDIMPLSERVICE_EXCEPTION!= <span class="literal">null</span>) &#123;</span><br><span class="line">            <span class="keyword">throw</span> HELLOWORLDIMPLSERVICE_EXCEPTION;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> HELLOWORLDIMPLSERVICE_WSDL_LOCATION;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>测试：<br><em>HelloWorldClientTest.java</em></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> com.devnp.client;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">HelloWorldClientTest</span> &#123;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String[] args)</span> &#123;</span><br><span class="line">		<span class="comment">// TODO Auto-generated method stub</span></span><br><span class="line">		<span class="type">HelloWorldImplService</span> <span class="variable">helloService</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">HelloWorldImplService</span>();</span><br><span class="line">		<span class="type">HelloWorld</span> <span class="variable">hello</span> <span class="operator">=</span> helloService.getHelloWorldImplPort();</span><br><span class="line"></span><br><span class="line">		System.out.println(hello.getHelloWorld(<span class="string">&quot;DU LIU&quot;</span>));</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>结果：<br><em>Hello, This is JAX-WS DU LIU</em><br>5. 代码下载<br><a target="_blank" rel="noopener" href="http://wp-qn.devnp.com/2017/03/12/jax-ws-prc-hello-world-%E6%BC%94%E7%A4%BA/JAX-WS-HelloWolrd.zip">JAX-WS-HelloWolrd.zip</a></p>
+
+        </div>
+
+        
+            <section class="post-copyright">
+                
+                    <p class="copyright-item">
+                        <span>Author:</span>
+                        <span>Darren Du</span>
+                    </p>
+                
+                
+                
+                    <p class="copyright-item">
+                        <span>License:</span>
+                        <span>Copyright (c) 2019 MIT LICENSE</span>
+                    </p>
+                
+                
+
+            </section>
+        
+        <section class="post-tags">
+            <div>
+                <span>Tag(s):</span>
+                <span class="tag">
+                    
+                    
+                        <a href="/tags/Java/"># Java</a>
+                    
+                        <a href="/tags/JAX-WS/"># JAX-WS</a>
+                    
+                        
+                </span>
+            </div>
+            <div>
+                <a href="javascript:window.history.back();">back</a>
+                <span>· </span>
+                <a href="/">home</a>
+            </div>
+        </section>
+        <section class="post-nav">
+            
+                <a class="prev" rel="prev" href="/2017/03/19/Spring%20%E4%BA%8B%E5%8A%A1%E7%9A%84%E4%BC%A0%E6%92%AD%E6%80%A7%20(Transaction%20Propagation)/">Spring 事务的传播性 (Transaction Propagation)</a>
+            
+            
+            <a class="next" rel="next" href="/2017/02/22/Java%20%E8%8E%B7%E5%8F%96%E6%9C%AC%E5%9C%B0IP%E5%92%8CServer%E5%90%8D%E5%AD%97/">Java 获取本地IP和Server名字</a>
+            
+        </section>
+
+
+    </article>
+</div>
+
+        </div>
+        <footer id="footer" class="footer">
+    <div class="copyright">
+        <span>© Darren Du | Powered by <a href="https://hexo.io" target="_blank">Hexo</a> & <a href="https://github.com/Siricee/hexo-theme-Chic" target="_blank">Chic</a></span>
+    </div>
+</footer>
+
+    </div>
+</body>
+</html>

@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <meta name="author" content="Darren Du">
+
+
+
+    <meta name="description" content="Dev">
+
+
+
+<title>Spring Boot 异常的处理 (Exception Handler) | Du Liu&#39;s Blog</title>
+
+
+
+    <link rel="icon" href="/favicon.ico">
+
+
+
+
+    <!-- stylesheets list from _config.yml -->
+    
+    <link rel="stylesheet" href="/css/style.css">
+    
+
+
+
+    <!-- scripts list from _config.yml -->
+    
+    <script src="/js/script.js"></script>
+    
+    <script src="/js/tocbot.min.js"></script>
+    
+
+
+
+    
+    
+        
+    
+
+
+<meta name="generator" content="Hexo 6.2.0"></head>
+<body>
+    <div class="wrapper">
+        <header>
+    <nav class="navbar">
+        <div class="container">
+            <div class="navbar-header header-logo"><a href="/">Du Liu&#39;s Blog</a></div>
+            <div class="menu navbar-right">
+                
+                    <a class="menu-item" href="/archives">Posts</a>
+                
+                    <a class="menu-item" href="/category">Categories</a>
+                
+                    <a class="menu-item" href="/tag">Tags</a>
+                
+                    <a class="menu-item" href="/about">About</a>
+                
+                <input id="switch_default" type="checkbox" class="switch_default">
+                <label for="switch_default" class="toggleBtn"></label>
+            </div>
+
+        </div>
+    </nav>
+
+    
+    <nav class="navbar-mobile" id="nav-mobile">
+        <div class="container">
+            <div class="navbar-header">
+                <div>
+                    <a href="/">Du Liu&#39;s Blog</a><a id="mobile-toggle-theme">·&nbsp;Light</a>
+                </div>
+                <div class="menu-toggle" onclick="mobileBtn()">&#9776; Menu</div>
+            </div>
+            <div class="menu" id="mobile-menu">
+                
+                    <a class="menu-item" href="/archives">Posts</a>
+                
+                    <a class="menu-item" href="/category">Categories</a>
+                
+                    <a class="menu-item" href="/tag">Tags</a>
+                
+                    <a class="menu-item" href="/about">About</a>
+                
+            </div>
+        </div>
+    </nav>
+
+</header>
+<script>
+    var mobileBtn = function f() {
+        var toggleMenu = document.getElementsByClassName("menu-toggle")[0];
+        var mobileMenu = document.getElementById("mobile-menu");
+        if(toggleMenu.classList.contains("active")){
+           toggleMenu.classList.remove("active")
+            mobileMenu.classList.remove("active")
+        }else{
+            toggleMenu.classList.add("active")
+            mobileMenu.classList.add("active")
+        }
+    }
+</script>
+        <div class="main">
+            <div class="container">
+    
+    
+        <div class="post-toc">
+    <div class="tocbot-list">
+    </div>
+    <div class="tocbot-list-menu">
+        <a class="tocbot-toc-expand" onclick="expand_toc()">Expand all</a>
+        <a onclick="go_top()">Back to top</a>
+        <a onclick="go_bottom()">Go to bottom</a>
+    </div>
+</div>
+
+<script>
+    document.ready(
+        function () {
+            tocbot.init({
+                tocSelector: '.tocbot-list',
+                contentSelector: '.post-content',
+                headingSelector: 'h1, h2, h3, h4, h5',
+                collapseDepth: 1,
+                orderedList: false,
+                scrollSmooth: true,
+            })
+        }
+    )
+
+    function expand_toc() {
+        var b = document.querySelector(".tocbot-toc-expand");
+        tocbot.init({
+            tocSelector: '.tocbot-list',
+            contentSelector: '.post-content',
+            headingSelector: 'h1, h2, h3, h4, h5',
+            collapseDepth: 6,
+            orderedList: false,
+            scrollSmooth: true,
+        });
+        b.setAttribute("onclick", "collapse_toc()");
+        b.innerHTML = "Collapse all"
+    }
+
+    function collapse_toc() {
+        var b = document.querySelector(".tocbot-toc-expand");
+        tocbot.init({
+            tocSelector: '.tocbot-list',
+            contentSelector: '.post-content',
+            headingSelector: 'h1, h2, h3, h4, h5',
+            collapseDepth: 1,
+            orderedList: false,
+            scrollSmooth: true,
+        });
+        b.setAttribute("onclick", "expand_toc()");
+        b.innerHTML = "Expand all"
+    }
+
+    function go_top() {
+        window.scrollTo(0, 0);
+    }
+
+    function go_bottom() {
+        window.scrollTo(0, document.body.scrollHeight);
+    }
+
+</script>
+    
+
+    
+    <article class="post-wrap">
+        <header class="post-header">
+            <h1 class="post-title">Spring Boot 异常的处理 (Exception Handler)</h1>
+            
+                <div class="post-meta">
+                    
+                        Author: <a itemprop="author" rel="author" href="/">Darren Du</a>
+                    
+
+                    
+                        <span class="post-time">
+                        Date: <a href="#">April 6, 2018&nbsp;&nbsp;12:52:23</a>
+                        </span>
+                    
+                    
+                        <span class="post-category">
+                    Category:
+                            
+                                <a href="/categories/Java-Framework/">Java Framework</a>
+                            
+                                <a href="/categories/Java-Framework/Spring-Boot/">Spring Boot</a>
+                            
+                        </span>
+                    
+                </div>
+            
+        </header>
+
+        <div class="post-content">
+            <p>本示例使用Spring Boot 1.5.9.RELEASE。</p>
+<p>在Spring Boot当中，当发生异常或者错误时默认会有 “<strong>org.springframework.boot.autoconfigure.web.BasicErrorController</strong>” 来进行处理，通过查看源码会发现Spring Boot在发生错误时对于不同的请求方式会有不同的返回内容。</p>
+<h2 id="1-根据状态码显示"><a href="#1-根据状态码显示" class="headerlink" title="1. 根据状态码显示"></a>1. 根据状态码显示</h2><p>当使用浏览器来访问一个不存在的请求时，会返回如下错误页面：<br><img src="http://wp-qn.devnp.com/2018/04/05/spring-boot-%E5%BC%82%E5%B8%B8%E7%9A%84%E5%A4%84%E7%90%86-exception-handler/b404.png" width="832" height="304" class="alignnone" /></p>
+<p>但是如果使用像Postman这样的工具来访问时候则会返回json格式的数据:<br><img src="http://wp-qn.devnp.com/2018/04/05/spring-boot-%E5%BC%82%E5%B8%B8%E7%9A%84%E5%A4%84%E7%90%86-exception-handler/p404.png" width="984" height="422" class="alignnone" /></p>
+<p>在普通的web项目中，可以通过在<em>web.xml</em>中去配置像404,500这样状态码的页面，那么在Spring Boot中，只需要在<em>resources</em>下面创建”public/error/**” 相对应的页面即可，如果用使用模板引擎，则在”templates/error/xx.html”如：<br><img src="http://wp-qn.devnp.com/2018/04/05/spring-boot-%E5%BC%82%E5%B8%B8%E7%9A%84%E5%A4%84%E7%90%86-exception-handler/error_sts.png" width="393" height="378" class="alignnone" /></p>
+<p>再次使用浏览器去访问不存在请求时，就会指向我们自定义的页面：</p>
+<img src="http://wp-qn.devnp.com/2018/04/05/spring-boot-%E5%BC%82%E5%B8%B8%E7%9A%84%E5%A4%84%E7%90%86-exception-handler/bc404.png" width="828" height="225" class="alignnone" />
+
+
+<h2 id="2-异常的处理"><a href="#2-异常的处理" class="headerlink" title="2. 异常的处理"></a>2. 异常的处理</h2><p>Spring MVC相关：<br><a target="_blank" rel="noopener" href="http://www.devnp.com/2017/04/08/spring-mvc-exception-handler-%e5%bc%82%e5%b8%b8%e7%9a%84%e5%a4%84%e7%90%86/">Spring MVC Exception Handler 异常的处理</a></p>
+<p>Spring Boot对于异常的处理与Spring MVC类似。</p>
+<p>在静态配置不同状态码的页面，往往有时不能满足我们的需要，我们需要通过一定的逻辑来处理，比如返回同一格式的json数据，这个主要通过”<strong>org.springframework.boot.context.embedded.EmbeddedServletContainerCustomizer</strong>“来自定义对应的映射。<br>首先设置需要处理的状态码和相关的映射路径：<br><em>CustomConfig.java</em></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> com.devnp.springbootexceptionhandlerdemo.config;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> org.springframework.boot.context.embedded.EmbeddedServletContainerCustomizer;</span><br><span class="line"><span class="keyword">import</span> org.springframework.boot.web.servlet.ErrorPage;</span><br><span class="line"><span class="keyword">import</span> org.springframework.context.annotation.Bean;</span><br><span class="line"><span class="keyword">import</span> org.springframework.context.annotation.Configuration;</span><br><span class="line"><span class="keyword">import</span> org.springframework.http.HttpStatus;</span><br><span class="line"><span class="keyword">import</span> org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@author</span> duliu</span></span><br><span class="line"><span class="comment"> *</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="meta">@Configuration</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">CustomConfig</span> <span class="keyword">extends</span> <span class="title class_">WebMvcConfigurerAdapter</span>&#123;</span><br><span class="line"></span><br><span class="line">	<span class="meta">@Bean</span></span><br><span class="line">	<span class="keyword">public</span> EmbeddedServletContainerCustomizer <span class="title function_">containerCustomizer</span><span class="params">()</span> &#123;</span><br><span class="line"></span><br><span class="line">		<span class="keyword">return</span> (container -&gt; &#123;</span><br><span class="line">			<span class="type">ErrorPage</span> <span class="variable">error404Page</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">ErrorPage</span>(HttpStatus.NOT_FOUND, <span class="string">&quot;/404&quot;</span>);</span><br><span class="line">			<span class="type">ErrorPage</span> <span class="variable">error500Page</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">ErrorPage</span>(HttpStatus.INTERNAL_SERVER_ERROR, <span class="string">&quot;/500&quot;</span>);</span><br><span class="line"></span><br><span class="line">			container.addErrorPages(error404Page, error500Page);</span><br><span class="line">		&#125;);</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>其次编写映射的控制器(Controller)：<br><em>StatusController.java</em></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> com.devnp.springbootexceptionhandlerdemo.web;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> org.springframework.web.bind.annotation.RequestMapping;</span><br><span class="line"><span class="keyword">import</span> org.springframework.web.bind.annotation.RestController;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@author</span> duliu</span></span><br><span class="line"><span class="comment"> *</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="meta">@RestController</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">StatusController</span> &#123;</span><br><span class="line">	</span><br><span class="line">	<span class="meta">@RequestMapping(&quot;/404&quot;)</span></span><br><span class="line">	<span class="keyword">public</span> String <span class="title function_">status404</span><span class="params">()</span> &#123;</span><br><span class="line">		<span class="keyword">return</span> <span class="string">&quot;This is Custom 404 &quot;</span> ;</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line">	<span class="meta">@RequestMapping(&quot;/500&quot;)</span></span><br><span class="line">	<span class="keyword">public</span> String <span class="title function_">status500</span><span class="params">()</span> &#123;</span><br><span class="line">		<span class="keyword">return</span> <span class="string">&quot;This is Custom 500&quot;</span> ;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>这样在发生对应的状态码，就会请求到相关的控制器：<br><img src="http://wp-qn.devnp.com/2018/04/05/spring-boot-%E5%BC%82%E5%B8%B8%E7%9A%84%E5%A4%84%E7%90%86-exception-handler/c404.png" width="827" height="195" class="alignnone" /></p>
+<img src="http://wp-qn.devnp.com/2018/04/05/spring-boot-%E5%BC%82%E5%B8%B8%E7%9A%84%E5%A4%84%E7%90%86-exception-handler/c500.png" width="826" height="159" class="alignnone" />
+
+
+<h2 id="产生异常时"><a href="#产生异常时" class="headerlink" title="产生异常时"></a>产生异常时</h2><p>通过上面的方法，可以用来处理当服务器发生错误状态码为500的处理，但是如果想要知道这个异常的产生是怎样的异常了？就通过”<strong>@ControllerAdvice</strong>“ 加 “<strong>@ExceptionHandler</strong>“来完成。</p>
+<p><strong>异常产生控制器:</strong><br><em>BasicController.java</em></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> com.devnp.springbootexceptionhandlerdemo.web;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> org.springframework.web.bind.annotation.RequestMapping;</span><br><span class="line"><span class="keyword">import</span> org.springframework.web.bind.annotation.RestController;</span><br><span class="line"></span><br><span class="line"><span class="meta">@RestController</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">BasicController</span> &#123;</span><br><span class="line">	</span><br><span class="line">	<span class="meta">@RequestMapping(&quot;/basicerror&quot;)</span></span><br><span class="line">	<span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">basicError</span><span class="params">()</span> <span class="keyword">throws</span> Exception &#123;</span><br><span class="line">		</span><br><span class="line">		<span class="keyword">throw</span> <span class="keyword">new</span> <span class="title class_">Exception</span>(<span class="string">&quot;Basic Error.&quot;</span>);</span><br><span class="line">		</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><strong>异常处理控制器:</strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * </span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">package</span> com.devnp.springbootexceptionhandlerdemo.web;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> javax.servlet.http.HttpServletRequest;</span><br><span class="line"><span class="keyword">import</span> javax.servlet.http.HttpServletResponse;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> org.springframework.web.bind.annotation.ControllerAdvice;</span><br><span class="line"><span class="keyword">import</span> org.springframework.web.bind.annotation.ExceptionHandler;</span><br><span class="line"><span class="keyword">import</span> org.springframework.web.bind.annotation.ResponseBody;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@author</span> duliu</span></span><br><span class="line"><span class="comment"> *</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="meta">@ControllerAdvice</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">ExceptionController</span> &#123;</span><br><span class="line"></span><br><span class="line">	<span class="comment">/**</span></span><br><span class="line"><span class="comment">	 * 全局异常</span></span><br><span class="line"><span class="comment">	 * <span class="doctag">@return</span></span></span><br><span class="line"><span class="comment">	 */</span></span><br><span class="line">	<span class="meta">@ExceptionHandler(value = Exception.class)</span></span><br><span class="line">    <span class="meta">@ResponseBody</span></span><br><span class="line">	<span class="keyword">public</span> String <span class="title function_">exceptionHandler</span><span class="params">(HttpServletRequest request, HttpServletResponse response, Exception e)</span>&#123;</span><br><span class="line">		</span><br><span class="line">        <span class="keyword">return</span> e.getMessage();</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>访问产生异常的URL：<strong><a target="_blank" rel="noopener" href="http://localhost:8080/basicerror">http://localhost:8080/basicerror</a></strong><br><img src="http://wp-qn.devnp.com/2018/04/05/spring-boot-%E5%BC%82%E5%B8%B8%E7%9A%84%E5%A4%84%E7%90%86-exception-handler/ce.png" width="830" height="140" class="alignnone" /></p>
+<p><strong>注：</strong> 自定义异常的处理在返回状态码之前</p>
+<h2 id="代码下载"><a href="#代码下载" class="headerlink" title="代码下载"></a>代码下载</h2><p><a href="http://wp-qn.devnp.com/2018/04/05/spring-boot-%E5%BC%82%E5%B8%B8%E7%9A%84%E5%A4%84%E7%90%86-exception-handler/spring-boot-exception-handler-demo.zip" rel="noopener" target="_blank">spring-boot-exception-handler-demo.zip</a></p>
+
+        </div>
+
+        
+            <section class="post-copyright">
+                
+                    <p class="copyright-item">
+                        <span>Author:</span>
+                        <span>Darren Du</span>
+                    </p>
+                
+                
+                
+                    <p class="copyright-item">
+                        <span>License:</span>
+                        <span>Copyright (c) 2019 MIT LICENSE</span>
+                    </p>
+                
+                
+
+            </section>
+        
+        <section class="post-tags">
+            <div>
+                <span>Tag(s):</span>
+                <span class="tag">
+                    
+                    
+                        <a href="/tags/Java/"># Java</a>
+                    
+                        <a href="/tags/Spring/"># Spring</a>
+                    
+                        <a href="/tags/Spring-Boot/"># Spring Boot</a>
+                    
+                        <a href="/tags/Exception-Handler/"># Exception Handler</a>
+                    
+                        
+                </span>
+            </div>
+            <div>
+                <a href="javascript:window.history.back();">back</a>
+                <span>· </span>
+                <a href="/">home</a>
+            </div>
+        </section>
+        <section class="post-nav">
+            
+                <a class="prev" rel="prev" href="/2018/04/08/Spring%20Boot%20%E9%85%8D%E7%BD%AE%E5%B1%9E%E6%80%A7%20(@ConfigurationProperties)/">Spring Boot 配置属性 (@ConfigurationProperties)</a>
+            
+            
+            <a class="next" rel="next" href="/2018/04/03/Spring%20Boot%20%E5%9B%BD%E9%99%85%E5%8C%96%20(Spring%20Boot%20Internationalization%20Demo)/">Spring Boot 国际化 (Spring Boot Internationalization Demo)</a>
+            
+        </section>
+
+
+    </article>
+</div>
+
+        </div>
+        <footer id="footer" class="footer">
+    <div class="copyright">
+        <span>© Darren Du | Powered by <a href="https://hexo.io" target="_blank">Hexo</a> & <a href="https://github.com/Siricee/hexo-theme-Chic" target="_blank">Chic</a></span>
+    </div>
+</footer>
+
+    </div>
+</body>
+</html>

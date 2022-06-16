@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <meta name="author" content="Darren Du">
+
+
+
+    <meta name="description" content="Dev">
+
+
+
+<title>iReport 在jdk8不能使用 (iReport Designer cannot open in JDK 8) | Du Liu&#39;s Blog</title>
+
+
+
+    <link rel="icon" href="/favicon.ico">
+
+
+
+
+    <!-- stylesheets list from _config.yml -->
+    
+    <link rel="stylesheet" href="/css/style.css">
+    
+
+
+
+    <!-- scripts list from _config.yml -->
+    
+    <script src="/js/script.js"></script>
+    
+    <script src="/js/tocbot.min.js"></script>
+    
+
+
+
+    
+    
+        
+    
+
+
+<meta name="generator" content="Hexo 6.2.0"></head>
+<body>
+    <div class="wrapper">
+        <header>
+    <nav class="navbar">
+        <div class="container">
+            <div class="navbar-header header-logo"><a href="/">Du Liu&#39;s Blog</a></div>
+            <div class="menu navbar-right">
+                
+                    <a class="menu-item" href="/archives">Posts</a>
+                
+                    <a class="menu-item" href="/category">Categories</a>
+                
+                    <a class="menu-item" href="/tag">Tags</a>
+                
+                    <a class="menu-item" href="/about">About</a>
+                
+                <input id="switch_default" type="checkbox" class="switch_default">
+                <label for="switch_default" class="toggleBtn"></label>
+            </div>
+
+        </div>
+    </nav>
+
+    
+    <nav class="navbar-mobile" id="nav-mobile">
+        <div class="container">
+            <div class="navbar-header">
+                <div>
+                    <a href="/">Du Liu&#39;s Blog</a><a id="mobile-toggle-theme">·&nbsp;Light</a>
+                </div>
+                <div class="menu-toggle" onclick="mobileBtn()">&#9776; Menu</div>
+            </div>
+            <div class="menu" id="mobile-menu">
+                
+                    <a class="menu-item" href="/archives">Posts</a>
+                
+                    <a class="menu-item" href="/category">Categories</a>
+                
+                    <a class="menu-item" href="/tag">Tags</a>
+                
+                    <a class="menu-item" href="/about">About</a>
+                
+            </div>
+        </div>
+    </nav>
+
+</header>
+<script>
+    var mobileBtn = function f() {
+        var toggleMenu = document.getElementsByClassName("menu-toggle")[0];
+        var mobileMenu = document.getElementById("mobile-menu");
+        if(toggleMenu.classList.contains("active")){
+           toggleMenu.classList.remove("active")
+            mobileMenu.classList.remove("active")
+        }else{
+            toggleMenu.classList.add("active")
+            mobileMenu.classList.add("active")
+        }
+    }
+</script>
+        <div class="main">
+            <div class="container">
+    
+    
+        <div class="post-toc">
+    <div class="tocbot-list">
+    </div>
+    <div class="tocbot-list-menu">
+        <a class="tocbot-toc-expand" onclick="expand_toc()">Expand all</a>
+        <a onclick="go_top()">Back to top</a>
+        <a onclick="go_bottom()">Go to bottom</a>
+    </div>
+</div>
+
+<script>
+    document.ready(
+        function () {
+            tocbot.init({
+                tocSelector: '.tocbot-list',
+                contentSelector: '.post-content',
+                headingSelector: 'h1, h2, h3, h4, h5',
+                collapseDepth: 1,
+                orderedList: false,
+                scrollSmooth: true,
+            })
+        }
+    )
+
+    function expand_toc() {
+        var b = document.querySelector(".tocbot-toc-expand");
+        tocbot.init({
+            tocSelector: '.tocbot-list',
+            contentSelector: '.post-content',
+            headingSelector: 'h1, h2, h3, h4, h5',
+            collapseDepth: 6,
+            orderedList: false,
+            scrollSmooth: true,
+        });
+        b.setAttribute("onclick", "collapse_toc()");
+        b.innerHTML = "Collapse all"
+    }
+
+    function collapse_toc() {
+        var b = document.querySelector(".tocbot-toc-expand");
+        tocbot.init({
+            tocSelector: '.tocbot-list',
+            contentSelector: '.post-content',
+            headingSelector: 'h1, h2, h3, h4, h5',
+            collapseDepth: 1,
+            orderedList: false,
+            scrollSmooth: true,
+        });
+        b.setAttribute("onclick", "expand_toc()");
+        b.innerHTML = "Expand all"
+    }
+
+    function go_top() {
+        window.scrollTo(0, 0);
+    }
+
+    function go_bottom() {
+        window.scrollTo(0, document.body.scrollHeight);
+    }
+
+</script>
+    
+
+    
+    <article class="post-wrap">
+        <header class="post-header">
+            <h1 class="post-title">iReport 在jdk8不能使用 (iReport Designer cannot open in JDK 8)</h1>
+            
+                <div class="post-meta">
+                    
+                        Author: <a itemprop="author" rel="author" href="/">Darren Du</a>
+                    
+
+                    
+                        <span class="post-time">
+                        Date: <a href="#">October 26, 2016&nbsp;&nbsp;10:52:21</a>
+                        </span>
+                    
+                    
+                        <span class="post-category">
+                    Category:
+                            
+                                <a href="/categories/Error-Solution/">Error Solution</a>
+                            
+                        </span>
+                    
+                </div>
+            
+        </header>
+
+        <div class="post-content">
+            <p>在使用iReport Designer在jdk 7能够正常使用，最近升级到jdk8,发现打开就自动关闭了，检查log发现如下：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">-------------------------------------------------------------------------------</span><br><span class="line">&gt;Log Session: Wednesday, October 26, 2016 10:32:59 AM SGT</span><br><span class="line">&gt;System Info:</span><br><span class="line">Product Version = Jaspersoft iReport Designer 5.6.0</span><br><span class="line">Operating System = Windows 7 version 6.1 running on amd64</span><br><span class="line">Java; VM; Vendor = 1.8.0_101; Java HotSpot(TM) 64-Bit Server VM 25.101-b13; Oracle Corporation</span><br><span class="line">Runtime = Java(TM) SE Runtime Environment 1.8.0_101-b13</span><br><span class="line">Java Home = D:\Java\jdk1.8.0_101\jre</span><br><span class="line">System Locale; Encoding = en_SG (ireport); Cp1252</span><br><span class="line">Home Directory = C:\Users\duliu</span><br><span class="line">Current Directory = D:\Program Files\Jaspersoft\iReport-5.6.0</span><br><span class="line">User Directory = C:\Users\duliu\.ireport\5.6.0</span><br><span class="line">Installation = D:\Program Files\Jaspersoft\iReport-5.6.0\ireport</span><br><span class="line">D:\Program Files\Jaspersoft\iReport-5.6.0\ide10</span><br><span class="line">D:\Program Files\Jaspersoft\iReport-5.6.0\nb6.5</span><br><span class="line">D:\Program Files\Jaspersoft\iReport-5.6.0\platform9</span><br><span class="line">Boot &amp; Ext. Classpath = D:\Java\jdk1.8.0_101\jre\lib\resources.jar;D:\Java\jdk1.8.0_101\jre\lib\rt.jar;D:\Java\jdk1.8.0_101\jre\lib\sunrsasign.jar;D:\Java\jdk1.8.0_101\jre\lib\jsse.jar;D:\Java\jdk1.8.0_101\jre\lib\jce.jar;D:\Java\jdk1.8.0_101\jre\lib\charsets.jar;D:\Java\jdk1.8.0_101\jre\lib\jfr.jar;D:\Java\jdk1.8.0_101\jre\classes;D:\Java\jdk1.8.0_101\jre\lib\ext\access-bridge-64.jar;D:\Java\jdk1.8.0_101\jre\lib\ext\cldrdata.jar;D:\Java\jdk1.8.0_101\jre\lib\ext\cryptix-jce-api_1.2.2.jar;D:\Java\jdk1.8.0_101\jre\lib\ext\cryptix-jce-provider_1.2.2.jar;D:\Java\jdk1.8.0_101\jre\lib\ext\cryptix-message-api_1.4.2.jar;D:\Java\jdk1.8.0_101\jre\lib\ext\cryptix-openpgp-provider_1.4.2.jar;D:\Java\jdk1.8.0_101\jre\lib\ext\cryptix-pki-api_1.4.2.jar;D:\Java\jdk1.8.0_101\jre\lib\ext\dnsns.jar;D:\Java\jdk1.8.0_101\jre\lib\ext\jaccess.jar;D:\Java\jdk1.8.0_101\jre\lib\ext\jfxrt.jar;D:\Java\jdk1.8.0_101\jre\lib\ext\localedata.jar;D:\Java\jdk1.8.0_101\jre\lib\ext\nashorn.jar;D:\Java\jdk1.8.0_101\jre\lib\ext\sunec.jar;D:\Java\jdk1.8.0_101\jre\lib\ext\sunjce_provider.jar;D:\Java\jdk1.8.0_101\jre\lib\ext\sunmscapi.jar;D:\Java\jdk1.8.0_101\jre\lib\ext\sunpkcs11.jar;D:\Java\jdk1.8.0_101\jre\lib\ext\zipfs.jar</span><br><span class="line">Application Classpath = D:\Program Files\Jaspersoft\iReport-5.6.0\platform9\lib\boot.jar;D:\Program Files\Jaspersoft\iReport-5.6.0\platform9\lib\org-openide-modules.jar;D:\Program Files\Jaspersoft\iReport-5.6.0\platform9\lib\org-openide-util.jar;D:\Java\jdk1.8.0_101\lib\dt.jar;D:\Java\jdk1.8.0_101\lib\tools.jar</span><br><span class="line">Startup Classpath = D:\Program Files\Jaspersoft\iReport-5.6.0\platform9\core\core.jar;D:\Program Files\Jaspersoft\iReport-5.6.0\platform9\core\org-openide-filesystems.jar;D:\Program Files\Jaspersoft\iReport-5.6.0\platform9\core\locale\core_de.jar;D:\Program Files\Jaspersoft\iReport-5.6.0\platform9\core\locale\core_es.jar;D:\Program Files\Jaspersoft\iReport-5.6.0\platform9\core\locale\core_fr.jar;D:\Program Files\Jaspersoft\iReport-5.6.0\platform9\core\locale\core_it.jar;D:\Program Files\Jaspersoft\iReport-5.6.0\platform9\core\locale\core_ja.jar;D:\Program Files\Jaspersoft\iReport-5.6.0\platform9\core\locale\core_pl.jar;D:\Program Files\Jaspersoft\iReport-5.6.0\platform9\core\locale\core_pt_BR.jar;D:\Program Files\Jaspersoft\iReport-5.6.0\platform9\core\locale\core_sq.jar;D:\Program Files\Jaspersoft\iReport-5.6.0\platform9\core\locale\core_zh_CN.jar;D:\Program Files\Jaspersoft\iReport-5.6.0\platform9\core\locale\core_zh_TW.jar;D:\Program Files\Jaspersoft\iReport-5.6.0\platform9\core\locale\org-openide-filesystems_de.jar;D:\Program Files\Jaspersoft\iReport-5.6.0\platform9\core\locale\org-openide-filesystems_es.jar;D:\Program Files\Jaspersoft\iReport-5.6.0\platform9\core\locale\org-openide-filesystems_fr.jar;D:\Program Files\Jaspersoft\iReport-5.6.0\platform9\core\locale\org-openide-filesystems_it.jar;D:\Program Files\Jaspersoft\iReport-5.6.0\platform9\core\locale\org-openide-filesystems_ja.jar;D:\Program Files\Jaspersoft\iReport-5.6.0\platform9\core\locale\org-openide-filesystems_pl.jar;D:\Program Files\Jaspersoft\iReport-5.6.0\platform9\core\locale\org-openide-filesystems_pt_BR.jar;D:\Program Files\Jaspersoft\iReport-5.6.0\platform9\core\locale\org-openide-filesystems_sq.jar;D:\Program Files\Jaspersoft\iReport-5.6.0\platform9\core\locale\org-openide-filesystems_zh_CN.jar;D:\Program Files\Jaspersoft\iReport-5.6.0\platform9\core\locale\org-openide-filesystems_zh_TW.jar;D:\Program Files\Jaspersoft\iReport-5.6.0\ireport\core\locale\core_ireport.jar;D:\Program Files\Jaspersoft\iReport-5.6.0\nb6.5\core\locale\core_nb_de.jar;D:\Program Files\Jaspersoft\iReport-5.6.0\nb6.5\core\locale\core_nb_es.jar;D:\Program Files\Jaspersoft\iReport-5.6.0\nb6.5\core\locale\core_nb_it.jar;D:\Program Files\Jaspersoft\iReport-5.6.0\nb6.5\core\locale\core_nb_ja.jar;D:\Program Files\Jaspersoft\iReport-5.6.0\nb6.5\core\locale\core_nb_pt_BR.jar;D:\Program Files\Jaspersoft\iReport-5.6.0\nb6.5\core\locale\core_nb_zh_CN.jar;D:\Program Files\Jaspersoft\iReport-5.6.0\nb6.5\core\locale\core_nb_zh_TW.jar;D:\Program Files\Jaspersoft\iReport-5.6.0\nb6.5\core\locale\org-netbeans-upgrader_de.jar;D:\Program Files\Jaspersoft\iReport-5.6.0\nb6.5\core\locale\org-netbeans-upgrader_es.jar;D:\Program Files\Jaspersoft\iReport-5.6.0\nb6.5\core\locale\org-netbeans-upgrader_it.jar;D:\Program Files\Jaspersoft\iReport-5.6.0\nb6.5\core\locale\org-netbeans-upgrader_ja.jar;D:\Program Files\Jaspersoft\iReport-5.6.0\nb6.5\core\locale\org-netbeans-upgrader_pt_BR.jar;D:\Program Files\Jaspersoft\iReport-5.6.0\nb6.5\core\locale\org-netbeans-upgrader_zh_CN.jar;D:\Program Files\Jaspersoft\iReport-5.6.0\nb6.5\core\locale\org-netbeans-upgrader_zh_TW.jar</span><br><span class="line">-------------------------------------------------------------------------------</span><br><span class="line">java.lang.IllegalStateException: java.lang.IllegalAccessException: Class org.openide.util.WeakListenerImpl$ProxyListener can not access a member of class org.openide.filesystems.$Proxy0 with modifiers &quot;public&quot;</span><br><span class="line">at org.openide.util.WeakListenerImpl$ProxyListener.&lt;init&gt;(WeakListenerImpl.java:413)</span><br><span class="line">at org.openide.util.WeakListenerImpl.create(WeakListenerImpl.java:154)</span><br><span class="line">at org.openide.util.WeakListeners.create(WeakListeners.java:268)</span><br><span class="line">at org.openide.filesystems.MultiFileObject.&lt;init&gt;(MultiFileObject.java:116)</span><br><span class="line">at org.openide.filesystems.MultiFileObject.&lt;init&gt;(MultiFileObject.java:133)</span><br><span class="line">at org.openide.filesystems.MultiFileSystem.getMultiRoot(MultiFileSystem.java:251)</span><br><span class="line">at org.openide.filesystems.MultiFileSystem.getRoot(MultiFileSystem.java:236)</span><br><span class="line">at org.netbeans.core.startup.ModuleSystem.&lt;init&gt;(ModuleSystem.java:112)</span><br><span class="line">at org.netbeans.core.startup.Main.getModuleSystem(Main.java:155)</span><br><span class="line">at org.netbeans.core.startup.Main.start(Main.java:312)</span><br><span class="line">at org.netbeans.core.startup.TopThreadGroup.run(TopThreadGroup.java:110)</span><br><span class="line">at java.lang.Thread.run(Thread.java:745)</span><br><span class="line">Caused by: java.lang.IllegalAccessException: Class org.openide.util.WeakListenerImpl$ProxyListener can not access a member of class org.openide.filesystems.$Proxy0 with modifiers &quot;public&quot;</span><br><span class="line">at sun.reflect.Reflection.ensureMemberAccess(Reflection.java:102)</span><br><span class="line">at java.lang.reflect.AccessibleObject.slowCheckMemberAccess(AccessibleObject.java:296)</span><br><span class="line">at java.lang.reflect.AccessibleObject.checkAccess(AccessibleObject.java:288)</span><br><span class="line">at java.lang.reflect.Constructor.newInstance(Constructor.java:413)</span><br><span class="line">at org.openide.util.WeakListenerImpl$ProxyListener.&lt;init&gt;(WeakListenerImpl.java:403)</span><br><span class="line">... 11 more</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>log查询的地址：C:\Users{username}.ireport\5.6.0\var\log</p>
+<p>发现ireport 5.6 不能支持JDK 8， 那么这个我们需要手动去配置ireport使用JDK的版本，而不是用系统环境。</p>
+<h2 id="配置ireport-JDK"><a href="#配置ireport-JDK" class="headerlink" title="配置ireport JDK"></a>配置ireport JDK</h2><p>1.需要本地安装有JDK 7<br>2.修改配置文件</p>
+<p>在iReport安装目录下-&gt;etc-&gt;ireport.conf</p>
+<p>修改</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">jdkhome=&quot;/path/to/jdk&quot;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>为</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">jdkhome=&quot;&#123;JAVA_1_7_HOME&#125;&quot;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>例如：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">jdkhome=&quot;C:\Java\jdk1.7.0_79&quot;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+        </div>
+
+        
+            <section class="post-copyright">
+                
+                    <p class="copyright-item">
+                        <span>Author:</span>
+                        <span>Darren Du</span>
+                    </p>
+                
+                
+                
+                    <p class="copyright-item">
+                        <span>License:</span>
+                        <span>Copyright (c) 2019 MIT LICENSE</span>
+                    </p>
+                
+                
+
+            </section>
+        
+        <section class="post-tags">
+            <div>
+                <span>Tag(s):</span>
+                <span class="tag">
+                    
+                    
+                        <a href="/tags/Error-Solution/"># Error Solution</a>
+                    
+                        
+                </span>
+            </div>
+            <div>
+                <a href="javascript:window.history.back();">back</a>
+                <span>· </span>
+                <a href="/">home</a>
+            </div>
+        </section>
+        <section class="post-nav">
+            
+                <a class="prev" rel="prev" href="/2016/11/01/Maven%20plugin%20Jetty%20%E7%AB%AF%E5%8F%A3%E5%8F%B7%E7%9A%84%E4%BF%AE%E6%94%B9/">Maven plugin Jetty 端口号的修改</a>
+            
+            
+            <a class="next" rel="next" href="/2016/10/23/Maven%20%E5%B0%86%E8%87%AA%E5%AE%9A%E4%B9%89jar%E6%B7%BB%E5%8A%A0%E5%88%B0%E6%9C%AC%E5%9C%B0%E4%BB%93%E5%BA%93/">Maven 将自定义jar添加到本地仓库</a>
+            
+        </section>
+
+
+    </article>
+</div>
+
+        </div>
+        <footer id="footer" class="footer">
+    <div class="copyright">
+        <span>© Darren Du | Powered by <a href="https://hexo.io" target="_blank">Hexo</a> & <a href="https://github.com/Siricee/hexo-theme-Chic" target="_blank">Chic</a></span>
+    </div>
+</footer>
+
+    </div>
+</body>
+</html>

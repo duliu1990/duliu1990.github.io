@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <meta name="author" content="Darren Du">
+
+
+
+    <meta name="description" content="Dev">
+
+
+
+<title>Hibernate ORM | Du Liu&#39;s Blog</title>
+
+
+
+    <link rel="icon" href="/favicon.ico">
+
+
+
+
+    <!-- stylesheets list from _config.yml -->
+    
+    <link rel="stylesheet" href="/css/style.css">
+    
+
+
+
+    <!-- scripts list from _config.yml -->
+    
+    <script src="/js/script.js"></script>
+    
+    <script src="/js/tocbot.min.js"></script>
+    
+
+
+
+    
+    
+        
+    
+
+
+<meta name="generator" content="Hexo 6.2.0"></head>
+<body>
+    <div class="wrapper">
+        <header>
+    <nav class="navbar">
+        <div class="container">
+            <div class="navbar-header header-logo"><a href="/">Du Liu&#39;s Blog</a></div>
+            <div class="menu navbar-right">
+                
+                    <a class="menu-item" href="/archives">Posts</a>
+                
+                    <a class="menu-item" href="/category">Categories</a>
+                
+                    <a class="menu-item" href="/tag">Tags</a>
+                
+                    <a class="menu-item" href="/about">About</a>
+                
+                <input id="switch_default" type="checkbox" class="switch_default">
+                <label for="switch_default" class="toggleBtn"></label>
+            </div>
+
+        </div>
+    </nav>
+
+    
+    <nav class="navbar-mobile" id="nav-mobile">
+        <div class="container">
+            <div class="navbar-header">
+                <div>
+                    <a href="/">Du Liu&#39;s Blog</a><a id="mobile-toggle-theme">·&nbsp;Light</a>
+                </div>
+                <div class="menu-toggle" onclick="mobileBtn()">&#9776; Menu</div>
+            </div>
+            <div class="menu" id="mobile-menu">
+                
+                    <a class="menu-item" href="/archives">Posts</a>
+                
+                    <a class="menu-item" href="/category">Categories</a>
+                
+                    <a class="menu-item" href="/tag">Tags</a>
+                
+                    <a class="menu-item" href="/about">About</a>
+                
+            </div>
+        </div>
+    </nav>
+
+</header>
+<script>
+    var mobileBtn = function f() {
+        var toggleMenu = document.getElementsByClassName("menu-toggle")[0];
+        var mobileMenu = document.getElementById("mobile-menu");
+        if(toggleMenu.classList.contains("active")){
+           toggleMenu.classList.remove("active")
+            mobileMenu.classList.remove("active")
+        }else{
+            toggleMenu.classList.add("active")
+            mobileMenu.classList.add("active")
+        }
+    }
+</script>
+        <div class="main">
+            <div class="container">
+    
+    
+        <div class="post-toc">
+    <div class="tocbot-list">
+    </div>
+    <div class="tocbot-list-menu">
+        <a class="tocbot-toc-expand" onclick="expand_toc()">Expand all</a>
+        <a onclick="go_top()">Back to top</a>
+        <a onclick="go_bottom()">Go to bottom</a>
+    </div>
+</div>
+
+<script>
+    document.ready(
+        function () {
+            tocbot.init({
+                tocSelector: '.tocbot-list',
+                contentSelector: '.post-content',
+                headingSelector: 'h1, h2, h3, h4, h5',
+                collapseDepth: 1,
+                orderedList: false,
+                scrollSmooth: true,
+            })
+        }
+    )
+
+    function expand_toc() {
+        var b = document.querySelector(".tocbot-toc-expand");
+        tocbot.init({
+            tocSelector: '.tocbot-list',
+            contentSelector: '.post-content',
+            headingSelector: 'h1, h2, h3, h4, h5',
+            collapseDepth: 6,
+            orderedList: false,
+            scrollSmooth: true,
+        });
+        b.setAttribute("onclick", "collapse_toc()");
+        b.innerHTML = "Collapse all"
+    }
+
+    function collapse_toc() {
+        var b = document.querySelector(".tocbot-toc-expand");
+        tocbot.init({
+            tocSelector: '.tocbot-list',
+            contentSelector: '.post-content',
+            headingSelector: 'h1, h2, h3, h4, h5',
+            collapseDepth: 1,
+            orderedList: false,
+            scrollSmooth: true,
+        });
+        b.setAttribute("onclick", "expand_toc()");
+        b.innerHTML = "Expand all"
+    }
+
+    function go_top() {
+        window.scrollTo(0, 0);
+    }
+
+    function go_bottom() {
+        window.scrollTo(0, document.body.scrollHeight);
+    }
+
+</script>
+    
+
+    
+    <article class="post-wrap">
+        <header class="post-header">
+            <h1 class="post-title">Hibernate ORM</h1>
+            
+                <div class="post-meta">
+                    
+                        Author: <a itemprop="author" rel="author" href="/">Darren Du</a>
+                    
+
+                    
+                        <span class="post-time">
+                        Date: <a href="#">May 25, 2017&nbsp;&nbsp;12:54:26</a>
+                        </span>
+                    
+                    
+                        <span class="post-category">
+                    Category:
+                            
+                                <a href="/categories/Java-Framework/">Java Framework</a>
+                            
+                                <a href="/categories/Java-Framework/Hibernate/">Hibernate</a>
+                            
+                        </span>
+                    
+                </div>
+            
+        </header>
+
+        <div class="post-content">
+            <img src="http://static.jboss.org/hibernate/images/hibernate_logo_whitebkg_200px.png" width="200" height="50" class="alignnone" />
+
+<p><code>Hibernate ORM</code>: 是一种Java语言下的对象关系映射解决方案。它是使用GNU宽通用公共许可证发行的自由、开源的软件。它为面向对象的领域模型到传统的关系型数据库的映射，提供了一个使用方便的框架。<img src="http://docs.jboss.org/hibernate/orm/5.2/userguide/html_single/images/architecture/data_access_layers.svg" width="230" height="314" class="alignnone" /></p>
+<p>作为JPA提供商，Hibernate实现了Java Persistence API规范，JPA接口和Hibernate特定实现之间的关联可以在下图中显示：<br><img src="http://docs.jboss.org/hibernate/orm/5.2/userguide/html_single/images/architecture/JPA_Hibernate.svg" width="686" height="385" class="alignnone" /></p>
+<p><code>官网</code>：<a target="_blank" rel="noopener" href="http://hibernate.org/orm/">http://hibernate.org/orm/</a><br>Hibernate ORM User Guide 5.2 ： <a target="_blank" rel="noopener" href="https://docs.jboss.org/hibernate/orm/current/userguide/html_single/Hibernate_User_Guide.html">https://docs.jboss.org/hibernate/orm/current/userguide/html_single/Hibernate_User_Guide.html</a><br>Hibernate Getting Started Guide 5.2 ： <a target="_blank" rel="noopener" href="http://docs.jboss.org/hibernate/orm/current/quickstart/html_single/">http://docs.jboss.org/hibernate/orm/current/quickstart/html_single/</a></p>
+<p>Hibernate 5.2 或者之后的版本，所需要的JDK 1.8 和 JDBC 4.2<br>Hibernate 5.1 或者老版本，所需要的JDK 1.6 和 JDBC 4.0</p>
+<p><strong>注意</strong>： 从源码构建Hibernate 5.1或更旧版本时，由于JDK 1.6编译器中存在错误，因此需要Java 1.7。</p>
+<h2 id="Hibernate-Quick-Start"><a href="#Hibernate-Quick-Start" class="headerlink" title="Hibernate Quick Start"></a>Hibernate Quick Start</h2><p>Hibernate5 在SessionFactory 的创建与V4.x 存在一定的差别<br><a target="_blank" rel="noopener" href="https://www.proliu.com/2017/05/28/hibernate5-sessionfactory-%e7%9a%84%e8%8e%b7%e5%8f%96/">Hibernate5 SessionFactory 的获取</a></p>
+<p>Hibernate5 中使用My SQL5 作为数据库， 以注解的形式来完成增删查改<br><a target="_blank" rel="noopener" href="https://www.proliu.com/2017/05/28/(Quick%20Start)%20Java-Hibernate5-MySQL-Maven-Demo%20注解方式进行增删查改/">Java-Hibernate5-MySQL-Maven-Demo 注解方式进行增删查改</a></p>
+<h2 id="Hibernate-关系映射"><a href="#Hibernate-关系映射" class="headerlink" title="Hibernate 关系映射"></a>Hibernate 关系映射</h2><p>一对一映射（注解）<br><a target="_blank" rel="noopener" href="https://www.proliu.com/2017/06/04/hibernate5-one-to-one-%e4%b8%80%e5%af%b9%e4%b8%80-demo-annotation/">Hibernate5 One-To-One 一对一 Demo (Annotation)</a></p>
+<p>一对多映射（注解）<br><a target="_blank" rel="noopener" href="https://www.proliu.com/2017/06/05/hibernate5-one-to-many-%e4%b8%80%e5%af%b9%e5%a4%9a-demo-annotation/">Hibernate5 One-To-Many 一对多 Demo (Annotation)</a></p>
+<p>多对一映射（注解）<br><a target="_blank" rel="noopener" href="https://www.proliu.com/2017/06/05/hibernate5-one-to-many-%e5%a4%9a%e5%af%b9%e4%b8%80-demo-annotation/">Hibernate5 One-To-Many 多对一 Demo (Annotation)</a></p>
+<p>多对多映射（注解）<br><a target="_blank" rel="noopener" href="https://www.proliu.com/2017/07/16/hibernate5-many-to-many-%e5%a4%9a%e5%af%b9%e5%a4%9a-demo-annotation/">Hibernate5 Many-To-Many 多对多 Demo (Annotation)</a></p>
+
+        </div>
+
+        
+            <section class="post-copyright">
+                
+                    <p class="copyright-item">
+                        <span>Author:</span>
+                        <span>Darren Du</span>
+                    </p>
+                
+                
+                
+                    <p class="copyright-item">
+                        <span>License:</span>
+                        <span>Copyright (c) 2019 MIT LICENSE</span>
+                    </p>
+                
+                
+
+            </section>
+        
+        <section class="post-tags">
+            <div>
+                <span>Tag(s):</span>
+                <span class="tag">
+                    
+                    
+                        <a href="/tags/Java/"># Java</a>
+                    
+                        <a href="/tags/Hibernate/"># Hibernate</a>
+                    
+                        
+                </span>
+            </div>
+            <div>
+                <a href="javascript:window.history.back();">back</a>
+                <span>· </span>
+                <a href="/">home</a>
+            </div>
+        </section>
+        <section class="post-nav">
+            
+                <a class="prev" rel="prev" href="/2017/05/28/Hibernate5-SessionFactory-%E7%9A%84%E8%8E%B7%E5%8F%96/">Hibernate5 SessionFactory 的获取</a>
+            
+            
+            <a class="next" rel="next" href="/2017/05/23/Java%20XML%20DOM%20%E8%AF%BB%E5%8F%96XML%E6%96%87%E4%BB%B6/">Java XML DOM 读取XML文件</a>
+            
+        </section>
+
+
+    </article>
+</div>
+
+        </div>
+        <footer id="footer" class="footer">
+    <div class="copyright">
+        <span>© Darren Du | Powered by <a href="https://hexo.io" target="_blank">Hexo</a> & <a href="https://github.com/Siricee/hexo-theme-Chic" target="_blank">Chic</a></span>
+    </div>
+</footer>
+
+    </div>
+</body>
+</html>

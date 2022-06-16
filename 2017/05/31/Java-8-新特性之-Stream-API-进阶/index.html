@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <meta name="author" content="Darren Du">
+
+
+
+    <meta name="description" content="Dev">
+
+
+
+<title>Java 8 新特性之 Stream API 进阶 | Du Liu&#39;s Blog</title>
+
+
+
+    <link rel="icon" href="/favicon.ico">
+
+
+
+
+    <!-- stylesheets list from _config.yml -->
+    
+    <link rel="stylesheet" href="/css/style.css">
+    
+
+
+
+    <!-- scripts list from _config.yml -->
+    
+    <script src="/js/script.js"></script>
+    
+    <script src="/js/tocbot.min.js"></script>
+    
+
+
+
+    
+    
+        
+    
+
+
+<meta name="generator" content="Hexo 6.2.0"></head>
+<body>
+    <div class="wrapper">
+        <header>
+    <nav class="navbar">
+        <div class="container">
+            <div class="navbar-header header-logo"><a href="/">Du Liu&#39;s Blog</a></div>
+            <div class="menu navbar-right">
+                
+                    <a class="menu-item" href="/archives">Posts</a>
+                
+                    <a class="menu-item" href="/category">Categories</a>
+                
+                    <a class="menu-item" href="/tag">Tags</a>
+                
+                    <a class="menu-item" href="/about">About</a>
+                
+                <input id="switch_default" type="checkbox" class="switch_default">
+                <label for="switch_default" class="toggleBtn"></label>
+            </div>
+
+        </div>
+    </nav>
+
+    
+    <nav class="navbar-mobile" id="nav-mobile">
+        <div class="container">
+            <div class="navbar-header">
+                <div>
+                    <a href="/">Du Liu&#39;s Blog</a><a id="mobile-toggle-theme">·&nbsp;Light</a>
+                </div>
+                <div class="menu-toggle" onclick="mobileBtn()">&#9776; Menu</div>
+            </div>
+            <div class="menu" id="mobile-menu">
+                
+                    <a class="menu-item" href="/archives">Posts</a>
+                
+                    <a class="menu-item" href="/category">Categories</a>
+                
+                    <a class="menu-item" href="/tag">Tags</a>
+                
+                    <a class="menu-item" href="/about">About</a>
+                
+            </div>
+        </div>
+    </nav>
+
+</header>
+<script>
+    var mobileBtn = function f() {
+        var toggleMenu = document.getElementsByClassName("menu-toggle")[0];
+        var mobileMenu = document.getElementById("mobile-menu");
+        if(toggleMenu.classList.contains("active")){
+           toggleMenu.classList.remove("active")
+            mobileMenu.classList.remove("active")
+        }else{
+            toggleMenu.classList.add("active")
+            mobileMenu.classList.add("active")
+        }
+    }
+</script>
+        <div class="main">
+            <div class="container">
+    
+    
+        <div class="post-toc">
+    <div class="tocbot-list">
+    </div>
+    <div class="tocbot-list-menu">
+        <a class="tocbot-toc-expand" onclick="expand_toc()">Expand all</a>
+        <a onclick="go_top()">Back to top</a>
+        <a onclick="go_bottom()">Go to bottom</a>
+    </div>
+</div>
+
+<script>
+    document.ready(
+        function () {
+            tocbot.init({
+                tocSelector: '.tocbot-list',
+                contentSelector: '.post-content',
+                headingSelector: 'h1, h2, h3, h4, h5',
+                collapseDepth: 1,
+                orderedList: false,
+                scrollSmooth: true,
+            })
+        }
+    )
+
+    function expand_toc() {
+        var b = document.querySelector(".tocbot-toc-expand");
+        tocbot.init({
+            tocSelector: '.tocbot-list',
+            contentSelector: '.post-content',
+            headingSelector: 'h1, h2, h3, h4, h5',
+            collapseDepth: 6,
+            orderedList: false,
+            scrollSmooth: true,
+        });
+        b.setAttribute("onclick", "collapse_toc()");
+        b.innerHTML = "Collapse all"
+    }
+
+    function collapse_toc() {
+        var b = document.querySelector(".tocbot-toc-expand");
+        tocbot.init({
+            tocSelector: '.tocbot-list',
+            contentSelector: '.post-content',
+            headingSelector: 'h1, h2, h3, h4, h5',
+            collapseDepth: 1,
+            orderedList: false,
+            scrollSmooth: true,
+        });
+        b.setAttribute("onclick", "expand_toc()");
+        b.innerHTML = "Expand all"
+    }
+
+    function go_top() {
+        window.scrollTo(0, 0);
+    }
+
+    function go_bottom() {
+        window.scrollTo(0, document.body.scrollHeight);
+    }
+
+</script>
+    
+
+    
+    <article class="post-wrap">
+        <header class="post-header">
+            <h1 class="post-title">Java 8 新特性之 Stream API 进阶</h1>
+            
+                <div class="post-meta">
+                    
+                        Author: <a itemprop="author" rel="author" href="/">Darren Du</a>
+                    
+
+                    
+                        <span class="post-time">
+                        Date: <a href="#">May 31, 2017&nbsp;&nbsp;13:05:06</a>
+                        </span>
+                    
+                    
+                        <span class="post-category">
+                    Category:
+                            
+                                <a href="/categories/Java/">Java</a>
+                            
+                        </span>
+                    
+                </div>
+            
+        </header>
+
+        <div class="post-content">
+            <h2 id="关于流的基础知识"><a href="#关于流的基础知识" class="headerlink" title="关于流的基础知识"></a>关于流的基础知识</h2><p><a href="https://www.proliu.com/2017/05/30/java-8-%e6%96%b0%e7%89%b9%e6%80%a7%e4%b9%8b-stream-api-%e5%9f%ba%e7%a1%80/" target="_blank">Java 8 新特性之 Stream API 基础</a></p>
+<h2 id="流的生成"><a href="#流的生成" class="headerlink" title="流的生成"></a>流的生成</h2><p>1.从数组</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//从数组</span></span><br><span class="line">String[] arr = &#123; <span class="string">&quot;program&quot;</span>, <span class="string">&quot;creek&quot;</span>, <span class="string">&quot;program&quot;</span>, <span class="string">&quot;creek&quot;</span>, <span class="string">&quot;java&quot;</span>&#125;;</span><br><span class="line">Stream&lt;String&gt;stream = Stream.of(arr);</span><br><span class="line"></span><br><span class="line">Stream&lt;String&gt;stream2 = Stream.of(<span class="string">&quot;program&quot;</span>, <span class="string">&quot;creek&quot;</span>, <span class="string">&quot;program&quot;</span>, <span class="string">&quot;creek&quot;</span>, <span class="string">&quot;java&quot;</span>);</span><br></pre></td></tr></table></figure>
+
+<p>2.从集合</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//从集合里面</span></span><br><span class="line">List&lt;String&gt;strings = Arrays.asList(<span class="string">&quot;abc&quot;</span>, <span class="string">&quot;cbc&quot;</span>, <span class="string">&quot;bbc&quot;</span>, <span class="string">&quot;cbc&quot;</span>, <span class="string">&quot;uas&quot;</span>,<span class="string">&quot;cctv&quot;</span>, <span class="string">&quot;cnc&quot;</span>);</span><br><span class="line"></span><br><span class="line">Stream&lt;String&gt;listStream = strings.stream();</span><br></pre></td></tr></table></figure>
+
+<p>3.使用Stream.generate()</p>
+<p>static <T> Stream<T> generate(Supplier<T> s) 返回无限顺序无序流，其中每个元素由提供的供应商生成。 这适合于产生恒定流，随机元素流等。通过实现 Supplier 接口,把 Supplier 实例传递给 Stream.generate() 生成的 Stream，默认是串行（相对 parallel 而言）但无序的（相对 ordered 而言）。由于它是无限的，在管道中，必须利用 limit 之类的操作限制 Stream 大小。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//Stream.generate()</span></span><br><span class="line"><span class="type">Random</span> <span class="variable">seed</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">Random</span>();</span><br><span class="line"></span><br><span class="line">Supplier&lt;Integer&gt;random = seed::nextInt; <span class="comment">//seed.nextInt</span></span><br><span class="line"></span><br><span class="line">Stream.generate(random).limit(<span class="number">10</span>).forEach(System.out::println);</span><br><span class="line"></span><br><span class="line"><span class="comment">//使用IntStream</span></span><br><span class="line">IntStream.generate(() -&gt;(<span class="type">int</span>) (System.nanoTime() % <span class="number">100</span>)).</span><br><span class="line">limit(<span class="number">10</span>).forEach(System.out::println);</span><br></pre></td></tr></table></figure>
+
+<p>4.使用Stream.iterate()<br>static <T> Stream<T> iterate(T seed, UnaryOperator<T> f) 返回通过将函数f迭代应用于初始元素种子产生的无限顺序有序流，产生由种子f（种子），f（f（种子））等组成的流。<br>Stream中的第一个元素（位置0）将是提供的种子。 对于n&gt; 0，位置n处的元素将是将函数f应用于位置n-1处的元素的结果。</p>
+<p>iterate 跟 reduce 操作很像，接受一个种子值，和一个 UnaryOperator（例如 f）。然后种子值成为 Stream 的第一个元素，f(seed) 为第二个，f(f(seed)) 第三个，以此类推。</p>
+<p>注意：与 Stream.generate 相仿，在 iterate 时候管道必须有 limit 这样的操作来限制 Stream 大小。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//Stream.iterate() 生产等差数列</span></span><br><span class="line">Stream.iterate(<span class="number">0</span>, n -&gt;n + <span class="number">3</span>).limit(<span class="number">10</span>). forEach(x -&gt;System.out.print(x + <span class="string">&quot; &quot;</span>));</span><br></pre></td></tr></table></figure>
+
+<p>完整实例代码：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> com.devnp.java8.stream;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> java.util.Arrays;</span><br><span class="line"><span class="keyword">import</span> java.util.List;</span><br><span class="line"><span class="keyword">import</span> java.util.Random;</span><br><span class="line"><span class="keyword">import</span> java.util.function.Supplier;</span><br><span class="line"><span class="keyword">import</span> java.util.stream.IntStream;</span><br><span class="line"><span class="keyword">import</span> java.util.stream.Stream;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">CreateStreamDemo</span> &#123;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String[] args)</span> &#123;</span><br><span class="line">		<span class="comment">// TODO Auto-generated method stub</span></span><br><span class="line">		</span><br><span class="line">		<span class="comment">//从数组</span></span><br><span class="line">		String[] arr = &#123; <span class="string">&quot;program&quot;</span>, <span class="string">&quot;creek&quot;</span>, <span class="string">&quot;program&quot;</span>, <span class="string">&quot;creek&quot;</span>, <span class="string">&quot;java&quot;</span>&#125;;</span><br><span class="line">		Stream&lt;String&gt;stream = Stream.of(arr);</span><br><span class="line">		</span><br><span class="line">		Stream&lt;String&gt;stream2 = Stream.of(<span class="string">&quot;program&quot;</span>, <span class="string">&quot;creek&quot;</span>, <span class="string">&quot;program&quot;</span>, <span class="string">&quot;creek&quot;</span>, <span class="string">&quot;java&quot;</span>);</span><br><span class="line">		</span><br><span class="line">		<span class="comment">//从集合里面</span></span><br><span class="line">		List&lt;String&gt;strings = Arrays.asList(<span class="string">&quot;abc&quot;</span>, <span class="string">&quot;cbc&quot;</span>, <span class="string">&quot;bbc&quot;</span>, <span class="string">&quot;cbc&quot;</span>, <span class="string">&quot;uas&quot;</span>,<span class="string">&quot;cctv&quot;</span>, <span class="string">&quot;cnc&quot;</span>);</span><br><span class="line">		</span><br><span class="line">		Stream&lt;String&gt;listStream = strings.stream();</span><br><span class="line">		</span><br><span class="line">		<span class="comment">//Stream.generate()</span></span><br><span class="line">		<span class="type">Random</span> <span class="variable">seed</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">Random</span>();</span><br><span class="line">		</span><br><span class="line">		Supplier&lt;Integer&gt;random = seed::nextInt; <span class="comment">//seed.nextInt</span></span><br><span class="line">		</span><br><span class="line">		Stream.generate(random).limit(<span class="number">10</span>).forEach(System.out::println);</span><br><span class="line">		</span><br><span class="line">		<span class="comment">//使用IntStream</span></span><br><span class="line">		IntStream.generate(() -&gt;(<span class="type">int</span>) (System.nanoTime() % <span class="number">100</span>)).</span><br><span class="line">		limit(<span class="number">10</span>).forEach(System.out::println);</span><br><span class="line">		</span><br><span class="line">		<span class="comment">//Stream.iterate() 生产等差数列</span></span><br><span class="line">		Stream.iterate(<span class="number">0</span>, n -&gt;n + <span class="number">3</span>).limit(<span class="number">10</span>). forEach(x -&gt;System.out.print(x + <span class="string">&quot; &quot;</span>));</span><br><span class="line"></span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="用-Collectors-来进行-reduction-操作"><a href="#用-Collectors-来进行-reduction-操作" class="headerlink" title="用 Collectors 来进行 reduction 操作"></a>用 Collectors 来进行 reduction 操作</h2><p>java.util.stream.Collectors 收集者实施各种有用的还原操作，如将元素累积到收藏中，根据各种标准汇总元素等,主要作用就是辅助进行各类有用的 reduction 操作.</p>
+<p><em>groupingBy/partitioningBy</em></p>
+<p>例如统计字符串出现的次数：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">List&lt;String&gt;strings = Arrays.asList(<span class="string">&quot;abc&quot;</span>, <span class="string">&quot;cbc&quot;</span>, <span class="string">&quot;abc&quot;</span>, <span class="string">&quot;cbc&quot;</span>, <span class="string">&quot;uas&quot;</span>,<span class="string">&quot;cctv&quot;</span>, <span class="string">&quot;cnc&quot;</span>);</span><br><span class="line"></span><br><span class="line">Map&lt;String, Long&gt;result = strings.stream().collect(Collectors.groupingBy(Function.identity(), Collectors.counting()));</span><br></pre></td></tr></table></figure>
+
+<p>例如找出“abc”字符串：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">List&lt;String&gt;strings = Arrays.asList(<span class="string">&quot;abc&quot;</span>, <span class="string">&quot;cbc&quot;</span>, <span class="string">&quot;abc&quot;</span>, <span class="string">&quot;cbc&quot;</span>, <span class="string">&quot;uas&quot;</span>,<span class="string">&quot;cctv&quot;</span>, <span class="string">&quot;cnc&quot;</span>);</span><br><span class="line">Map&lt;Boolean, List&lt;String&amp;gt;&gt;result2 = strings.stream().collect(Collectors.partitioningBy(p -&gt;p.equals(<span class="string">&quot;abc&quot;</span>)));</span><br></pre></td></tr></table></figure>
+
+
+<p>完整代码：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> com.devnp.java8.stream;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> java.util.Arrays;</span><br><span class="line"><span class="keyword">import</span> java.util.List;</span><br><span class="line"><span class="keyword">import</span> java.util.Map;</span><br><span class="line"><span class="keyword">import</span> java.util.function.Function;</span><br><span class="line"><span class="keyword">import</span> java.util.stream.Collectors;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">CollectorsDemo</span> &#123;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String[] args)</span> &#123;</span><br><span class="line">		<span class="comment">// TODO Auto-generated method stub</span></span><br><span class="line"></span><br><span class="line">		List&lt;String&gt;strings = Arrays.asList(<span class="string">&quot;abc&quot;</span>, <span class="string">&quot;cbc&quot;</span>, <span class="string">&quot;abc&quot;</span>, <span class="string">&quot;cbc&quot;</span>, <span class="string">&quot;uas&quot;</span>,<span class="string">&quot;cctv&quot;</span>, <span class="string">&quot;cnc&quot;</span>);</span><br><span class="line">		</span><br><span class="line">		Map&lt;String, Long&gt;result = strings.stream().collect(Collectors.groupingBy(Function.identity(), Collectors.counting()));</span><br><span class="line">		</span><br><span class="line">		System.out.println(result);</span><br><span class="line">		</span><br><span class="line">		System.out.println(<span class="string">&quot;---------------&quot;</span>);</span><br><span class="line">		</span><br><span class="line">		Map&lt;Boolean, List&lt;String&amp;gt;&gt;result2 = strings.stream().collect(Collectors.partitioningBy(p -&gt;p.equals(<span class="string">&quot;abc&quot;</span>)));</span><br><span class="line">		</span><br><span class="line">		System.out.println(result2);</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>运行结果：<br>[code lang=”text”]<br>{abc=2, cbc=2, uas=1, cnc=1, cctv=1}</p>
+<hr>
+<p>{false=[cbc, cbc, uas, cctv, cnc], true=[abc, abc]}</p>
+<p>```</p>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><ol>
+<li>Stream 不是数据结构，没有内部存储，它只是用操作管道从 source（数据结构、数组、generator function、IO channel）抓取数据。</li>
+<li>Stream 也绝不修改自己所封装的底层数据结构的数据。</li>
+<li>Stream 的操作必须以 lambda 表达式为参数</li>
+<li>不支持索引访问</li>
+<li>惰性化</li>
+<li>Stream 操作是向后延迟的，一直到它弄清楚了最后需要多少数据才会开始。</li>
+<li>当一个 Stream 是并行化的，就不需要再写多线程代码，所有对它的操作会自动并行进行的。</li>
+<li>集合有固定大小，Stream 则不必, 可以是无限的.</li>
+</ol>
+
+        </div>
+
+        
+            <section class="post-copyright">
+                
+                    <p class="copyright-item">
+                        <span>Author:</span>
+                        <span>Darren Du</span>
+                    </p>
+                
+                
+                
+                    <p class="copyright-item">
+                        <span>License:</span>
+                        <span>Copyright (c) 2019 MIT LICENSE</span>
+                    </p>
+                
+                
+
+            </section>
+        
+        <section class="post-tags">
+            <div>
+                <span>Tag(s):</span>
+                <span class="tag">
+                    
+                    
+                        <a href="/tags/Java/"># Java</a>
+                    
+                        <a href="/tags/Java8/"># Java8</a>
+                    
+                        
+                </span>
+            </div>
+            <div>
+                <a href="javascript:window.history.back();">back</a>
+                <span>· </span>
+                <a href="/">home</a>
+            </div>
+        </section>
+        <section class="post-nav">
+            
+                <a class="prev" rel="prev" href="/2017/06/04/Hibernate5-One-To-Many-%E4%B8%80%E5%AF%B9%E5%A4%9A-Demo-Annotation/">Hibernate5 One-To-Many 一对多 Demo (Annotation)</a>
+            
+            
+            <a class="next" rel="next" href="/2017/05/30/Java-8-%E6%96%B0%E7%89%B9%E6%80%A7%E4%B9%8B-Stream-API-%E5%9F%BA%E7%A1%80/">Java 8 新特性之 Stream API 基础</a>
+            
+        </section>
+
+
+    </article>
+</div>
+
+        </div>
+        <footer id="footer" class="footer">
+    <div class="copyright">
+        <span>© Darren Du | Powered by <a href="https://hexo.io" target="_blank">Hexo</a> & <a href="https://github.com/Siricee/hexo-theme-Chic" target="_blank">Chic</a></span>
+    </div>
+</footer>
+
+    </div>
+</body>
+</html>

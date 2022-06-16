@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <meta name="author" content="Darren Du">
+
+
+
+    <meta name="description" content="Dev">
+
+
+
+<title>Spring Boot Email 邮件发送 | Du Liu&#39;s Blog</title>
+
+
+
+    <link rel="icon" href="/favicon.ico">
+
+
+
+
+    <!-- stylesheets list from _config.yml -->
+    
+    <link rel="stylesheet" href="/css/style.css">
+    
+
+
+
+    <!-- scripts list from _config.yml -->
+    
+    <script src="/js/script.js"></script>
+    
+    <script src="/js/tocbot.min.js"></script>
+    
+
+
+
+    
+    
+        
+    
+
+
+<meta name="generator" content="Hexo 6.2.0"></head>
+<body>
+    <div class="wrapper">
+        <header>
+    <nav class="navbar">
+        <div class="container">
+            <div class="navbar-header header-logo"><a href="/">Du Liu&#39;s Blog</a></div>
+            <div class="menu navbar-right">
+                
+                    <a class="menu-item" href="/archives">Posts</a>
+                
+                    <a class="menu-item" href="/category">Categories</a>
+                
+                    <a class="menu-item" href="/tag">Tags</a>
+                
+                    <a class="menu-item" href="/about">About</a>
+                
+                <input id="switch_default" type="checkbox" class="switch_default">
+                <label for="switch_default" class="toggleBtn"></label>
+            </div>
+
+        </div>
+    </nav>
+
+    
+    <nav class="navbar-mobile" id="nav-mobile">
+        <div class="container">
+            <div class="navbar-header">
+                <div>
+                    <a href="/">Du Liu&#39;s Blog</a><a id="mobile-toggle-theme">·&nbsp;Light</a>
+                </div>
+                <div class="menu-toggle" onclick="mobileBtn()">&#9776; Menu</div>
+            </div>
+            <div class="menu" id="mobile-menu">
+                
+                    <a class="menu-item" href="/archives">Posts</a>
+                
+                    <a class="menu-item" href="/category">Categories</a>
+                
+                    <a class="menu-item" href="/tag">Tags</a>
+                
+                    <a class="menu-item" href="/about">About</a>
+                
+            </div>
+        </div>
+    </nav>
+
+</header>
+<script>
+    var mobileBtn = function f() {
+        var toggleMenu = document.getElementsByClassName("menu-toggle")[0];
+        var mobileMenu = document.getElementById("mobile-menu");
+        if(toggleMenu.classList.contains("active")){
+           toggleMenu.classList.remove("active")
+            mobileMenu.classList.remove("active")
+        }else{
+            toggleMenu.classList.add("active")
+            mobileMenu.classList.add("active")
+        }
+    }
+</script>
+        <div class="main">
+            <div class="container">
+    
+    
+        <div class="post-toc">
+    <div class="tocbot-list">
+    </div>
+    <div class="tocbot-list-menu">
+        <a class="tocbot-toc-expand" onclick="expand_toc()">Expand all</a>
+        <a onclick="go_top()">Back to top</a>
+        <a onclick="go_bottom()">Go to bottom</a>
+    </div>
+</div>
+
+<script>
+    document.ready(
+        function () {
+            tocbot.init({
+                tocSelector: '.tocbot-list',
+                contentSelector: '.post-content',
+                headingSelector: 'h1, h2, h3, h4, h5',
+                collapseDepth: 1,
+                orderedList: false,
+                scrollSmooth: true,
+            })
+        }
+    )
+
+    function expand_toc() {
+        var b = document.querySelector(".tocbot-toc-expand");
+        tocbot.init({
+            tocSelector: '.tocbot-list',
+            contentSelector: '.post-content',
+            headingSelector: 'h1, h2, h3, h4, h5',
+            collapseDepth: 6,
+            orderedList: false,
+            scrollSmooth: true,
+        });
+        b.setAttribute("onclick", "collapse_toc()");
+        b.innerHTML = "Collapse all"
+    }
+
+    function collapse_toc() {
+        var b = document.querySelector(".tocbot-toc-expand");
+        tocbot.init({
+            tocSelector: '.tocbot-list',
+            contentSelector: '.post-content',
+            headingSelector: 'h1, h2, h3, h4, h5',
+            collapseDepth: 1,
+            orderedList: false,
+            scrollSmooth: true,
+        });
+        b.setAttribute("onclick", "expand_toc()");
+        b.innerHTML = "Expand all"
+    }
+
+    function go_top() {
+        window.scrollTo(0, 0);
+    }
+
+    function go_bottom() {
+        window.scrollTo(0, document.body.scrollHeight);
+    }
+
+</script>
+    
+
+    
+    <article class="post-wrap">
+        <header class="post-header">
+            <h1 class="post-title">Spring Boot Email 邮件发送</h1>
+            
+                <div class="post-meta">
+                    
+                        Author: <a itemprop="author" rel="author" href="/">Darren Du</a>
+                    
+
+                    
+                        <span class="post-time">
+                        Date: <a href="#">May 7, 2018&nbsp;&nbsp;19:33:53</a>
+                        </span>
+                    
+                    
+                        <span class="post-category">
+                    Category:
+                            
+                                <a href="/categories/Java-Framework/">Java Framework</a>
+                            
+                                <a href="/categories/Java-Framework/Spring-Boot/">Spring Boot</a>
+                            
+                        </span>
+                    
+                </div>
+            
+        </header>
+
+        <div class="post-content">
+            <p>在Spring Boot中来发送邮件是很方便的事情，只需要添加对应的依赖jar,然后配置邮箱服务器地址和账号就可以实现邮件的发送。本示例使用JDK1.8, Spring Boot 1.5.9.RELEASE来演示邮件的发送。</p>
+<h2 id="1-创建项目"><a href="#1-创建项目" class="headerlink" title="1.创建项目"></a>1.创建项目</h2><p>可以通过 <a href="http://start.spring.io/" rel="noopener" target="_blank">http://start.spring.io/</a> 来快速创建项目，选择mail模块。或者手动创建，并添加对应的依赖。<br>所需的mail jar:</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.springframework.boot<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>spring-boot-starter-mail<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+
+<h2 id="2-配置信息"><a href="#2-配置信息" class="headerlink" title="2.配置信息"></a>2.配置信息</h2><p>本测试实例以阿里的邮箱来演示，不同邮箱服务器的host需要修改：</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">spring:</span></span><br><span class="line">  <span class="attr">mail:</span></span><br><span class="line">    <span class="attr">properties:</span></span><br><span class="line">      <span class="attr">mail:</span></span><br><span class="line">        <span class="attr">smtp:</span></span><br><span class="line">          <span class="attr">connectiontimeout:</span> <span class="number">5000</span></span><br><span class="line">          <span class="attr">timeout:</span> <span class="number">3000</span></span><br><span class="line">          <span class="attr">writetimeout:</span> <span class="number">5000</span></span><br><span class="line">          <span class="attr">auth:</span> <span class="literal">true</span></span><br><span class="line">          <span class="attr">starttls:</span></span><br><span class="line">            <span class="attr">enable:</span> <span class="literal">true</span></span><br><span class="line">    <span class="attr">efault-encoding:</span> <span class="string">UTF-8</span>  <span class="comment">#设置编码 防止乱码</span></span><br><span class="line">    <span class="attr">protocol:</span> <span class="string">smtp</span></span><br><span class="line">    <span class="attr">host:</span> <span class="string">smtp.mxhichina.com</span></span><br><span class="line">    <span class="attr">port:</span> <span class="number">25</span></span><br><span class="line">    <span class="attr">username:</span> <span class="comment">#邮箱帐号</span></span><br><span class="line">    <span class="attr">password:</span> <span class="comment">#邮箱密码</span></span><br><span class="line">  <span class="attr">messages:</span></span><br><span class="line">    <span class="attr">encoding:</span> <span class="string">UTF-8</span></span><br><span class="line">    <span class="attr">basename:</span> <span class="string">com/devnp/message/MailMessage</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="3-发送一般邮件"><a href="#3-发送一般邮件" class="headerlink" title="3.发送一般邮件"></a>3.发送一般邮件</h2><p>发送邮件使用 <strong>org.springframework.mail.javamail.JavaMailSender</strong> 来完成, 首先注入<em>JavaMailSender</em>，完整代码 <em><a href="https://github.com/duliu1990/spring-boot-demo/blob/master/spring-boot-email-demo/src/main/java/com/devnp/springbootemaildemo/email/SimpleMailSend.java" rel="noopener" target="_blank">com.devnp.springbootemaildemo.email.SimpleMailSend.java</a></em>：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Autowired</span></span><br><span class="line"><span class="keyword">private</span> JavaMailSender mailSender;</span><br><span class="line"></span><br><span class="line"><span class="meta">@Value(&quot;$&#123;spring.mail.username&#125;&quot;)</span></span><br><span class="line"><span class="keyword">private</span> String sender; <span class="comment">//发送地址</span></span><br><span class="line"></span><br><span class="line"><span class="meta">@Autowired</span></span><br><span class="line"><span class="keyword">private</span> ResourceLoader resourceLoader;</span><br></pre></td></tr></table></figure>
+
+
+<h3 id="发送给单一的用户："><a href="#发送给单一的用户：" class="headerlink" title="发送给单一的用户："></a>发送给单一的用户：</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 发送给单一的用户</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> toMail</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> content</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">simpleSend</span><span class="params">(String toMail, String subject, String content)</span> &#123;</span><br><span class="line">	<span class="type">SimpleMailMessage</span> <span class="variable">message</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">SimpleMailMessage</span>(); </span><br><span class="line">	</span><br><span class="line">	message.setTo(toMail);</span><br><span class="line">	message.setSubject(subject);</span><br><span class="line">	message.setText(content);</span><br><span class="line">	message.setFrom(sender); <span class="comment">//确保发送邮件地址与认证地址，如果不一致， 一些邮箱服务器会退信</span></span><br><span class="line">	</span><br><span class="line">	<span class="built_in">this</span>.mailSender.send(message);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="发送-给多个地址，并且抄送多人，同时隐身抄送给多个人："><a href="#发送-给多个地址，并且抄送多人，同时隐身抄送给多个人：" class="headerlink" title="发送 给多个地址，并且抄送多人，同时隐身抄送给多个人："></a>发送 给多个地址，并且抄送多人，同时隐身抄送给多个人：</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 发送 给多个地址，并且抄送多人，同时隐身抄送给多个人</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> toMails 收件人地址</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> ccMails 抄送人地址</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> bccMails 隐形抄送地址 不会出现在地址栏</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> subject 标题</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> content 内容</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">simpleSend</span><span class="params">(String [] toMails, String [] ccMails, String [] bccMails, String subject, String content)</span> &#123;</span><br><span class="line">	<span class="type">SimpleMailMessage</span> <span class="variable">message</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">SimpleMailMessage</span>(); </span><br><span class="line">	</span><br><span class="line">	message.setTo(toMails);</span><br><span class="line">	message.setCc(ccMails);</span><br><span class="line">	message.setBcc(bccMails);</span><br><span class="line">	message.setSubject(subject);</span><br><span class="line">	message.setText(content);</span><br><span class="line">	message.setFrom(sender); <span class="comment">//确保发送邮件地址与认证地址，如果不一致， 一些邮箱服务器会退信</span></span><br><span class="line">	</span><br><span class="line">	<span class="built_in">this</span>.mailSender.send(message);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h5>使用 MimeMessagePreparator：</h5>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 使用 MimeMessagePreparator  回掉接口來发送html 同时 也可以使用 MimeMessageHelper</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> toMail</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> subject</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> content html</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">sendWithHtml</span><span class="params">(String toMail, String subject, String content)</span> &#123;</span><br><span class="line">	</span><br><span class="line">	<span class="type">MimeMessagePreparator</span> <span class="variable">preparator</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">MimeMessagePreparator</span>() &#123;</span><br><span class="line">        <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">prepare</span><span class="params">(MimeMessage mimeMessage)</span> <span class="keyword">throws</span> Exception &#123;</span><br><span class="line">            mimeMessage.setRecipient(Message.RecipientType.TO, <span class="keyword">new</span> <span class="title class_">InternetAddress</span>(toMail));</span><br><span class="line">            mimeMessage.setSubject(subject);</span><br><span class="line">            mimeMessage.setFrom(<span class="keyword">new</span> <span class="title class_">InternetAddress</span>(sender));</span><br><span class="line">            mimeMessage.setText(content, StandardCharsets.UTF_8.name(), <span class="string">&quot;html&quot;</span>);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;;</span><br><span class="line"></span><br><span class="line">    <span class="built_in">this</span>.mailSender.send(preparator);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="4-发送带有附件的邮件："><a href="#4-发送带有附件的邮件：" class="headerlink" title="4.发送带有附件的邮件："></a>4.发送带有附件的邮件：</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 发送带有附件的邮件</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> toMail</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> subject</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> content</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> files</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@throws</span> MessagingException </span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">sendWithAttachemnt</span><span class="params">(String toMail, String subject, String content, List&lt;String&gt; files)</span> <span class="keyword">throws</span> MessagingException&#123;</span><br><span class="line">	<span class="type">MimeMessage</span> <span class="variable">message</span> <span class="operator">=</span> mailSender.createMimeMessage();</span><br><span class="line">	</span><br><span class="line">	<span class="type">MimeMessageHelper</span> <span class="variable">helper</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">MimeMessageHelper</span>(message, <span class="literal">true</span>);</span><br><span class="line">	</span><br><span class="line">	helper.setTo(toMail);</span><br><span class="line">	helper.setSubject(subject);</span><br><span class="line">	helper.setText(content); <span class="comment">//支持发送html setText(String text, boolean html)</span></span><br><span class="line">	helper.setFrom(sender);</span><br><span class="line">	</span><br><span class="line">	<span class="keyword">for</span> (<span class="type">int</span> <span class="variable">i</span> <span class="operator">=</span> <span class="number">0</span>; i &lt; files.size(); i++) &#123;</span><br><span class="line">		</span><br><span class="line">		<span class="type">Resource</span> <span class="variable">resource</span> <span class="operator">=</span>  resourceLoader.getResource(files.get(i));</span><br><span class="line">				</span><br><span class="line">		helper.addAttachment(resource.getFilename() , resource);</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line">	<span class="built_in">this</span>.mailSender.send(message);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="5-发送模板邮件"><a href="#5-发送模板邮件" class="headerlink" title="5.发送模板邮件"></a>5.发送模板邮件</h2><p>使用模板来发送邮件，和普通邮件的不同之处在于需要设计模板，然后使用模板引擎对模板进行渲染，渲染的之后的数据在发送，以<a href="https://www.thymeleaf.org" rel="noopener" target="_blank">thymeleaf</a>为例：<br>首先添加对应的依赖jar:</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.springframework.boot<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>spring-boot-starter-thymeleaf<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>在Spring Boot 1.5.9.RELEASE的版本中，默认引入的thymeleaf的版本为2.1.6.RELEASE，为了适应text形式的模板，所以需要将thymeleaf提高到3.X，所以在properties中增加如下：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">&lt;thymeleaf.version&gt;3.0.2.RELEASE&lt;/thymeleaf.version&gt;</span><br><span class="line">&lt;thymeleaf-layout-dialect.version&gt;2.1.1&lt;/thymeleaf-layout-dialect.version&gt;</span><br></pre></td></tr></table></figure>
+
+<h3 id="1-模板配置"><a href="#1-模板配置" class="headerlink" title="1.模板配置"></a>1.模板配置</h3><p>Spring Boot 默认有配置模板引擎和解析器，这里为了不冲突默认的，单独来配置模板引擎和解析器, 完整配置代码 <em><a href="https://github.com/duliu1990/spring-boot-demo/blob/master/spring-boot-email-demo/src/main/java/com/devnp/springbootemaildemo/email/config/SpringMailConfig.java" rel="noopener" target="_blank">com.devnp.springbootemaildemo.email.config.SpringMailConfig</a></em>：</p>
+<p><strong>HTML 模板引擎和解析器：</strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Bean</span></span><br><span class="line"><span class="keyword">public</span> TemplateEngine <span class="title function_">htmlEmailTemplateEngine</span><span class="params">()</span> &#123;</span><br><span class="line">    <span class="keyword">final</span> <span class="type">SpringTemplateEngine</span> <span class="variable">templateEngine</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">SpringTemplateEngine</span>();</span><br><span class="line">    <span class="comment">// Resolver for TEXT emails</span></span><br><span class="line">    <span class="comment">//templateEngine.addTemplateResolver(textTemplateResolver());</span></span><br><span class="line">    <span class="comment">// Resolver for HTML emails (except the editable one)</span></span><br><span class="line">    templateEngine.addTemplateResolver(htmlTemplateResolver());</span><br><span class="line">    <span class="comment">// Resolver for HTML editable emails (which will be treated as a String)</span></span><br><span class="line">    <span class="comment">//templateEngine.addTemplateResolver(stringTemplateResolver());</span></span><br><span class="line">    <span class="comment">// Message source, internationalization specific to emails</span></span><br><span class="line">    <span class="comment">//templateEngine.setTemplateEngineMessageSource(emailMessageSource());</span></span><br><span class="line">    </span><br><span class="line">    <span class="keyword">return</span> templateEngine;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * html 模板解析器</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@return</span></span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">private</span> ITemplateResolver <span class="title function_">htmlTemplateResolver</span><span class="params">()</span> &#123;</span><br><span class="line">    <span class="keyword">final</span> <span class="type">ClassLoaderTemplateResolver</span> <span class="variable">templateResolver</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">ClassLoaderTemplateResolver</span>();</span><br><span class="line">    <span class="comment">//templateResolver.setOrder(Integer.valueOf(2));</span></span><br><span class="line">    <span class="comment">//templateResolver.setResolvablePatterns(Collections.singleton(&quot;html/*&quot;));</span></span><br><span class="line">    templateResolver.setPrefix(<span class="string">&quot;/templates/&quot;</span>);</span><br><span class="line">    templateResolver.setSuffix(<span class="string">&quot;.html&quot;</span>);</span><br><span class="line">    templateResolver.setTemplateMode(TemplateMode.HTML);</span><br><span class="line">    templateResolver.setCharacterEncoding(StandardCharsets.UTF_8.name());</span><br><span class="line">    templateResolver.setCacheable(<span class="literal">false</span>);</span><br><span class="line">    <span class="keyword">return</span> templateResolver;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><strong>TEXT 模板引擎和解析器：</strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Bean</span></span><br><span class="line"><span class="keyword">public</span> TemplateEngine <span class="title function_">textEmailTemplateEngine</span><span class="params">()</span> &#123;</span><br><span class="line">    <span class="keyword">final</span> <span class="type">SpringTemplateEngine</span> <span class="variable">templateEngine</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">SpringTemplateEngine</span>();</span><br><span class="line">    <span class="comment">// Resolver for TEXT emails</span></span><br><span class="line">    templateEngine.addTemplateResolver(textTemplateResolver());</span><br><span class="line">    <span class="comment">// Resolver for HTML emails (except the editable one)</span></span><br><span class="line">    <span class="comment">//templateEngine.addTemplateResolver(htmlTemplateResolver());</span></span><br><span class="line">    <span class="comment">// Resolver for HTML editable emails (which will be treated as a String)</span></span><br><span class="line">   <span class="comment">// templateEngine.addTemplateResolver(stringTemplateResolver());</span></span><br><span class="line">    <span class="comment">// Message source, internationalization specific to emails</span></span><br><span class="line">    <span class="comment">//templateEngine.setTemplateEngineMessageSource(emailMessageSource());</span></span><br><span class="line">    </span><br><span class="line">    <span class="keyword">return</span> templateEngine;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * TEXT 模板解析器</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@return</span></span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">private</span> ITemplateResolver <span class="title function_">textTemplateResolver</span><span class="params">()</span> &#123;</span><br><span class="line">    <span class="keyword">final</span> <span class="type">ClassLoaderTemplateResolver</span>  <span class="variable">templateResolver</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">ClassLoaderTemplateResolver</span>();</span><br><span class="line">    <span class="comment">//templateResolver.setOrder(Integer.valueOf(1)); //优先级</span></span><br><span class="line">    <span class="comment">//templateResolver.setResolvablePatterns(Collections.singleton(&quot;text/*&quot;)); //文件类型</span></span><br><span class="line">    templateResolver.setPrefix(<span class="string">&quot;/templates/&quot;</span>); <span class="comment">//模板文件开始</span></span><br><span class="line">    templateResolver.setSuffix(<span class="string">&quot;.txt&quot;</span>); <span class="comment">//模板文件结尾</span></span><br><span class="line">    templateResolver.setTemplateMode(TemplateMode.TEXT); <span class="comment">//模板模型</span></span><br><span class="line">    templateResolver.setCharacterEncoding(StandardCharsets.UTF_8.name()); <span class="comment">//编码</span></span><br><span class="line">    templateResolver.setCacheable(<span class="literal">false</span>); <span class="comment">//缓存</span></span><br><span class="line">    <span class="keyword">return</span> templateResolver;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="2-html模板"><a href="#2-html模板" class="headerlink" title="2.html模板"></a>2.html模板</h3><p><em>templates\mail\html\mail-hello.html</em></p>
+<p>[code lang=”html”]<br><!DOCTYPE html></p>
+<html xmlns:th="http://www.thymeleaf.org">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  </head>
+  <body>
+      <div>
+       <img src="logo.png" th:src="|cid:${imageResourceName}|" alt="http://www.denvp.com" style="display: block;" />
+      </div>
+    <div>
+        <span th:text="#{msg.hello}"></span> <span th:text="${name}"></span>,
+    </div>
+
+<pre><code>&lt;div&gt;
+    &lt;p th:text=&quot;#&#123;msg.content&#125;&quot;&gt;&lt;/p&gt;
+&lt;/div&gt;
+
+&lt;div&gt;
+    &lt;p th:text=&quot;#&#123;msg.thank&#125;&quot;&gt;&lt;/p&gt;
+    &lt;em&gt;&lt;a href=&quot;http://www.denvp.com&quot;&gt;www.denvp.com&lt;/a&gt;&lt;/em&gt;
+&lt;/div&gt;</code></pre>  </body>
+</html>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">设置资源文件，用于对静态信息的展示, 同时也可以对多语言的支持，关于&lt;a href=&quot;http://www.devnp.com/2018/04/03/spring-boot-%e5%9b%bd%e9%99%85%e5%8c%96-spring-boot-internationalization-demo/&quot; rel=&quot;noopener&quot; target=&quot;_blank&quot;&gt;Spring Boot 国际化&lt;/a&gt; :</span><br><span class="line">&lt;em&gt;com\devnp\message\MailMessage_zh_CN.properties&lt;/em&gt;</span><br><span class="line"></span><br><span class="line">```text</span><br><span class="line">msg.hello = 你好</span><br><span class="line">msg.thank = 感谢</span><br><span class="line">msg.content = 这是一封测试来自模板的邮件</span><br></pre></td></tr></table></figure>
+
+<h3 id="3-text模板"><a href="#3-text模板" class="headerlink" title="3.text模板"></a>3.text模板</h3><p><em>templates\mail\text\mail-hello.txt</em></p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">[(#&#123;msg.hello&#125;)] [( $&#123;name&#125; )],</span><br><span class="line"></span><br><span class="line">[# th:if=&quot;$&#123;name.length() gt 10&#125;&quot;] 你的名字太长啦 [/]</span><br><span class="line"></span><br><span class="line"> [( $&#123;#dates.format(subscriptionDate)&#125; )]</span><br><span class="line"></span><br><span class="line">你的爱好:</span><br><span class="line">[# th:each=&quot;hobby : $&#123;hobbies&#125;&quot;]</span><br><span class="line"> - [( $&#123;hobby&#125; )]</span><br><span class="line">[/]</span><br><span class="line"></span><br><span class="line">[(#&#123;msg.content&#125;)]</span><br></pre></td></tr></table></figure>
+
+<h2 id="4-发送邮件"><a href="#4-发送邮件" class="headerlink" title="4.发送邮件"></a>4.发送邮件</h2><p><em>com.devnp.springbootemaildemo.email.TemplateMailSend.java</em></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * </span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">package</span> com.devnp.springbootemaildemo.email;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> java.nio.charset.StandardCharsets;</span><br><span class="line"><span class="keyword">import</span> java.util.Arrays;</span><br><span class="line"><span class="keyword">import</span> java.util.Date;</span><br><span class="line"><span class="keyword">import</span> java.util.Locale;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> javax.mail.MessagingException;</span><br><span class="line"><span class="keyword">import</span> javax.mail.internet.MimeMessage;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> org.slf4j.Logger;</span><br><span class="line"><span class="keyword">import</span> org.slf4j.LoggerFactory;</span><br><span class="line"><span class="keyword">import</span> org.springframework.beans.factory.annotation.Autowired;</span><br><span class="line"><span class="keyword">import</span> org.springframework.beans.factory.annotation.Value;</span><br><span class="line"><span class="keyword">import</span> org.springframework.core.io.Resource;</span><br><span class="line"><span class="keyword">import</span> org.springframework.core.io.ResourceLoader;</span><br><span class="line"><span class="keyword">import</span> org.springframework.mail.javamail.JavaMailSender;</span><br><span class="line"><span class="keyword">import</span> org.springframework.mail.javamail.MimeMessageHelper;</span><br><span class="line"><span class="keyword">import</span> org.springframework.stereotype.Component;</span><br><span class="line"><span class="keyword">import</span> org.thymeleaf.TemplateEngine;</span><br><span class="line"><span class="keyword">import</span> org.thymeleaf.context.Context;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@author</span> duliu</span></span><br><span class="line"><span class="comment"> *</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="meta">@Component</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">TemplateMailSend</span> &#123;</span><br><span class="line">	</span><br><span class="line">	<span class="keyword">public</span> <span class="type">Logger</span> <span class="variable">log</span> <span class="operator">=</span> LoggerFactory.getLogger(getClass());</span><br><span class="line">	</span><br><span class="line">	<span class="meta">@Autowired</span></span><br><span class="line">    <span class="keyword">private</span> TemplateEngine textEmailTemplateEngine;</span><br><span class="line">	</span><br><span class="line">	<span class="meta">@Autowired</span></span><br><span class="line">    <span class="keyword">private</span> TemplateEngine htmlEmailTemplateEngine;</span><br><span class="line"></span><br><span class="line">	<span class="meta">@Autowired</span></span><br><span class="line">	<span class="keyword">private</span> JavaMailSender mailSender;</span><br><span class="line">	</span><br><span class="line">	<span class="meta">@Value(&quot;$&#123;spring.mail.username&#125;&quot;)</span></span><br><span class="line">	<span class="keyword">private</span> String sender;</span><br><span class="line">	</span><br><span class="line">	<span class="meta">@Autowired</span></span><br><span class="line">	<span class="keyword">private</span> ResourceLoader resourceLoader;</span><br><span class="line">	</span><br><span class="line">	<span class="comment">/**</span></span><br><span class="line"><span class="comment">	 *  使用Html模板来生产发送消息</span></span><br><span class="line"><span class="comment">	 * <span class="doctag">@param</span> toMail</span></span><br><span class="line"><span class="comment">	 * <span class="doctag">@param</span> subject</span></span><br><span class="line"><span class="comment">	 * <span class="doctag">@param</span> file</span></span><br><span class="line"><span class="comment">	 * <span class="doctag">@throws</span> MessagingException </span></span><br><span class="line"><span class="comment">	 */</span></span><br><span class="line">	<span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">sendWithThymeleafHtmlTemplate</span><span class="params">(String toMail, String subject, String file, String recipientName, String imageResourceName)</span> <span class="keyword">throws</span> MessagingException &#123;</span><br><span class="line">		<span class="type">MimeMessage</span> <span class="variable">message</span> <span class="operator">=</span> mailSender.createMimeMessage();</span><br><span class="line">		</span><br><span class="line">		<span class="type">MimeMessageHelper</span> <span class="variable">helper</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">MimeMessageHelper</span>(message, <span class="literal">true</span>, StandardCharsets.UTF_8.name());</span><br><span class="line">		</span><br><span class="line">		helper.setTo(toMail);</span><br><span class="line">		helper.setSubject(subject);</span><br><span class="line">		helper.setFrom(sender);</span><br><span class="line">		</span><br><span class="line">		<span class="comment">//设置方言环境</span></span><br><span class="line">		<span class="keyword">final</span> <span class="type">Context</span> <span class="variable">ctx</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">Context</span>(Locale.SIMPLIFIED_CHINESE); </span><br><span class="line">		</span><br><span class="line">		ctx.setVariable(<span class="string">&quot;name&quot;</span>, recipientName);</span><br><span class="line">		ctx.setVariable(<span class="string">&quot;imageResourceName&quot;</span>, imageResourceName);</span><br><span class="line">		</span><br><span class="line">		<span class="type">String</span> <span class="variable">htmlContent</span> <span class="operator">=</span> <span class="built_in">this</span>.htmlEmailTemplateEngine.process(file, ctx);</span><br><span class="line">		</span><br><span class="line">		<span class="type">Resource</span> <span class="variable">resource</span> <span class="operator">=</span>  resourceLoader.getResource(<span class="string">&quot;classpath:static/logo.png&quot;</span>);</span><br><span class="line">		</span><br><span class="line">		helper.setText(htmlContent, <span class="literal">true</span>);</span><br><span class="line">		</span><br><span class="line">		helper.addInline(imageResourceName, resource);</span><br><span class="line">		</span><br><span class="line">		log.info(htmlContent);</span><br><span class="line">		</span><br><span class="line">		<span class="built_in">this</span>.mailSender.send(message);</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="comment">/**</span></span><br><span class="line"><span class="comment">	 * 使用Text模板来生产发送消息</span></span><br><span class="line"><span class="comment">	 * <span class="doctag">@param</span> toMail</span></span><br><span class="line"><span class="comment">	 * <span class="doctag">@param</span> subject</span></span><br><span class="line"><span class="comment">	 * <span class="doctag">@param</span> file</span></span><br><span class="line"><span class="comment">	 * <span class="doctag">@param</span> recipientName</span></span><br><span class="line"><span class="comment">	 * <span class="doctag">@throws</span> MessagingException</span></span><br><span class="line"><span class="comment">	 */</span></span><br><span class="line">	<span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">sendWithThymeleafTextTemplate</span><span class="params">(String toMail, String subject, String file, String recipientName)</span> <span class="keyword">throws</span> MessagingException &#123;</span><br><span class="line">		<span class="type">MimeMessage</span> <span class="variable">message</span> <span class="operator">=</span> mailSender.createMimeMessage();</span><br><span class="line">		</span><br><span class="line">		<span class="type">MimeMessageHelper</span> <span class="variable">helper</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">MimeMessageHelper</span>(message, <span class="literal">true</span>, StandardCharsets.UTF_8.name());</span><br><span class="line">		</span><br><span class="line">		helper.setTo(toMail);</span><br><span class="line">		helper.setSubject(subject);</span><br><span class="line">		helper.setFrom(sender);</span><br><span class="line">		</span><br><span class="line">		<span class="comment">//设置方言环境</span></span><br><span class="line">		<span class="keyword">final</span> <span class="type">Context</span> <span class="variable">ctx</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">Context</span>(Locale.SIMPLIFIED_CHINESE); </span><br><span class="line">		</span><br><span class="line">		ctx.setVariable(<span class="string">&quot;name&quot;</span>, recipientName);</span><br><span class="line">		ctx.setVariable(<span class="string">&quot;subscriptionDate&quot;</span>, <span class="keyword">new</span> <span class="title class_">Date</span>());</span><br><span class="line">		ctx.setVariable(<span class="string">&quot;hobbies&quot;</span>, Arrays.asList(<span class="string">&quot;吃&quot;</span>, <span class="string">&quot;吃&quot;</span>, <span class="string">&quot;吃&quot;</span>));</span><br><span class="line">		</span><br><span class="line">		<span class="type">String</span> <span class="variable">txtContent</span> <span class="operator">=</span> <span class="built_in">this</span>.textEmailTemplateEngine.process(file, ctx);</span><br><span class="line">		</span><br><span class="line">		helper.setText(txtContent);</span><br><span class="line">		</span><br><span class="line">		log.info(txtContent);</span><br><span class="line">		</span><br><span class="line">		<span class="built_in">this</span>.mailSender.send(message);</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="5-测试"><a href="#5-测试" class="headerlink" title="5.测试"></a>5.测试</h2><p>编写相应的单元测试代码，为了不显示过多的代码篇幅：</p>
+<p><em><a href="https://github.com/duliu1990/spring-boot-demo/blob/master/spring-boot-email-demo/src/test/java/com/devnp/springbootemaildemo/email/SimpleMailSendTests.java" rel="noopener" target="_blank">com.devnp.springbootemaildemo.email.SimpleMailSendTests.java</a></em><br><em><a href="https://github.com/duliu1990/spring-boot-demo/blob/master/spring-boot-email-demo/src/test/java/com/devnp/springbootemaildemo/email/TemplateMailSendTests.java" rel="noopener" target="_blank">com.devnp.springbootemaildemo.email.TemplateMailSendTests.java</a></em></p>
+<h2 id="6-参考"><a href="#6-参考" class="headerlink" title="6.参考"></a>6.参考</h2><p><a href="https://docs.spring.io/spring/docs/4.3.16.RELEASE/spring-framework-reference/htmlsingle/#mail" rel="noopener" target="_blank">https://docs.spring.io/spring/docs/4.3.16.RELEASE/spring-framework-reference/htmlsingle/#mail</a><br><a href="https://www.thymeleaf.org/doc/articles/springmail.html" rel="noopener" target="_blank">https://www.thymeleaf.org/doc/articles/springmail.html</a></p>
+<h2 id="7-代码下载"><a href="#7-代码下载" class="headerlink" title="7.代码下载"></a>7.代码下载</h2><p><a href="http://wp-qn.devnp.com/2018/04/27/spring-boot-email-%E9%82%AE%E4%BB%B6%E5%8F%91%E9%80%81/spring-boot-email-demo.zip" rel="noopener" target="_blank">spring-boot-email-demo.zip</a></p>
+
+        </div>
+
+        
+            <section class="post-copyright">
+                
+                    <p class="copyright-item">
+                        <span>Author:</span>
+                        <span>Darren Du</span>
+                    </p>
+                
+                
+                
+                    <p class="copyright-item">
+                        <span>License:</span>
+                        <span>Copyright (c) 2019 MIT LICENSE</span>
+                    </p>
+                
+                
+
+            </section>
+        
+        <section class="post-tags">
+            <div>
+                <span>Tag(s):</span>
+                <span class="tag">
+                    
+                    
+                        <a href="/tags/Java/"># Java</a>
+                    
+                        <a href="/tags/Spring/"># Spring</a>
+                    
+                        <a href="/tags/Spring-Boot/"># Spring Boot</a>
+                    
+                        <a href="/tags/Email/"># Email</a>
+                    
+                        
+                </span>
+            </div>
+            <div>
+                <a href="javascript:window.history.back();">back</a>
+                <span>· </span>
+                <a href="/">home</a>
+            </div>
+        </section>
+        <section class="post-nav">
+            
+                <a class="prev" rel="prev" href="/2018/05/10/Spring%20Boot%20jar%20to%20war/">Spring Boot jar to war</a>
+            
+            
+            <a class="next" rel="next" href="/2018/04/21/Spring%20Boot%20+%20Spring%20Security%20%E8%87%AA%E5%AE%9A%E4%B9%89%E8%A1%A8%E5%8D%95%E7%99%BB%E5%BD%95/">Spring Boot + Spring Security 自定义表单登录</a>
+            
+        </section>
+
+
+    </article>
+</div>
+
+        </div>
+        <footer id="footer" class="footer">
+    <div class="copyright">
+        <span>© Darren Du | Powered by <a href="https://hexo.io" target="_blank">Hexo</a> & <a href="https://github.com/Siricee/hexo-theme-Chic" target="_blank">Chic</a></span>
+    </div>
+</footer>
+
+    </div>
+</body>
+</html>

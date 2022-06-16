@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <meta name="author" content="Darren Du">
+
+
+
+    <meta name="description" content="Dev">
+
+
+
+<title>Hibernate5 Many-To-Many 多对多 Demo (Annotation) | Du Liu&#39;s Blog</title>
+
+
+
+    <link rel="icon" href="/favicon.ico">
+
+
+
+
+    <!-- stylesheets list from _config.yml -->
+    
+    <link rel="stylesheet" href="/css/style.css">
+    
+
+
+
+    <!-- scripts list from _config.yml -->
+    
+    <script src="/js/script.js"></script>
+    
+    <script src="/js/tocbot.min.js"></script>
+    
+
+
+
+    
+    
+        
+    
+
+
+<meta name="generator" content="Hexo 6.2.0"></head>
+<body>
+    <div class="wrapper">
+        <header>
+    <nav class="navbar">
+        <div class="container">
+            <div class="navbar-header header-logo"><a href="/">Du Liu&#39;s Blog</a></div>
+            <div class="menu navbar-right">
+                
+                    <a class="menu-item" href="/archives">Posts</a>
+                
+                    <a class="menu-item" href="/category">Categories</a>
+                
+                    <a class="menu-item" href="/tag">Tags</a>
+                
+                    <a class="menu-item" href="/about">About</a>
+                
+                <input id="switch_default" type="checkbox" class="switch_default">
+                <label for="switch_default" class="toggleBtn"></label>
+            </div>
+
+        </div>
+    </nav>
+
+    
+    <nav class="navbar-mobile" id="nav-mobile">
+        <div class="container">
+            <div class="navbar-header">
+                <div>
+                    <a href="/">Du Liu&#39;s Blog</a><a id="mobile-toggle-theme">·&nbsp;Light</a>
+                </div>
+                <div class="menu-toggle" onclick="mobileBtn()">&#9776; Menu</div>
+            </div>
+            <div class="menu" id="mobile-menu">
+                
+                    <a class="menu-item" href="/archives">Posts</a>
+                
+                    <a class="menu-item" href="/category">Categories</a>
+                
+                    <a class="menu-item" href="/tag">Tags</a>
+                
+                    <a class="menu-item" href="/about">About</a>
+                
+            </div>
+        </div>
+    </nav>
+
+</header>
+<script>
+    var mobileBtn = function f() {
+        var toggleMenu = document.getElementsByClassName("menu-toggle")[0];
+        var mobileMenu = document.getElementById("mobile-menu");
+        if(toggleMenu.classList.contains("active")){
+           toggleMenu.classList.remove("active")
+            mobileMenu.classList.remove("active")
+        }else{
+            toggleMenu.classList.add("active")
+            mobileMenu.classList.add("active")
+        }
+    }
+</script>
+        <div class="main">
+            <div class="container">
+    
+    
+        <div class="post-toc">
+    <div class="tocbot-list">
+    </div>
+    <div class="tocbot-list-menu">
+        <a class="tocbot-toc-expand" onclick="expand_toc()">Expand all</a>
+        <a onclick="go_top()">Back to top</a>
+        <a onclick="go_bottom()">Go to bottom</a>
+    </div>
+</div>
+
+<script>
+    document.ready(
+        function () {
+            tocbot.init({
+                tocSelector: '.tocbot-list',
+                contentSelector: '.post-content',
+                headingSelector: 'h1, h2, h3, h4, h5',
+                collapseDepth: 1,
+                orderedList: false,
+                scrollSmooth: true,
+            })
+        }
+    )
+
+    function expand_toc() {
+        var b = document.querySelector(".tocbot-toc-expand");
+        tocbot.init({
+            tocSelector: '.tocbot-list',
+            contentSelector: '.post-content',
+            headingSelector: 'h1, h2, h3, h4, h5',
+            collapseDepth: 6,
+            orderedList: false,
+            scrollSmooth: true,
+        });
+        b.setAttribute("onclick", "collapse_toc()");
+        b.innerHTML = "Collapse all"
+    }
+
+    function collapse_toc() {
+        var b = document.querySelector(".tocbot-toc-expand");
+        tocbot.init({
+            tocSelector: '.tocbot-list',
+            contentSelector: '.post-content',
+            headingSelector: 'h1, h2, h3, h4, h5',
+            collapseDepth: 1,
+            orderedList: false,
+            scrollSmooth: true,
+        });
+        b.setAttribute("onclick", "expand_toc()");
+        b.innerHTML = "Expand all"
+    }
+
+    function go_top() {
+        window.scrollTo(0, 0);
+    }
+
+    function go_bottom() {
+        window.scrollTo(0, document.body.scrollHeight);
+    }
+
+</script>
+    
+
+    
+    <article class="post-wrap">
+        <header class="post-header">
+            <h1 class="post-title">Hibernate5 Many-To-Many 多对多 Demo (Annotation)</h1>
+            
+                <div class="post-meta">
+                    
+                        Author: <a itemprop="author" rel="author" href="/">Darren Du</a>
+                    
+
+                    
+                        <span class="post-time">
+                        Date: <a href="#">July 16, 2017&nbsp;&nbsp;10:16:39</a>
+                        </span>
+                    
+                    
+                        <span class="post-category">
+                    Category:
+                            
+                                <a href="/categories/Java-Framework/">Java Framework</a>
+                            
+                                <a href="/categories/Java-Framework/Hibernate/">Hibernate</a>
+                            
+                        </span>
+                    
+                </div>
+            
+        </header>
+
+        <div class="post-content">
+            <p>本例以Windows, JDK1.8, MySQL5 为基础，演示使用Hibernate5以注解的方式完成多对多的双向关系映射。</p>
+<p>在多对多的关联上,需求创建一个中间表,中间表用来连接两个多不多关系的表,等于在中间表中保存了两个表的映射关系.</p>
+<h2 id="多对多的表的关系"><a href="#多对多的表的关系" class="headerlink" title="多对多的表的关系"></a>多对多的表的关系</h2><img src="http://wp-qn.devnp.com/2017/07/16/hibernate5-many-to-many-%E5%A4%9A%E5%AF%B9%E5%A4%9A-demo-annotation/db.png" width="954" height="233" class="alignnone" />
+
+<h2 id="Model"><a href="#Model" class="headerlink" title="Model"></a>Model</h2><p>分别创建<em>Hero</em>和<em>HeroBook</em>两个Model对象，在映射关系上，<em>Hero</em>和<em>HeroBook</em>存在多对多映射,以<em>Hero</em>作为主控方。</p>
+<p><em>File : Hero.java</em></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> com.devnp.hibernate.association.mtm.model;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> java.util.HashSet;</span><br><span class="line"><span class="keyword">import</span> java.util.Set;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> javax.persistence.Basic;</span><br><span class="line"><span class="keyword">import</span> javax.persistence.CascadeType;</span><br><span class="line"><span class="keyword">import</span> javax.persistence.Column;</span><br><span class="line"><span class="keyword">import</span> javax.persistence.Entity;</span><br><span class="line"><span class="keyword">import</span> javax.persistence.FetchType;</span><br><span class="line"><span class="keyword">import</span> javax.persistence.GeneratedValue;</span><br><span class="line"><span class="keyword">import</span> javax.persistence.GenerationType;</span><br><span class="line"><span class="keyword">import</span> javax.persistence.Id;</span><br><span class="line"><span class="keyword">import</span> javax.persistence.JoinColumn;</span><br><span class="line"><span class="keyword">import</span> javax.persistence.JoinTable;</span><br><span class="line"><span class="keyword">import</span> javax.persistence.ManyToMany;</span><br><span class="line"><span class="keyword">import</span> javax.persistence.Table;</span><br><span class="line"></span><br><span class="line"><span class="meta">@Entity</span></span><br><span class="line"><span class="meta">@Table(name = &quot;HERO&quot;)</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">Hero</span> &#123;</span><br><span class="line">	</span><br><span class="line">	<span class="meta">@Id</span></span><br><span class="line">	<span class="meta">@GeneratedValue(strategy = GenerationType.IDENTITY)</span></span><br><span class="line">	<span class="meta">@Basic(optional = false)</span></span><br><span class="line">	<span class="meta">@Column(name = &quot;HERO_ID&quot;)</span></span><br><span class="line">	<span class="keyword">private</span> Long heroId ;</span><br><span class="line">	</span><br><span class="line">	<span class="meta">@Column(name = &quot;HERO_NAME&quot;)</span></span><br><span class="line">	<span class="keyword">private</span> String heroName ;</span><br><span class="line">	</span><br><span class="line">	<span class="meta">@Column(name = &quot;HERO_AGE&quot;)</span></span><br><span class="line">	<span class="keyword">private</span> Integer heroAge ;</span><br><span class="line">	</span><br><span class="line">	<span class="meta">@ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)</span></span><br><span class="line">	<span class="meta">@JoinTable(name = &quot;heroes_mapping&quot;, </span></span><br><span class="line"><span class="meta">		joinColumns = &#123;@JoinColumn(name = &quot;HERO_ID&quot;, nullable = false, updatable = false)&#125;,</span></span><br><span class="line"><span class="meta">			inverseJoinColumns = &#123; @JoinColumn(name = &quot;HERO_BOOK_ID&quot;, nullable = false, updatable = false)&#125;)</span></span><br><span class="line">	<span class="keyword">private</span> Set&amp;lt;HeroBook&amp;gt; heroBooks = <span class="keyword">new</span> <span class="title class_">HashSet</span>&amp;lt;HeroBook&amp;gt;();</span><br><span class="line">	</span><br><span class="line"></span><br><span class="line">	<span class="keyword">public</span> <span class="title function_">Hero</span><span class="params">()</span> &#123;</span><br><span class="line">		<span class="built_in">super</span>();</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line"></span><br><span class="line">	<span class="keyword">public</span> <span class="title function_">Hero</span><span class="params">(String heroName, Integer heroAge)</span> &#123;</span><br><span class="line">		<span class="built_in">super</span>();</span><br><span class="line">		<span class="built_in">this</span>.heroName = heroName;</span><br><span class="line">		<span class="built_in">this</span>.heroAge = heroAge;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">	<span class="keyword">public</span> Long <span class="title function_">getHeroId</span><span class="params">()</span> &#123;</span><br><span class="line">		<span class="keyword">return</span> heroId;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">	<span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">setHeroId</span><span class="params">(Long heroId)</span> &#123;</span><br><span class="line">		<span class="built_in">this</span>.heroId = heroId;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">	<span class="keyword">public</span> String <span class="title function_">getHeroName</span><span class="params">()</span> &#123;</span><br><span class="line">		<span class="keyword">return</span> heroName;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">	<span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">setHeroName</span><span class="params">(String heroName)</span> &#123;</span><br><span class="line">		<span class="built_in">this</span>.heroName = heroName;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">	<span class="keyword">public</span> Integer <span class="title function_">getHeroAge</span><span class="params">()</span> &#123;</span><br><span class="line">		<span class="keyword">return</span> heroAge;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">	<span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">setHeroAge</span><span class="params">(Integer heroAge)</span> &#123;</span><br><span class="line">		<span class="built_in">this</span>.heroAge = heroAge;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">	<span class="keyword">public</span> Set&amp;lt;HeroBook&amp;gt; getHeroBooks() &#123;</span><br><span class="line">		<span class="keyword">return</span> heroBooks;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">	<span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">setHeroBooks</span><span class="params">(Set&amp;lt;HeroBook&amp;gt; heroBooks)</span> &#123;</span><br><span class="line">		<span class="built_in">this</span>.heroBooks = heroBooks;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><em>File : HeroBook.java</em></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> com.devnp.hibernate.association.mtm.model;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> java.util.HashSet;</span><br><span class="line"><span class="keyword">import</span> java.util.Set;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> javax.persistence.Basic;</span><br><span class="line"><span class="keyword">import</span> javax.persistence.Column;</span><br><span class="line"><span class="keyword">import</span> javax.persistence.Entity;</span><br><span class="line"><span class="keyword">import</span> javax.persistence.FetchType;</span><br><span class="line"><span class="keyword">import</span> javax.persistence.GeneratedValue;</span><br><span class="line"><span class="keyword">import</span> javax.persistence.GenerationType;</span><br><span class="line"><span class="keyword">import</span> javax.persistence.Id;</span><br><span class="line"><span class="keyword">import</span> javax.persistence.ManyToMany;</span><br><span class="line"><span class="keyword">import</span> javax.persistence.Table;</span><br><span class="line"></span><br><span class="line"><span class="meta">@Entity</span></span><br><span class="line"><span class="meta">@Table(name = &quot;HERO_BOOK&quot;)</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">HeroBook</span> &#123;</span><br><span class="line">	</span><br><span class="line">	<span class="meta">@Id</span></span><br><span class="line">	<span class="meta">@GeneratedValue(strategy = GenerationType.IDENTITY)</span></span><br><span class="line">	<span class="meta">@Basic(optional = false)</span></span><br><span class="line">	<span class="meta">@Column(name = &quot;HERO_BOOK_ID&quot;)</span></span><br><span class="line">	<span class="keyword">private</span> Long heroBookId ;</span><br><span class="line">	</span><br><span class="line">	<span class="meta">@Column(name = &quot;HERO_BOOK_NAME&quot;)</span></span><br><span class="line">	<span class="keyword">private</span> String heroBookName ;</span><br><span class="line">	</span><br><span class="line">	<span class="meta">@Column(name = &quot;HERO_BOOK_PRICE&quot;)</span></span><br><span class="line">	<span class="keyword">private</span> Float heroBookPrice ;</span><br><span class="line">	</span><br><span class="line">	<span class="meta">@ManyToMany(fetch = FetchType.LAZY, mappedBy=&quot;heroBooks&quot;)</span></span><br><span class="line">	<span class="keyword">private</span> Set&amp;lt;Hero&amp;gt; heros = <span class="keyword">new</span> <span class="title class_">HashSet</span>&amp;lt;Hero&amp;gt;();</span><br><span class="line">	</span><br><span class="line">	<span class="keyword">public</span> <span class="title function_">HeroBook</span><span class="params">()</span> &#123;</span><br><span class="line">		<span class="built_in">super</span>();</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line">	<span class="keyword">public</span> <span class="title function_">HeroBook</span><span class="params">(String heroBookName, Float heroBookPrice)</span> &#123;</span><br><span class="line">		<span class="built_in">super</span>();</span><br><span class="line">		<span class="built_in">this</span>.heroBookName = heroBookName;</span><br><span class="line">		<span class="built_in">this</span>.heroBookPrice = heroBookPrice;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">public</span> Long <span class="title function_">getHeroBookId</span><span class="params">()</span> &#123;</span><br><span class="line">		<span class="keyword">return</span> heroBookId;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">setHeroBookId</span><span class="params">(Long heroBookId)</span> &#123;</span><br><span class="line">		<span class="built_in">this</span>.heroBookId = heroBookId;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">public</span> String <span class="title function_">getHeroBookName</span><span class="params">()</span> &#123;</span><br><span class="line">		<span class="keyword">return</span> heroBookName;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">setHeroBookName</span><span class="params">(String heroBookName)</span> &#123;</span><br><span class="line">		<span class="built_in">this</span>.heroBookName = heroBookName;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">public</span> Float <span class="title function_">getHeroBookPrice</span><span class="params">()</span> &#123;</span><br><span class="line">		<span class="keyword">return</span> heroBookPrice;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">setHeroBookPrice</span><span class="params">(Float heroBookPrice)</span> &#123;</span><br><span class="line">		<span class="built_in">this</span>.heroBookPrice = heroBookPrice;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">public</span> Set&amp;lt;Hero&amp;gt; getHeros() &#123;</span><br><span class="line">		<span class="keyword">return</span> heros;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">setHeros</span><span class="params">(Set&amp;lt;Hero&amp;gt; heros)</span> &#123;</span><br><span class="line">		<span class="built_in">this</span>.heros = heros;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="Hibernate-SessionFactory"><a href="#Hibernate-SessionFactory" class="headerlink" title="Hibernate SessionFactory"></a>Hibernate SessionFactory</h2><p>本例以属性配置的加载，更多获取SessionFactory的方式:<a target="_blank" rel="noopener" href="http://www.devnp.com/2017/05/28/hibernate5-sessionfactory-%e7%9a%84%e8%8e%b7%e5%8f%96/">Hibernate5 SessionFactory 的获取</a></p>
+<p>添加<em>Hero.java</em>和<em>HeroBook.java</em><br><em>File : HibernateProUtil.java</em></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> com.devnp.hibernate.util;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> java.util.Properties;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> org.hibernate.SessionFactory;</span><br><span class="line"><span class="keyword">import</span> org.hibernate.boot.Metadata;</span><br><span class="line"><span class="keyword">import</span> org.hibernate.boot.MetadataSources;</span><br><span class="line"><span class="keyword">import</span> org.hibernate.boot.model.naming.ImplicitNamingStrategyJpaCompliantImpl;</span><br><span class="line"><span class="keyword">import</span> org.hibernate.boot.registry.StandardServiceRegistry;</span><br><span class="line"><span class="keyword">import</span> org.hibernate.boot.registry.StandardServiceRegistryBuilder;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> com.devnp.hibernate.association.mtm.model.Hero;</span><br><span class="line"><span class="keyword">import</span> com.devnp.hibernate.association.mto.model.Company;</span><br><span class="line"><span class="keyword">import</span> com.devnp.hibernate.association.mto.model.Employee;</span><br><span class="line"><span class="keyword">import</span> com.devnp.hibernate.association.otm.model.Book;</span><br><span class="line"><span class="keyword">import</span> com.devnp.hibernate.association.otm.model.Person;</span><br><span class="line"><span class="keyword">import</span> com.devnp.hibernate.association.oto.model.Student;</span><br><span class="line"><span class="keyword">import</span> com.devnp.hibernate.association.oto.model.Transcripts;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">HibernateProUtil</span> &#123;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">private</span> <span class="keyword">static</span> <span class="type">SessionFactory</span> <span class="variable">sessionFactory</span> <span class="operator">=</span> buildSessionFactory();</span><br><span class="line"></span><br><span class="line">	<span class="keyword">private</span> <span class="keyword">static</span> SessionFactory <span class="title function_">buildSessionFactory</span><span class="params">()</span> &#123;</span><br><span class="line">		<span class="type">Properties</span> <span class="variable">properties</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">Properties</span>();</span><br><span class="line">	    properties.put(<span class="string">&quot;hibernate.dialect&quot;</span>,<span class="string">&quot;org.hibernate.dialect.MySQL5InnoDBDialect&quot;</span>); <span class="comment">//数据库方言</span></span><br><span class="line">	    properties.put(<span class="string">&quot;hibernate.show_sql&quot;</span>, <span class="string">&quot;true&quot;</span>);	<span class="comment">//是否打印SQL</span></span><br><span class="line">	    properties.put(<span class="string">&quot;hibernate.hbm2ddl.auto&quot;</span>,<span class="string">&quot;update&quot;</span>); <span class="comment">//执行跟新，及如果表不存在则会自动创建表</span></span><br><span class="line">	    </span><br><span class="line">	    properties.put(<span class="string">&quot;hibernate.format_sql&quot;</span>, <span class="string">&quot;true&quot;</span>); <span class="comment">//格式化</span></span><br><span class="line">	    </span><br><span class="line">	    properties.put(<span class="string">&quot;hibernate.connection.driver_class&quot;</span>, <span class="string">&quot;com.mysql.jdbc.Driver&quot;</span>);</span><br><span class="line">	    properties.put(<span class="string">&quot;hibernate.connection.password&quot;</span>, <span class="string">&quot;!qaz2wsx&quot;</span>);</span><br><span class="line">	    properties.put(<span class="string">&quot;hibernate.connection.url&quot;</span>, <span class="string">&quot;jdbc:mysql://localhost:3306/test&quot;</span>);</span><br><span class="line">	    properties.put(<span class="string">&quot;hibernate.connection.username&quot;</span>, <span class="string">&quot;root&quot;</span>);</span><br><span class="line"></span><br><span class="line">	    <span class="comment">/*StandardServiceRegistryBuilder standardServiceRegistryBuilder = new StandardServiceRegistryBuilder();</span></span><br><span class="line"><span class="comment">	    standardServiceRegistryBuilder.applySettings(properties);</span></span><br><span class="line"><span class="comment"></span></span><br><span class="line"><span class="comment">	    MetadataSources metadataSources = new MetadataSources(standardServiceRegistryBuilder.build());</span></span><br><span class="line"><span class="comment">	    metadataSources.addAnnotatedClass(Student.class);*/</span></span><br><span class="line">	    </span><br><span class="line">	    StandardServiceRegistry serviceRegistry= <span class="keyword">new</span> <span class="title class_">StandardServiceRegistryBuilder</span>().applySettings(properties).build();</span><br><span class="line">	    </span><br><span class="line">	    <span class="type">MetadataSources</span> <span class="variable">metadataSources</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">MetadataSources</span>(serviceRegistry);</span><br><span class="line">	    <span class="comment">//add for one to one</span></span><br><span class="line">	    metadataSources.addAnnotatedClass(Student.class).addAnnotatedClass(Transcripts.class);</span><br><span class="line">	    </span><br><span class="line">	    <span class="comment">//add for one to many</span></span><br><span class="line">	    metadataSources.addAnnotatedClass(Person.class).addAnnotatedClass(Book.class);</span><br><span class="line">	    </span><br><span class="line">	    <span class="comment">//add for many to one</span></span><br><span class="line">	    metadataSources.addAnnotatedClass(Employee.class).addAnnotatedClass(Company.class);</span><br><span class="line">	    </span><br><span class="line">	    <span class="comment">//add for many to many</span></span><br><span class="line">	    metadataSources.addAnnotatedClass(Hero.class).addAnnotatedClass(com.devnp.hibernate.association.mtm.model.HeroBook.class);</span><br><span class="line">	    </span><br><span class="line">	    <span class="type">Metadata</span> <span class="variable">metadata</span> <span class="operator">=</span> metadataSources.getMetadataBuilder().applyImplicitNamingStrategy(</span><br><span class="line">	    		ImplicitNamingStrategyJpaCompliantImpl.INSTANCE).build();</span><br><span class="line">	    </span><br><span class="line">	    sessionFactory = metadata.getSessionFactoryBuilder().build();  </span><br><span class="line">	    </span><br><span class="line">	    <span class="keyword">return</span> sessionFactory;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">public</span> <span class="keyword">static</span> SessionFactory <span class="title function_">getSessionFactory</span><span class="params">()</span> &#123;</span><br><span class="line">		<span class="keyword">return</span> sessionFactory;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">shutdown</span><span class="params">()</span> &#123;</span><br><span class="line">		<span class="comment">// Close caches and connection pools</span></span><br><span class="line">		getSessionFactory().close();</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<h2 id="测试"><a href="#测试" class="headerlink" title="测试"></a>测试</h2><p>添加对象:<br><em>File : ManyToManyOperation.java</em></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> com.devnp.hibernate.association.operation;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> java.util.HashSet;</span><br><span class="line"><span class="keyword">import</span> java.util.Set;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> org.hibernate.Session;</span><br><span class="line"><span class="keyword">import</span> org.hibernate.SessionFactory;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> com.devnp.hibernate.association.mtm.model.Hero;</span><br><span class="line"><span class="keyword">import</span> com.devnp.hibernate.association.mtm.model.HeroBook;</span><br><span class="line"><span class="keyword">import</span> com.devnp.hibernate.util.HibernateProUtil;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">ManyToManyOperation</span> &#123;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String[] args)</span> &#123;</span><br><span class="line">		<span class="comment">// TODO Auto-generated method stub</span></span><br><span class="line">		save();</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line">	<span class="comment">/**</span></span><br><span class="line"><span class="comment">	 * &quot;Guo Jin&quot; and &quot;Huang Rou&quot; belong &quot;Eagle Shooting Heroes&quot; book</span></span><br><span class="line"><span class="comment">	 * </span></span><br><span class="line"><span class="comment">	 * &quot;Yang Guo&quot;  belong &quot;Eagle Shooting Heroes&quot; and &quot;Shooting Knight&quot; book</span></span><br><span class="line"><span class="comment">	 * </span></span><br><span class="line"><span class="comment">	 */</span></span><br><span class="line">	<span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">save</span><span class="params">()</span>&#123;</span><br><span class="line">		<span class="type">SessionFactory</span> <span class="variable">sessionFactory</span> <span class="operator">=</span> HibernateProUtil.getSessionFactory();</span><br><span class="line"></span><br><span class="line">		<span class="type">Session</span> <span class="variable">session</span> <span class="operator">=</span> sessionFactory.openSession();</span><br><span class="line"></span><br><span class="line">		session.getTransaction().begin();</span><br><span class="line">		</span><br><span class="line">		<span class="type">Hero</span> <span class="variable">hero1</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">Hero</span>(<span class="string">&quot;Guo Jin&quot;</span>, <span class="number">33</span>);</span><br><span class="line">		<span class="type">Hero</span> <span class="variable">hero2</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">Hero</span>(<span class="string">&quot;Huang Rou&quot;</span>, <span class="number">25</span>);</span><br><span class="line">		<span class="type">Hero</span> <span class="variable">hero3</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">Hero</span>(<span class="string">&quot;Yang Guo&quot;</span>, <span class="number">22</span>);</span><br><span class="line">		</span><br><span class="line">		<span class="type">HeroBook</span> <span class="variable">book1</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">HeroBook</span>(<span class="string">&quot;Eagle Shooting Heroes&quot;</span>, <span class="number">22.3F</span>);</span><br><span class="line">		<span class="type">HeroBook</span> <span class="variable">book2</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">HeroBook</span>(<span class="string">&quot;Shooting Knight&quot;</span>, <span class="number">23.5F</span>);</span><br><span class="line">		</span><br><span class="line">		Set&amp;lt;HeroBook&amp;gt; heroBooks = <span class="keyword">new</span> <span class="title class_">HashSet</span>&amp;lt;HeroBook&amp;gt;();</span><br><span class="line">		heroBooks.add(book1);</span><br><span class="line">		</span><br><span class="line">		hero1.setHeroBooks(heroBooks);</span><br><span class="line">		hero2.setHeroBooks(heroBooks);</span><br><span class="line">		</span><br><span class="line">		hero3.getHeroBooks().add(book1);</span><br><span class="line">		hero3.getHeroBooks().add(book2);</span><br><span class="line">		</span><br><span class="line">		session.save(hero1);</span><br><span class="line">		session.save(hero2);</span><br><span class="line">		session.save(hero3);</span><br><span class="line">		</span><br><span class="line">		session.getTransaction().commit();</span><br><span class="line">		</span><br><span class="line">		HibernateProUtil.shutdown();</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>运行结果:</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br></pre></td><td class="code"><pre><span class="line">Hibernate: </span><br><span class="line">    </span><br><span class="line">    <span class="keyword">create</span> <span class="keyword">table</span> HERO (</span><br><span class="line">       HERO_ID <span class="type">bigint</span> <span class="keyword">not</span> <span class="keyword">null</span> auto_increment,</span><br><span class="line">        HERO_AGE <span class="type">integer</span>,</span><br><span class="line">        HERO_NAME <span class="type">varchar</span>(<span class="number">255</span>),</span><br><span class="line">        <span class="keyword">primary</span> key (HERO_ID)</span><br><span class="line">    ) engine<span class="operator">=</span>InnoDB</span><br><span class="line">Hibernate: </span><br><span class="line">    </span><br><span class="line">    <span class="keyword">create</span> <span class="keyword">table</span> HERO_BOOK (</span><br><span class="line">       HERO_BOOK_ID <span class="type">bigint</span> <span class="keyword">not</span> <span class="keyword">null</span> auto_increment,</span><br><span class="line">        HERO_BOOK_NAME <span class="type">varchar</span>(<span class="number">255</span>),</span><br><span class="line">        HERO_BOOK_PRICE <span class="type">float</span>,</span><br><span class="line">        <span class="keyword">primary</span> key (HERO_BOOK_ID)</span><br><span class="line">    ) engine<span class="operator">=</span>InnoDB</span><br><span class="line">Hibernate: </span><br><span class="line">    </span><br><span class="line">    <span class="keyword">create</span> <span class="keyword">table</span> heroes_mapping (</span><br><span class="line">       HERO_ID <span class="type">bigint</span> <span class="keyword">not</span> <span class="keyword">null</span>,</span><br><span class="line">        HERO_BOOK_ID <span class="type">bigint</span> <span class="keyword">not</span> <span class="keyword">null</span>,</span><br><span class="line">        <span class="keyword">primary</span> key (HERO_ID, HERO_BOOK_ID)</span><br><span class="line">    ) engine<span class="operator">=</span>InnoDB</span><br><span class="line">Hibernate: </span><br><span class="line">    </span><br><span class="line">    <span class="keyword">alter</span> <span class="keyword">table</span> heroes_mapping </span><br><span class="line">       <span class="keyword">add</span> <span class="keyword">constraint</span> FKrkhpo49wk4l3waye5i32x884m </span><br><span class="line">       <span class="keyword">foreign</span> key (HERO_BOOK_ID) </span><br><span class="line">       <span class="keyword">references</span> HERO_BOOK (HERO_BOOK_ID)</span><br><span class="line">Hibernate: </span><br><span class="line">    </span><br><span class="line">    <span class="keyword">alter</span> <span class="keyword">table</span> heroes_mapping </span><br><span class="line">       <span class="keyword">add</span> <span class="keyword">constraint</span> FKbf749uoxlaf3ys4suui71jx4k </span><br><span class="line">       <span class="keyword">foreign</span> key (HERO_ID) </span><br><span class="line">       <span class="keyword">references</span> HERO (HERO_ID)</span><br><span class="line">Hibernate: </span><br><span class="line">    <span class="keyword">insert</span> </span><br><span class="line">    <span class="keyword">into</span></span><br><span class="line">        HERO</span><br><span class="line">        (HERO_AGE, HERO_NAME) </span><br><span class="line">    <span class="keyword">values</span></span><br><span class="line">        (?, ?)</span><br><span class="line">Hibernate: </span><br><span class="line">    <span class="keyword">insert</span> </span><br><span class="line">    <span class="keyword">into</span></span><br><span class="line">        HERO_BOOK</span><br><span class="line">        (HERO_BOOK_NAME, HERO_BOOK_PRICE) </span><br><span class="line">    <span class="keyword">values</span></span><br><span class="line">        (?, ?)</span><br><span class="line">Hibernate: </span><br><span class="line">    <span class="keyword">insert</span> </span><br><span class="line">    <span class="keyword">into</span></span><br><span class="line">        HERO</span><br><span class="line">        (HERO_AGE, HERO_NAME) </span><br><span class="line">    <span class="keyword">values</span></span><br><span class="line">        (?, ?)</span><br><span class="line">Hibernate: </span><br><span class="line">    <span class="keyword">insert</span> </span><br><span class="line">    <span class="keyword">into</span></span><br><span class="line">        HERO</span><br><span class="line">        (HERO_AGE, HERO_NAME) </span><br><span class="line">    <span class="keyword">values</span></span><br><span class="line">        (?, ?)</span><br><span class="line">Hibernate: </span><br><span class="line">    <span class="keyword">insert</span> </span><br><span class="line">    <span class="keyword">into</span></span><br><span class="line">        HERO_BOOK</span><br><span class="line">        (HERO_BOOK_NAME, HERO_BOOK_PRICE) </span><br><span class="line">    <span class="keyword">values</span></span><br><span class="line">        (?, ?)</span><br><span class="line">Hibernate: </span><br><span class="line">    <span class="keyword">insert</span> </span><br><span class="line">    <span class="keyword">into</span></span><br><span class="line">        heroes_mapping</span><br><span class="line">        (HERO_ID, HERO_BOOK_ID) </span><br><span class="line">    <span class="keyword">values</span></span><br><span class="line">        (?, ?)</span><br><span class="line">Hibernate: </span><br><span class="line">    <span class="keyword">insert</span> </span><br><span class="line">    <span class="keyword">into</span></span><br><span class="line">        heroes_mapping</span><br><span class="line">        (HERO_ID, HERO_BOOK_ID) </span><br><span class="line">    <span class="keyword">values</span></span><br><span class="line">        (?, ?)</span><br><span class="line">Hibernate: </span><br><span class="line">    <span class="keyword">insert</span> </span><br><span class="line">    <span class="keyword">into</span></span><br><span class="line">        heroes_mapping</span><br><span class="line">        (HERO_ID, HERO_BOOK_ID) </span><br><span class="line">    <span class="keyword">values</span></span><br><span class="line">        (?, ?)</span><br><span class="line">Hibernate: </span><br><span class="line">    <span class="keyword">insert</span> </span><br><span class="line">    <span class="keyword">into</span></span><br><span class="line">        heroes_mapping</span><br><span class="line">        (HERO_ID, HERO_BOOK_ID) </span><br><span class="line">    <span class="keyword">values</span></span><br><span class="line">        (?, ?)</span><br></pre></td></tr></table></figure>
+
+<h2 id="代码下载"><a href="#代码下载" class="headerlink" title="代码下载"></a>代码下载</h2><p><a target="_blank" rel="noopener" href="http://wp-qn.devnp.com/2017/07/16/hibernate5-many-to-many-%E5%A4%9A%E5%AF%B9%E5%A4%9A-demo-annotation/java-hibernate-association-demo.zip">java-hibernate-association-demo.zip</a></p>
+
+        </div>
+
+        
+            <section class="post-copyright">
+                
+                    <p class="copyright-item">
+                        <span>Author:</span>
+                        <span>Darren Du</span>
+                    </p>
+                
+                
+                
+                    <p class="copyright-item">
+                        <span>License:</span>
+                        <span>Copyright (c) 2019 MIT LICENSE</span>
+                    </p>
+                
+                
+
+            </section>
+        
+        <section class="post-tags">
+            <div>
+                <span>Tag(s):</span>
+                <span class="tag">
+                    
+                    
+                        <a href="/tags/Java/"># Java</a>
+                    
+                        <a href="/tags/Hibernate/"># Hibernate</a>
+                    
+                        
+                </span>
+            </div>
+            <div>
+                <a href="javascript:window.history.back();">back</a>
+                <span>· </span>
+                <a href="/">home</a>
+            </div>
+        </section>
+        <section class="post-nav">
+            
+                <a class="prev" rel="prev" href="/2017/07/24/Spring%20Boot%20-%20Hello%20Wolrd%20(Thymeleaf)/">Spring Boot - Hello Wolrd (Thymeleaf)</a>
+            
+            
+            <a class="next" rel="next" href="/2017/07/02/Python(3.x)%20Transaction%20%E4%BA%8B%E7%89%A9%E7%9A%84%E7%AE%A1%E7%90%86/">Python(3.x) Transaction 事物的管理</a>
+            
+        </section>
+
+
+    </article>
+</div>
+
+        </div>
+        <footer id="footer" class="footer">
+    <div class="copyright">
+        <span>© Darren Du | Powered by <a href="https://hexo.io" target="_blank">Hexo</a> & <a href="https://github.com/Siricee/hexo-theme-Chic" target="_blank">Chic</a></span>
+    </div>
+</footer>
+
+    </div>
+</body>
+</html>

@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <meta name="author" content="Darren Du">
+
+
+
+    <meta name="description" content="Dev">
+
+
+
+<title>Spring4 Bean Scope bean的作用域 | Du Liu&#39;s Blog</title>
+
+
+
+    <link rel="icon" href="/favicon.ico">
+
+
+
+
+    <!-- stylesheets list from _config.yml -->
+    
+    <link rel="stylesheet" href="/css/style.css">
+    
+
+
+
+    <!-- scripts list from _config.yml -->
+    
+    <script src="/js/script.js"></script>
+    
+    <script src="/js/tocbot.min.js"></script>
+    
+
+
+
+    
+    
+        
+    
+
+
+<meta name="generator" content="Hexo 6.2.0"></head>
+<body>
+    <div class="wrapper">
+        <header>
+    <nav class="navbar">
+        <div class="container">
+            <div class="navbar-header header-logo"><a href="/">Du Liu&#39;s Blog</a></div>
+            <div class="menu navbar-right">
+                
+                    <a class="menu-item" href="/archives">Posts</a>
+                
+                    <a class="menu-item" href="/category">Categories</a>
+                
+                    <a class="menu-item" href="/tag">Tags</a>
+                
+                    <a class="menu-item" href="/about">About</a>
+                
+                <input id="switch_default" type="checkbox" class="switch_default">
+                <label for="switch_default" class="toggleBtn"></label>
+            </div>
+
+        </div>
+    </nav>
+
+    
+    <nav class="navbar-mobile" id="nav-mobile">
+        <div class="container">
+            <div class="navbar-header">
+                <div>
+                    <a href="/">Du Liu&#39;s Blog</a><a id="mobile-toggle-theme">·&nbsp;Light</a>
+                </div>
+                <div class="menu-toggle" onclick="mobileBtn()">&#9776; Menu</div>
+            </div>
+            <div class="menu" id="mobile-menu">
+                
+                    <a class="menu-item" href="/archives">Posts</a>
+                
+                    <a class="menu-item" href="/category">Categories</a>
+                
+                    <a class="menu-item" href="/tag">Tags</a>
+                
+                    <a class="menu-item" href="/about">About</a>
+                
+            </div>
+        </div>
+    </nav>
+
+</header>
+<script>
+    var mobileBtn = function f() {
+        var toggleMenu = document.getElementsByClassName("menu-toggle")[0];
+        var mobileMenu = document.getElementById("mobile-menu");
+        if(toggleMenu.classList.contains("active")){
+           toggleMenu.classList.remove("active")
+            mobileMenu.classList.remove("active")
+        }else{
+            toggleMenu.classList.add("active")
+            mobileMenu.classList.add("active")
+        }
+    }
+</script>
+        <div class="main">
+            <div class="container">
+    
+    
+
+    
+    <article class="post-wrap">
+        <header class="post-header">
+            <h1 class="post-title">Spring4 Bean Scope bean的作用域</h1>
+            
+                <div class="post-meta">
+                    
+                        Author: <a itemprop="author" rel="author" href="/">Darren Du</a>
+                    
+
+                    
+                        <span class="post-time">
+                        Date: <a href="#">January 14, 2017&nbsp;&nbsp;15:55:10</a>
+                        </span>
+                    
+                    
+                        <span class="post-category">
+                    Category:
+                            
+                                <a href="/categories/Java-Framework/">Java Framework</a>
+                            
+                                <a href="/categories/Java-Framework/Spring-Framework/">Spring Framework</a>
+                            
+                        </span>
+                    
+                </div>
+            
+        </header>
+
+        <div class="post-content">
+            <p>Spring4 bean的作用域包含以下几种，同时你也可以创建自己定义的作用域。</p>
+<p><strong>官网解释：</strong></p>
+<p><a class="link" title="7.5.1 The singleton scope" target="_blank" rel="noopener" href="http://docs.spring.io/spring/docs/current/spring-framework-reference/htmlsingle/#beans-factory-scopes-singleton"><code>singleton</code></a></p>
+<p>(Default) Scopes a single bean definition to a single object instance per Spring IoC container.<br>译：（默认方式）在Spring IoC容器中都只有单个对象实例。</p>
+<p><a class="link" title="7.5.2 The prototype scope" target="_blank" rel="noopener" href="http://docs.spring.io/spring/docs/current/spring-framework-reference/htmlsingle/#beans-factory-scopes-prototype"><code>prototype</code></a></p>
+<p>Scopes a single bean definition to any number of object instances.<br>译：将单个bean定义范围限定为任意数量的对象实例。</p>
+<p><a class="link" title="Request scope" target="_blank" rel="noopener" href="http://docs.spring.io/spring/docs/current/spring-framework-reference/htmlsingle/#beans-factory-scopes-request">request</a></p>
+<p>Scopes a single bean definition to the lifecycle of a single HTTP request; that is, each HTTP request has its own instance of a bean created off the back of a single bean definition. Only valid in the context of a web-aware Spring ApplicationContext.<br>译：将单个bean定义的范围限定为单个HTTP请求的生命周期; 也就是说，每个HTTP请求都有自己的bean实例，它是从单个bean定义的后面创建的。 仅在Web感知Spring  ApplicationContext 的上下文中有效。</p>
+<p><a class="link" title="Session scope" target="_blank" rel="noopener" href="http://docs.spring.io/spring/docs/current/spring-framework-reference/htmlsingle/#beans-factory-scopes-session">session</a></p>
+<p>Scopes a single bean definition to the lifecycle of an HTTP <code class="literal">Session</code>. Only valid in the context of a web-aware Spring ApplicationContext.<br>译：将单个bean定义范围限定为HTTP Session 的生命周期。 仅在Web感知Spring ApplicationContext 的上下文中有效。</code></p>
+<p><a class="link" title="Global session scope" target="_blank" rel="noopener" href="http://docs.spring.io/spring/docs/current/spring-framework-reference/htmlsingle/#beans-factory-scopes-global-session"><code>globalSession</code></a></p>
+<p>Scopes a single bean definition to the lifecycle of a global HTTP Session. Typically only valid when used in a Portlet context. Only valid in the context of a web-aware Spring ApplicationContext.<br>译：将单个bean定义的范围限定为全局HTTP会话的生命周期。 通常仅在在Portlet上下文中使用时有效。 只在Web感知Spring ApplicationContext的上下文中有效。</p>
+<p><a class="link" title="Application scope" target="_blank" rel="noopener" href="http://docs.spring.io/spring/docs/current/spring-framework-reference/htmlsingle/#beans-factory-scopes-application"><code>application</code></a></p>
+<p>Scopes a single bean definition to the lifecycle of a ServletContext. Only valid in the context of a web-aware Spring ApplicationContext.<br>译：将单个bean定义范围限定为ServletContext的生命周期。 只在Web感知Spring ApplicationContext的上下文中有效。</p>
+<p><a class="link" title="26.4.15 WebSocket Scope" target="_blank" rel="noopener" href="http://docs.spring.io/spring/docs/current/spring-framework-reference/htmlsingle/#websocket-stomp-websocket-scope"><code>websocket</code></a></p>
+<p>Scopes a single bean definition to the lifecycle of a WebSocket. Only valid in the context of a web-aware Spring ApplicationContext.<br>译: 将单个bean定义范围限定为WebSocket的生命周期。 只在Web感知Spring ApplicationContext的上下文中有效。</p>
+
+        </div>
+
+        
+            <section class="post-copyright">
+                
+                    <p class="copyright-item">
+                        <span>Author:</span>
+                        <span>Darren Du</span>
+                    </p>
+                
+                
+                
+                    <p class="copyright-item">
+                        <span>License:</span>
+                        <span>Copyright (c) 2019 MIT LICENSE</span>
+                    </p>
+                
+                
+
+            </section>
+        
+        <section class="post-tags">
+            <div>
+                <span>Tag(s):</span>
+                <span class="tag">
+                    
+                    
+                        <a href="/tags/Java/"># Java</a>
+                    
+                        <a href="/tags/Spring/"># Spring</a>
+                    
+                        
+                </span>
+            </div>
+            <div>
+                <a href="javascript:window.history.back();">back</a>
+                <span>· </span>
+                <a href="/">home</a>
+            </div>
+        </section>
+        <section class="post-nav">
+            
+                <a class="prev" rel="prev" href="/2017/02/16/%E6%8C%87%E5%AE%9AIE%E6%96%87%E6%A1%A3%E6%A8%A1%E5%BC%8F/">指定IE文档模式</a>
+            
+            
+            <a class="next" rel="next" href="/2017/01/14/Spring%20Arbitrary%20method%20replacement%20%E6%96%B9%E6%B3%95%E7%9A%84%E6%9B%BF%E6%8D%A2/">Spring Arbitrary method replacement 方法的替换</a>
+            
+        </section>
+
+
+    </article>
+</div>
+
+        </div>
+        <footer id="footer" class="footer">
+    <div class="copyright">
+        <span>© Darren Du | Powered by <a href="https://hexo.io" target="_blank">Hexo</a> & <a href="https://github.com/Siricee/hexo-theme-Chic" target="_blank">Chic</a></span>
+    </div>
+</footer>
+
+    </div>
+</body>
+</html>

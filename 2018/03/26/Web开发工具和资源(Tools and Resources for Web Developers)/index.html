@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <meta name="author" content="Darren Du">
+
+
+
+    <meta name="description" content="Dev">
+
+
+
+<title>Web开发工具和资源(Tools and Resources for Web Developers) | Du Liu&#39;s Blog</title>
+
+
+
+    <link rel="icon" href="/favicon.ico">
+
+
+
+
+    <!-- stylesheets list from _config.yml -->
+    
+    <link rel="stylesheet" href="/css/style.css">
+    
+
+
+
+    <!-- scripts list from _config.yml -->
+    
+    <script src="/js/script.js"></script>
+    
+    <script src="/js/tocbot.min.js"></script>
+    
+
+
+
+    
+    
+        
+    
+
+
+<meta name="generator" content="Hexo 6.2.0"></head>
+<body>
+    <div class="wrapper">
+        <header>
+    <nav class="navbar">
+        <div class="container">
+            <div class="navbar-header header-logo"><a href="/">Du Liu&#39;s Blog</a></div>
+            <div class="menu navbar-right">
+                
+                    <a class="menu-item" href="/archives">Posts</a>
+                
+                    <a class="menu-item" href="/category">Categories</a>
+                
+                    <a class="menu-item" href="/tag">Tags</a>
+                
+                    <a class="menu-item" href="/about">About</a>
+                
+                <input id="switch_default" type="checkbox" class="switch_default">
+                <label for="switch_default" class="toggleBtn"></label>
+            </div>
+
+        </div>
+    </nav>
+
+    
+    <nav class="navbar-mobile" id="nav-mobile">
+        <div class="container">
+            <div class="navbar-header">
+                <div>
+                    <a href="/">Du Liu&#39;s Blog</a><a id="mobile-toggle-theme">·&nbsp;Light</a>
+                </div>
+                <div class="menu-toggle" onclick="mobileBtn()">&#9776; Menu</div>
+            </div>
+            <div class="menu" id="mobile-menu">
+                
+                    <a class="menu-item" href="/archives">Posts</a>
+                
+                    <a class="menu-item" href="/category">Categories</a>
+                
+                    <a class="menu-item" href="/tag">Tags</a>
+                
+                    <a class="menu-item" href="/about">About</a>
+                
+            </div>
+        </div>
+    </nav>
+
+</header>
+<script>
+    var mobileBtn = function f() {
+        var toggleMenu = document.getElementsByClassName("menu-toggle")[0];
+        var mobileMenu = document.getElementById("mobile-menu");
+        if(toggleMenu.classList.contains("active")){
+           toggleMenu.classList.remove("active")
+            mobileMenu.classList.remove("active")
+        }else{
+            toggleMenu.classList.add("active")
+            mobileMenu.classList.add("active")
+        }
+    }
+</script>
+        <div class="main">
+            <div class="container">
+    
+    
+        <div class="post-toc">
+    <div class="tocbot-list">
+    </div>
+    <div class="tocbot-list-menu">
+        <a class="tocbot-toc-expand" onclick="expand_toc()">Expand all</a>
+        <a onclick="go_top()">Back to top</a>
+        <a onclick="go_bottom()">Go to bottom</a>
+    </div>
+</div>
+
+<script>
+    document.ready(
+        function () {
+            tocbot.init({
+                tocSelector: '.tocbot-list',
+                contentSelector: '.post-content',
+                headingSelector: 'h1, h2, h3, h4, h5',
+                collapseDepth: 1,
+                orderedList: false,
+                scrollSmooth: true,
+            })
+        }
+    )
+
+    function expand_toc() {
+        var b = document.querySelector(".tocbot-toc-expand");
+        tocbot.init({
+            tocSelector: '.tocbot-list',
+            contentSelector: '.post-content',
+            headingSelector: 'h1, h2, h3, h4, h5',
+            collapseDepth: 6,
+            orderedList: false,
+            scrollSmooth: true,
+        });
+        b.setAttribute("onclick", "collapse_toc()");
+        b.innerHTML = "Collapse all"
+    }
+
+    function collapse_toc() {
+        var b = document.querySelector(".tocbot-toc-expand");
+        tocbot.init({
+            tocSelector: '.tocbot-list',
+            contentSelector: '.post-content',
+            headingSelector: 'h1, h2, h3, h4, h5',
+            collapseDepth: 1,
+            orderedList: false,
+            scrollSmooth: true,
+        });
+        b.setAttribute("onclick", "expand_toc()");
+        b.innerHTML = "Expand all"
+    }
+
+    function go_top() {
+        window.scrollTo(0, 0);
+    }
+
+    function go_bottom() {
+        window.scrollTo(0, document.body.scrollHeight);
+    }
+
+</script>
+    
+
+    
+    <article class="post-wrap">
+        <header class="post-header">
+            <h1 class="post-title">Web开发工具和资源(Tools and Resources for Web Developers)</h1>
+            
+                <div class="post-meta">
+                    
+                        Author: <a itemprop="author" rel="author" href="/">Darren Du</a>
+                    
+
+                    
+                        <span class="post-time">
+                        Date: <a href="#">March 26, 2018&nbsp;&nbsp;11:56:47</a>
+                        </span>
+                    
+                    
+                        <span class="post-category">
+                    Category:
+                            
+                                <a href="/categories/Web%E5%BC%80%E5%8F%91%E5%B7%A5%E5%85%B7%E5%92%8C%E8%B5%84%E6%BA%90/">Web开发工具和资源</a>
+                            
+                        </span>
+                    
+                </div>
+            
+        </header>
+
+        <div class="post-content">
+            <h2 id="设计-Design"><a href="#设计-Design" class="headerlink" title="设计 Design"></a>设计 Design</h2><ul>
+     <li><a href="https://www.invisionapp.com" target="_blank" rel="noopener">InVision</a> -InVision使团队可以自由设计，审查和用户测试产品 - 所有这些都不需要一行代码。 通过直观的原型设计，任务管理和版本控制工具，整个设计过程都在一个地方。</li>
+     <li><a href="https://www.creative-tim.com/" target="_blank" rel="noopener">Creative Tim</a> - Creative Tim提供基于Bootstrap的设计元素，加速您的开发工作。 从插件到复杂的工具包，他们拥有您需要的一切。</li>
+     <li><a href="https://fonts.google.com/" target="_blank" rel="noopener">谷歌字体</a> - 谷歌字体帮助您使网页更美观，快速，并通过伟大的排版打开。</li>
+     <li><a href="https://unsplash.com/" target="_blank" rel="noopener">Unsplash</a> - Unsplash是找到优质且免版权的摄影的理想场所。</li>
+     <li><a href="https://color.hailpixel.com/" target="_blank" rel="noopener">Colordot</a> - Colordot是人类的颜色选择器。 它直观，快速，美观。</li>
+     <li><a href="https://dribbble.com/" target="_blank" rel="noopener">Dribbble</a> - Dribbble是一个展示和宣传，推广，发现和探索设计的地方。</li>
+     <li><a href="https://www.bypeople.com/" target="_blank" rel="noopener">ByPeople</a> - ByPeople.com是一个有用的资源（免费赠品，工具评论和代码片段）的内容网络。</li>
+     <li><a href="https://bootstrapstudio.io/" target="_blank" rel="noopener">Bootstrap Studio</a> - 一个功能强大的桌面应用程序，用于使用Bootstrap框架创建响应式网站。</li>
+     <li><a href="https://www.canva.com/" target="_blank" rel="noopener">Canva</a> - 使用Canva的拖放功能和专业布局设计始终令人惊叹的图形。</li>
+     <li><a href="https://pikwizard.com/" target="_blank" rel="noopener">Pikwizard</a> - 一个免费的股票照片网站。</li>
+</ul>
+
+
+<h2 id="协作工具-Collaboration-Tools"><a href="#协作工具-Collaboration-Tools" class="headerlink" title="协作工具 Collaboration Tools"></a>协作工具 Collaboration Tools</h2><ul>
+    <li><a href="https://slack.com" target="_blank">Slack</a> - Slack将您的所有通讯集中在一个地方。 它是实时消息传递，归档和搜索现代团队。</li>
+    <li><a href="https://trello.com" target="_blank">Trello</a> - Trello是管理项目和组织任何事情的简单，自由，灵活和可视化的方式。</li>
+    <li><a href="https://glip.com" target="_blank">RingCentral</a> - RingCentral是最先进的云通信解决方案的供应商，可帮助现代公司以他们所需的方式工作。</li>
+    <li><a href="https://asana.com/try" target="_blank">Asana</a> - Asana是团队跟踪他们工作并获得结果的最简单方式。</li>
+    <li><a href="https://www.hipchat.com" target="_blank">HipChat</a> - 群聊，视频聊天和屏幕共享。</li>
+    <li><a href="https://github.com" target="_blank">GitHub</a> - GitHub是一个受你工作方式启发的开发平台。 您可以托管和查看代码，管理项目，并与数百万其他开发人员一起构建软件。</li>
+    <li><a href="https://bitbucket.org" target="_blank">Bitbucket</a> - Bitbucket是专业团队的Git解决方案。</li>
+<li><a href="https://team.oschina.net/" rel="noopener" target="_blank"> - Team@OSC</a>Team@OSC 是一个团队协作开发平台,轻松管理轻量级团队。代码运行平台(PaaS)、代码质量检查应有尽有。</li>
+</ul>
+
+
+<h2 id="测试和展示-Testing-and-Showcasing"><a href="#测试和展示-Testing-and-Showcasing" class="headerlink" title="测试和展示 Testing and Showcasing"></a>测试和展示 Testing and Showcasing</h2><ul>
+ <li><a href="https://jsfiddle.net/" rel="noopener" target="_blank">jsfiddle</a> - JSFiddle是一个在线社区，用于测试和展示用户创建和合作的HTML，CSS和JavaScript代码片段，称为“小提琴”。 它允许模拟AJAX调用。</li>
+</ul>
+
+
+<h2 id="学习资源-Learning-Resources"><a href="#学习资源-Learning-Resources" class="headerlink" title="学习资源 Learning Resources"></a>学习资源 Learning Resources</h2><ul>
+    <li><a href="https://www.freecodecamp.com" target="_blank">freeCodeCamp</a> - 帮助您学习编码的开源社区。 </li>
+    <li><a href="https://www.codecademy.com" target="_blank">Codecademy</a> - Codecademy是我们团队学习，教授和创造未来在线学习体验的最佳场所。</li>
+    <li><a href="https://websitesetup.org/dreamweaver-tutorial/" target="_blank"> - Dreamweaver Tutorial</a> 使用Dreamweaver创建网站的分步指南。</li>
+    <li><a href="https://www.codeschool.com" target="_blank">CodeSchool</a> - 有抱负和有经验的开发人员的互动学习目的地。</li>
+    <li><a href="https://tutorialzine.com" target="_blank">Tutorialzine</a> - 一个有才华的开发者共同学习的社区。</li>
+    <li><a href="https://bento.io" target="_blank">Bento</a> - 顶级工程师提供免费的完整堆栈网络开发课程。</li>
+<li><a href="https://www.w3schools.com/" target="_blank">w3schools</a> - W3Schools是一个Web开发人员网站，提供有关Web开发语言（如HTML，CSS，JavaScript，PHP，SQL，W3.CSS和Bootstrap）的教程和参考资料，涵盖了Web编程的大多数方面。</li>
+</ul>
+
+
+<h2 id="前端框架-Front-end-Frameworks"><a href="#前端框架-Front-end-Frameworks" class="headerlink" title="前端框架 Front-end Frameworks"></a>前端框架 Front-end Frameworks</h2><ul>
+    <li><a href="http://getbootstrap.com" target="_blank">Bootstrap</a> - Bootstrap是用于在Web上开发响应式移动第一项目的最流行的HTML，CSS和JS框架。</li>
+    <li><a href="https://semantic-ui.com" target="_blank">Semantic UI</a> – 语义是一种开发框架，可帮助使用人性化的HTML创建漂亮，响应式布局。</li>
+    <li><a href="https://getuikit.com" target="_blank">UIkit</a> - 用于开发快速而强大的Web界面的轻量级和模块化前端框架。</li>
+    <li><a href="http://foundation.zurb.com" target="_blank">Foundation</a> – Foundation是一个响应式前端框架系列，可以轻松设计美观的响应式网站，应用程序和电子邮件，在任何设备上看起来都非常棒。</li>
+</ul>
+
+
+<h2 id="文本编辑器-Text-Editors"><a href="#文本编辑器-Text-Editors" class="headerlink" title="文本编辑器 Text Editors"></a>文本编辑器 Text Editors</h2><ul>
+    <li><a href="http://brackets.io" target="_blank">Brackets</a> – 一个理解网页设计的现代化开源文本编辑器。</li>
+    <li><a href="https://panic.com/coda/" target="_blank">Coda2</a> – Coda是您在一个漂亮的应用程序中手动编写网站所需的一切。</li>
+    <li><a href="https://code.visualstudio.com" target="_blank">Visual Studio Code</a> - Visual Studio Code是一个简化的代码编辑器，支持诸如调试，任务运行和版本控制等开发操作。</li>
+    <li><a href="http://www.sublimetext.com" target="_blank">Sublime Text</a> – Sublime Text是用于代码，标记和散文的复杂文本编辑器。</li>
+    <li><a href="https://atom.io" target="_blank">Atom</a> – Atom是一个使用HTML，JavaScript，CSS和Node.js集成构建的桌面应用程序。</li>
+    <li><a href="https://www.jetbrains.com/webstorm/" target="_blank">WebStorm</a> - 强大的IDE用于现代JavaScript开发。</li>
+</ul>
+
+
+<h2 id="图标-Icons"><a href="#图标-Icons" class="headerlink" title="图标 Icons"></a>图标 Icons</h2><ul>
+    <li><a href="https://www.swifticons.com" target="_blank">Swifticons</a> – Swifticons是一套优质的2,264个高质量图标，覆盖了6种可编辑风格的20个类别。</li>
+    <li><a href="https://icons8.com" target="_blank">Icons8</a> – 52,600个免费平面图标，任何格式，大小和颜色均可在20秒内完成。</li>
+    <li><a href="https://nucleoapp.com?ref=creativetim" target="_blank">Nucleo App</a> - Nucleo是一个拥有超级权力的图标库。</li>
+    <li><a href="https://www.iconfinder.com" target="_blank">Iconfinder</a> - Iconfinder为数百万创意专业人士提供高质量的图标。</li>
+    <li><a href="http://fontawesome.io" target="_blank">Font Awesome</a> – Font Awesome为您提供可立即定制的可缩放矢量图标 - 大小，颜色，阴影以及任何可以使用CSS强大功能的图标。</li>
+</ul>
+
+
+<h2 id="参考-Reference"><a href="#参考-Reference" class="headerlink" title="参考 Reference"></a>参考 Reference</h2><ul>
+ <li><a target="_blank" rel="noopener" href="http://blog.creative-tim.com/web-design/tools-and-resources-for-web-developers/">75 Tools and Resources for Web Developers</a></li>
+</ul>
+
+        </div>
+
+        
+            <section class="post-copyright">
+                
+                    <p class="copyright-item">
+                        <span>Author:</span>
+                        <span>Darren Du</span>
+                    </p>
+                
+                
+                
+                    <p class="copyright-item">
+                        <span>License:</span>
+                        <span>Copyright (c) 2019 MIT LICENSE</span>
+                    </p>
+                
+                
+
+            </section>
+        
+        <section class="post-tags">
+            <div>
+                <span>Tag(s):</span>
+                <span class="tag">
+                    
+                    
+                        <a href="/tags/Web%E5%BC%80%E5%8F%91%E5%B7%A5%E5%85%B7%E5%92%8C%E8%B5%84%E6%BA%90/"># Web开发工具和资源</a>
+                    
+                        
+                </span>
+            </div>
+            <div>
+                <a href="javascript:window.history.back();">back</a>
+                <span>· </span>
+                <a href="/">home</a>
+            </div>
+        </section>
+        <section class="post-nav">
+            
+                <a class="prev" rel="prev" href="/2018/04/03/Spring%20Boot%20%E5%9B%BD%E9%99%85%E5%8C%96%20(Spring%20Boot%20Internationalization%20Demo)/">Spring Boot 国际化 (Spring Boot Internationalization Demo)</a>
+            
+            
+            <a class="next" rel="next" href="/2018/03/10/zxing%20%E7%94%9F%E6%88%90%E4%BA%8C%E7%BB%B4%E7%A0%81%20(zxing%20Generate%20QRCode)/">zxing 生成二维码 (zxing Generate QRCode)</a>
+            
+        </section>
+
+
+    </article>
+</div>
+
+        </div>
+        <footer id="footer" class="footer">
+    <div class="copyright">
+        <span>© Darren Du | Powered by <a href="https://hexo.io" target="_blank">Hexo</a> & <a href="https://github.com/Siricee/hexo-theme-Chic" target="_blank">Chic</a></span>
+    </div>
+</footer>
+
+    </div>
+</body>
+</html>

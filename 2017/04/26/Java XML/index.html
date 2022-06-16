@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <meta name="author" content="Darren Du">
+
+
+
+    <meta name="description" content="Dev">
+
+
+
+<title>Java XML | Du Liu&#39;s Blog</title>
+
+
+
+    <link rel="icon" href="/favicon.ico">
+
+
+
+
+    <!-- stylesheets list from _config.yml -->
+    
+    <link rel="stylesheet" href="/css/style.css">
+    
+
+
+
+    <!-- scripts list from _config.yml -->
+    
+    <script src="/js/script.js"></script>
+    
+    <script src="/js/tocbot.min.js"></script>
+    
+
+
+
+    
+    
+        
+    
+
+
+<meta name="generator" content="Hexo 6.2.0"></head>
+<body>
+    <div class="wrapper">
+        <header>
+    <nav class="navbar">
+        <div class="container">
+            <div class="navbar-header header-logo"><a href="/">Du Liu&#39;s Blog</a></div>
+            <div class="menu navbar-right">
+                
+                    <a class="menu-item" href="/archives">Posts</a>
+                
+                    <a class="menu-item" href="/category">Categories</a>
+                
+                    <a class="menu-item" href="/tag">Tags</a>
+                
+                    <a class="menu-item" href="/about">About</a>
+                
+                <input id="switch_default" type="checkbox" class="switch_default">
+                <label for="switch_default" class="toggleBtn"></label>
+            </div>
+
+        </div>
+    </nav>
+
+    
+    <nav class="navbar-mobile" id="nav-mobile">
+        <div class="container">
+            <div class="navbar-header">
+                <div>
+                    <a href="/">Du Liu&#39;s Blog</a><a id="mobile-toggle-theme">·&nbsp;Light</a>
+                </div>
+                <div class="menu-toggle" onclick="mobileBtn()">&#9776; Menu</div>
+            </div>
+            <div class="menu" id="mobile-menu">
+                
+                    <a class="menu-item" href="/archives">Posts</a>
+                
+                    <a class="menu-item" href="/category">Categories</a>
+                
+                    <a class="menu-item" href="/tag">Tags</a>
+                
+                    <a class="menu-item" href="/about">About</a>
+                
+            </div>
+        </div>
+    </nav>
+
+</header>
+<script>
+    var mobileBtn = function f() {
+        var toggleMenu = document.getElementsByClassName("menu-toggle")[0];
+        var mobileMenu = document.getElementById("mobile-menu");
+        if(toggleMenu.classList.contains("active")){
+           toggleMenu.classList.remove("active")
+            mobileMenu.classList.remove("active")
+        }else{
+            toggleMenu.classList.add("active")
+            mobileMenu.classList.add("active")
+        }
+    }
+</script>
+        <div class="main">
+            <div class="container">
+    
+    
+        <div class="post-toc">
+    <div class="tocbot-list">
+    </div>
+    <div class="tocbot-list-menu">
+        <a class="tocbot-toc-expand" onclick="expand_toc()">Expand all</a>
+        <a onclick="go_top()">Back to top</a>
+        <a onclick="go_bottom()">Go to bottom</a>
+    </div>
+</div>
+
+<script>
+    document.ready(
+        function () {
+            tocbot.init({
+                tocSelector: '.tocbot-list',
+                contentSelector: '.post-content',
+                headingSelector: 'h1, h2, h3, h4, h5',
+                collapseDepth: 1,
+                orderedList: false,
+                scrollSmooth: true,
+            })
+        }
+    )
+
+    function expand_toc() {
+        var b = document.querySelector(".tocbot-toc-expand");
+        tocbot.init({
+            tocSelector: '.tocbot-list',
+            contentSelector: '.post-content',
+            headingSelector: 'h1, h2, h3, h4, h5',
+            collapseDepth: 6,
+            orderedList: false,
+            scrollSmooth: true,
+        });
+        b.setAttribute("onclick", "collapse_toc()");
+        b.innerHTML = "Collapse all"
+    }
+
+    function collapse_toc() {
+        var b = document.querySelector(".tocbot-toc-expand");
+        tocbot.init({
+            tocSelector: '.tocbot-list',
+            contentSelector: '.post-content',
+            headingSelector: 'h1, h2, h3, h4, h5',
+            collapseDepth: 1,
+            orderedList: false,
+            scrollSmooth: true,
+        });
+        b.setAttribute("onclick", "expand_toc()");
+        b.innerHTML = "Expand all"
+    }
+
+    function go_top() {
+        window.scrollTo(0, 0);
+    }
+
+    function go_bottom() {
+        window.scrollTo(0, document.body.scrollHeight);
+    }
+
+</script>
+    
+
+    
+    <article class="post-wrap">
+        <header class="post-header">
+            <h1 class="post-title">Java XML</h1>
+            
+                <div class="post-meta">
+                    
+                        Author: <a itemprop="author" rel="author" href="/">Darren Du</a>
+                    
+
+                    
+                        <span class="post-time">
+                        Date: <a href="#">April 26, 2017&nbsp;&nbsp;12:02:23</a>
+                        </span>
+                    
+                    
+                </div>
+            
+        </header>
+
+        <div class="post-content">
+            <p>在Java 中有多种方式可以对XML进行操作，其中以 <em><strong>DOM</strong></em> 和 <em><strong>SAX</strong></em> 为主要方式，他们也存在不同的特性。</p>
+<h2 id="DOM-XML-解析"><a href="#DOM-XML-解析" class="headerlink" title="DOM XML 解析"></a>DOM XML 解析</h2><p>DOM (Document Object Model) 是最简单的Java XML 解析器。 它解析整个XML文档并将其加载到内存中，使用Object对其进行建模，以便轻松进行节点遍历。 DOM解析器缓慢，如果加载包含大量数据的XML文档，则消耗大量内存。<br>由于它是基于信息层次的，因而 DOM 被认为是基于树或基于对象的。DOM 以及广义的基于树的处理具有几个优点。首先，由于树在内存中是持久的，因此可以修改它以便应用程序能对数据和结构作出更改。它还可以在任何时候在树中上下导航，而不是像 SAX 那样是一次性的处理。DOM 使用起来也要简单得多。 </p>
+<p>使用DOM方式来创建文件<br><a href="http://www.devnp.com/2017/04/23/java-xml-dom-%e5%88%9b%e5%bb%baxml%e6%96%87%e4%bb%b6/" target="_blank">Java XML DOM 创建XML文件</a></p>
+<p>使用DOM方式来修改文件，主要包括修改id属性的值，添加一个address节点，删除age节点，同时更新performance节点的值。<br><a href="http://www.devnp.com/2017/04/24/java-xml-dom-%e4%bf%ae%e6%94%b9xml%e6%96%87%e4%bb%b6/" target="_blank">Java XML DOM 修改XML文件</a></p>
+<p>使用DOM方式来读取文件<br><a href="http://www.devnp.com/2017/05/23/java-xml-dom-%e8%af%bb%e5%8f%96xml%e6%96%87%e4%bb%b6/" target="_blank">Java XML DOM 读取XML文件</a></p>
+<h2 id="SAX-XML-解析"><a href="#SAX-XML-解析" class="headerlink" title="SAX XML 解析"></a>SAX XML 解析</h2><p>SAX (Simple API for XML) 解析器采用了基于事件的模型，它在解析 XML 文档的时候可以触发一系列的事件，当发现给定的tag的时候，它可以激活一个回调方法，告诉该方法制定的标签已经找到。它不会将任何XML文档加载到内存中并创建XML文档的一些对象表示。 相反，SAX解析器使用回调函数（<em>org.xml.sax.helpers.DefaultHandler</em>）通知客户端XML文档结构。<br>实现SAX了的解析器拥有事件驱动式的API，并像流读取器那样工作。由使用者定义回调函数，解析时，若发生事件的话会被调用。SAX事件包括：<br>XML 文字 节点 &lt;– (Text nodes) –&gt;<br>XML 元素 节点 &lt;– (Element nodes) –&gt;<br>XML 处理指令 &lt;– (Processing Instructions) –&gt;<br>XML 注释 &lt;– (Comments) –&gt;<br>事件在遇到任一XML特性时触发，以及遇到他们结尾时再次触发。XML属性也作为传给元素事件资料的一部分。<br>SAX运行时是单向的；解析过的资料无法在不重新开始的情况下再次读取。<br>因为SAX事件驱动的本质，所以处理文件通常会比DOM风格的解析器快。</p>
+
+        </div>
+
+        
+            <section class="post-copyright">
+                
+                    <p class="copyright-item">
+                        <span>Author:</span>
+                        <span>Darren Du</span>
+                    </p>
+                
+                
+                
+                    <p class="copyright-item">
+                        <span>License:</span>
+                        <span>Copyright (c) 2019 MIT LICENSE</span>
+                    </p>
+                
+                
+
+            </section>
+        
+        <section class="post-tags">
+            <div>
+                <span>Tag(s):</span>
+                <span class="tag">
+                    
+                </span>
+            </div>
+            <div>
+                <a href="javascript:window.history.back();">back</a>
+                <span>· </span>
+                <a href="/">home</a>
+            </div>
+        </section>
+        <section class="post-nav">
+            
+                <a class="prev" rel="prev" href="/2017/05/23/Java%20XML%20DOM%20%E8%AF%BB%E5%8F%96XML%E6%96%87%E4%BB%B6/">Java XML DOM 读取XML文件</a>
+            
+            
+            <a class="next" rel="next" href="/2017/04/25/Java%20MSSQL%20%E8%BF%9E%E6%8E%A5/">Java MSSQL 连接</a>
+            
+        </section>
+
+
+    </article>
+</div>
+
+        </div>
+        <footer id="footer" class="footer">
+    <div class="copyright">
+        <span>© Darren Du | Powered by <a href="https://hexo.io" target="_blank">Hexo</a> & <a href="https://github.com/Siricee/hexo-theme-Chic" target="_blank">Chic</a></span>
+    </div>
+</footer>
+
+    </div>
+</body>
+</html>

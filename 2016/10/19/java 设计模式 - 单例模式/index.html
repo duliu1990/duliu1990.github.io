@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <meta name="author" content="Darren Du">
+
+
+
+    <meta name="description" content="Dev">
+
+
+
+<title>java 设计模式 - 单例模式 | Du Liu&#39;s Blog</title>
+
+
+
+    <link rel="icon" href="/favicon.ico">
+
+
+
+
+    <!-- stylesheets list from _config.yml -->
+    
+    <link rel="stylesheet" href="/css/style.css">
+    
+
+
+
+    <!-- scripts list from _config.yml -->
+    
+    <script src="/js/script.js"></script>
+    
+    <script src="/js/tocbot.min.js"></script>
+    
+
+
+
+    
+    
+        
+    
+
+
+<meta name="generator" content="Hexo 6.2.0"></head>
+<body>
+    <div class="wrapper">
+        <header>
+    <nav class="navbar">
+        <div class="container">
+            <div class="navbar-header header-logo"><a href="/">Du Liu&#39;s Blog</a></div>
+            <div class="menu navbar-right">
+                
+                    <a class="menu-item" href="/archives">Posts</a>
+                
+                    <a class="menu-item" href="/category">Categories</a>
+                
+                    <a class="menu-item" href="/tag">Tags</a>
+                
+                    <a class="menu-item" href="/about">About</a>
+                
+                <input id="switch_default" type="checkbox" class="switch_default">
+                <label for="switch_default" class="toggleBtn"></label>
+            </div>
+
+        </div>
+    </nav>
+
+    
+    <nav class="navbar-mobile" id="nav-mobile">
+        <div class="container">
+            <div class="navbar-header">
+                <div>
+                    <a href="/">Du Liu&#39;s Blog</a><a id="mobile-toggle-theme">·&nbsp;Light</a>
+                </div>
+                <div class="menu-toggle" onclick="mobileBtn()">&#9776; Menu</div>
+            </div>
+            <div class="menu" id="mobile-menu">
+                
+                    <a class="menu-item" href="/archives">Posts</a>
+                
+                    <a class="menu-item" href="/category">Categories</a>
+                
+                    <a class="menu-item" href="/tag">Tags</a>
+                
+                    <a class="menu-item" href="/about">About</a>
+                
+            </div>
+        </div>
+    </nav>
+
+</header>
+<script>
+    var mobileBtn = function f() {
+        var toggleMenu = document.getElementsByClassName("menu-toggle")[0];
+        var mobileMenu = document.getElementById("mobile-menu");
+        if(toggleMenu.classList.contains("active")){
+           toggleMenu.classList.remove("active")
+            mobileMenu.classList.remove("active")
+        }else{
+            toggleMenu.classList.add("active")
+            mobileMenu.classList.add("active")
+        }
+    }
+</script>
+        <div class="main">
+            <div class="container">
+    
+    
+        <div class="post-toc">
+    <div class="tocbot-list">
+    </div>
+    <div class="tocbot-list-menu">
+        <a class="tocbot-toc-expand" onclick="expand_toc()">Expand all</a>
+        <a onclick="go_top()">Back to top</a>
+        <a onclick="go_bottom()">Go to bottom</a>
+    </div>
+</div>
+
+<script>
+    document.ready(
+        function () {
+            tocbot.init({
+                tocSelector: '.tocbot-list',
+                contentSelector: '.post-content',
+                headingSelector: 'h1, h2, h3, h4, h5',
+                collapseDepth: 1,
+                orderedList: false,
+                scrollSmooth: true,
+            })
+        }
+    )
+
+    function expand_toc() {
+        var b = document.querySelector(".tocbot-toc-expand");
+        tocbot.init({
+            tocSelector: '.tocbot-list',
+            contentSelector: '.post-content',
+            headingSelector: 'h1, h2, h3, h4, h5',
+            collapseDepth: 6,
+            orderedList: false,
+            scrollSmooth: true,
+        });
+        b.setAttribute("onclick", "collapse_toc()");
+        b.innerHTML = "Collapse all"
+    }
+
+    function collapse_toc() {
+        var b = document.querySelector(".tocbot-toc-expand");
+        tocbot.init({
+            tocSelector: '.tocbot-list',
+            contentSelector: '.post-content',
+            headingSelector: 'h1, h2, h3, h4, h5',
+            collapseDepth: 1,
+            orderedList: false,
+            scrollSmooth: true,
+        });
+        b.setAttribute("onclick", "expand_toc()");
+        b.innerHTML = "Expand all"
+    }
+
+    function go_top() {
+        window.scrollTo(0, 0);
+    }
+
+    function go_bottom() {
+        window.scrollTo(0, document.body.scrollHeight);
+    }
+
+</script>
+    
+
+    
+    <article class="post-wrap">
+        <header class="post-header">
+            <h1 class="post-title">java 设计模式 - 单例模式</h1>
+            
+                <div class="post-meta">
+                    
+                        Author: <a itemprop="author" rel="author" href="/">Darren Du</a>
+                    
+
+                    
+                        <span class="post-time">
+                        Date: <a href="#">October 19, 2016&nbsp;&nbsp;22:59:40</a>
+                        </span>
+                    
+                    
+                </div>
+            
+        </header>
+
+        <div class="post-content">
+            <h2 id="单例模式-Singleton-Pattern"><a href="#单例模式-Singleton-Pattern" class="headerlink" title="单例模式:Singleton Pattern"></a>单例模式:Singleton Pattern</h2><p>对象类型的创建只有一个实例，单例类必须自己创建自己的唯一实例。<br>优点：1、在内存里只有一个实例，减少了内存的开销，尤其是频繁的创建和销毁实例（比如管理学院首页页面缓存）。 2、避免对资源的多重占用（比如写文件操作）。<br>缺点：没有接口，不能继承，与单一职责原则冲突，一个类应该只关心内部逻辑，而不关心外面怎么样来实例化。</p>
+<h3 id="方式一："><a href="#方式一：" class="headerlink" title="方式一："></a>方式一：</h3><p>[java]package com.proliu.designPatterns.single;<br>/**</p>
+<ul>
+<li>@author duliu</li>
+<li>没有加锁，执行效率会提高, 类加载时就初始化，浪费内存。</li>
+<li></li>
+<li>/<br>public class SingleObject {</li>
+</ul>
+<p>private static SingleObject singleObject = new SingleObject();</p>
+<p>public SingleObject(){</p>
+<p>}</p>
+<p>public static SingleObject getInstance(){<br>return singleObject;<br>}</p>
+<p>public void outMsg(){<br>System.out.println(“Hello, This is Single Object.” + this.getClass().hashCode());<br>}<br>}[/java]</p>
+<h3 id="方式二："><a href="#方式二：" class="headerlink" title="方式二："></a>方式二：</h3><p>[java]package com.proliu.designPatterns.single;</p>
+<p>/**</p>
+<ul>
+<li>@author duliu</li>
+<li>这种方式是最基本的实现方式，这种实现最大的问题就是不支持多线程。因为没有加锁 synchronized.</li>
+<li>/<br>public class SingleObjectTwo {</li>
+</ul>
+<p>private static SingleObjectTwo singleObjectTwo ;</p>
+<p>public SingleObjectTwo(){</p>
+<p>}</p>
+<p>public static SingleObjectTwo getInstance(){<br>if(singleObjectTwo == null){<br>singleObjectTwo = new SingleObjectTwo();<br>}</p>
+<p>return singleObjectTwo;<br>}</p>
+<p>public void outMsg(){<br>System.out.println(“Hello, This is Single Object Two.” + this.getClass().hashCode());<br>}<br>}[/java]</p>
+<p>方式三：</p>
+<p>[java]package com.proliu.designPatterns.single;</p>
+<p>/**<br>*</p>
+<ul>
+<li>@author duliu</li>
+<li>第一次调用才初始化，避免内存浪费, 必须加锁 synchronized 才能保证单例，但加锁会影响效率。</li>
+<li></li>
+<li>/<br>public class SingleObjectThree {</li>
+</ul>
+<p>private static SingleObjectThree singleObjectThree ;</p>
+<p>public SingleObjectThree(){</p>
+<p>}</p>
+<p>/**</p>
+<ul>
+<li>同步块大家都比较熟悉，通过 synchronized 关键字来实现，所有加上synchronized 和 块语句，</li>
+<li>在多线程访问的时候，同一时刻只能有一个线程能够用synchronized 修饰的方法 或者 代码块。</li>
+<li>@return</li>
+<li>/<br>public static synchronized SingleObjectThree getInstance(){<br>if(singleObjectThree == null){<br>singleObjectThree = new SingleObjectThree();<br>}</li>
+</ul>
+<p>return singleObjectThree;<br>}</p>
+<p>public void outMsg(){<br>System.out.println(“Hello, This is Single Object Three.” + this.getClass().hashCode());<br>}<br>}[/java]</p>
+<h3 id="方式四："><a href="#方式四：" class="headerlink" title="方式四："></a>方式四：</h3><p>[java]package com.proliu.designPatterns.single;</p>
+<p>/**</p>
+<ul>
+<li>@author duliu</li>
+<li>这种方式采用双锁机制，安全且在多线程情况下能保持高性能。</li>
+<li>/<br>public class SingleObjectFour {</li>
+</ul>
+<p>/**</p>
+<ul>
+<li>用volatile修饰的变量，线程在每次使用变量的时候，都会读取变量修改后的最的值</li>
+<li>/<br>private volatile static SingleObjectFour singleObjectFour ;</li>
+</ul>
+<p>public SingleObjectFour(){</p>
+<p>}</p>
+<p>public static SingleObjectFour getInstance(){<br>if(singleObjectFour == null){<br>synchronized (SingleObjectFour.class){<br>if(singleObjectFour == null)<br>singleObjectFour = new SingleObjectFour();<br>}<br>}</p>
+<p>return singleObjectFour ;<br>}</p>
+<p>public void outMsg(){<br>System.out.println(“Hello, This is Single Object Four.” + this.getClass().hashCode());<br>}<br>}[/java]</p>
+<h3 id="方式五："><a href="#方式五：" class="headerlink" title="方式五："></a>方式五：</h3><p>[java]package com.proliu.designPatterns.single;</p>
+<p>/**</p>
+<ul>
+<li>@author duliu</li>
+<li>通过静态内部类来实现类的实例化</li>
+<li>/<br>public class SingleObjectFive {</li>
+</ul>
+<p>private static class SingleObjectHolder{<br>private static final SingleObjectFive INSTANCE = new SingleObjectFive();<br>}</p>
+<p>public SingleObjectFive(){</p>
+<p>}</p>
+<p>public static final SingleObjectFive getInstance(){<br>return SingleObjectHolder.INSTANCE ;<br>}</p>
+<p>public void outMsg(){<br>System.out.println(“Hello, This is Single Object Five.” + this.getClass().hashCode());<br>}<br>}[/java]</p>
+<h3 id="方式六："><a href="#方式六：" class="headerlink" title="方式六："></a>方式六：</h3><p>[java]package com.proliu.designPatterns.single;</p>
+<p>/**</p>
+<ul>
+<li>@author duliu</li>
+<li>参与枚举模式</li>
+<li>/<br>public enum SingleObjectSix {</li>
+</ul>
+<p>INSTANCE;</p>
+<p>public void outMsg(){<br>System.out.println(“Hello, This is Single Object Six.” + this.getClass().hashCode());<br>}<br>}[/java]</p>
+
+        </div>
+
+        
+            <section class="post-copyright">
+                
+                    <p class="copyright-item">
+                        <span>Author:</span>
+                        <span>Darren Du</span>
+                    </p>
+                
+                
+                
+                    <p class="copyright-item">
+                        <span>License:</span>
+                        <span>Copyright (c) 2019 MIT LICENSE</span>
+                    </p>
+                
+                
+
+            </section>
+        
+        <section class="post-tags">
+            <div>
+                <span>Tag(s):</span>
+                <span class="tag">
+                    
+                </span>
+            </div>
+            <div>
+                <a href="javascript:window.history.back();">back</a>
+                <span>· </span>
+                <a href="/">home</a>
+            </div>
+        </section>
+        <section class="post-nav">
+            
+                <a class="prev" rel="prev" href="/2016/10/19/@Resource,%20@Autowired%20%E5%92%8C%20@Inject%20%E6%AF%94%E8%BE%83(Difference%20Between%20@Resource,%20@Autowired%20and%20@Inject%20in%20Spring%20Injection)/">Resource, Autowired 和 Inject 比较(Difference Between @Resource, @Autowired and @Inject in Spring Injection)</a>
+            
+            
+            <a class="next" rel="next" href="/2016/10/19/java%20%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%20-%20%E5%B7%A5%E5%8E%82%E6%A8%A1%E5%BC%8F/">java 设计模式 - 工厂模式</a>
+            
+        </section>
+
+
+    </article>
+</div>
+
+        </div>
+        <footer id="footer" class="footer">
+    <div class="copyright">
+        <span>© Darren Du | Powered by <a href="https://hexo.io" target="_blank">Hexo</a> & <a href="https://github.com/Siricee/hexo-theme-Chic" target="_blank">Chic</a></span>
+    </div>
+</footer>
+
+    </div>
+</body>
+</html>

@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <meta name="author" content="Darren Du">
+
+
+
+    <meta name="description" content="Dev">
+
+
+
+<title>Python(3.x) Transaction 事物的管理 | Du Liu&#39;s Blog</title>
+
+
+
+    <link rel="icon" href="/favicon.ico">
+
+
+
+
+    <!-- stylesheets list from _config.yml -->
+    
+    <link rel="stylesheet" href="/css/style.css">
+    
+
+
+
+    <!-- scripts list from _config.yml -->
+    
+    <script src="/js/script.js"></script>
+    
+    <script src="/js/tocbot.min.js"></script>
+    
+
+
+
+    
+    
+        
+    
+
+
+<meta name="generator" content="Hexo 6.2.0"></head>
+<body>
+    <div class="wrapper">
+        <header>
+    <nav class="navbar">
+        <div class="container">
+            <div class="navbar-header header-logo"><a href="/">Du Liu&#39;s Blog</a></div>
+            <div class="menu navbar-right">
+                
+                    <a class="menu-item" href="/archives">Posts</a>
+                
+                    <a class="menu-item" href="/category">Categories</a>
+                
+                    <a class="menu-item" href="/tag">Tags</a>
+                
+                    <a class="menu-item" href="/about">About</a>
+                
+                <input id="switch_default" type="checkbox" class="switch_default">
+                <label for="switch_default" class="toggleBtn"></label>
+            </div>
+
+        </div>
+    </nav>
+
+    
+    <nav class="navbar-mobile" id="nav-mobile">
+        <div class="container">
+            <div class="navbar-header">
+                <div>
+                    <a href="/">Du Liu&#39;s Blog</a><a id="mobile-toggle-theme">·&nbsp;Light</a>
+                </div>
+                <div class="menu-toggle" onclick="mobileBtn()">&#9776; Menu</div>
+            </div>
+            <div class="menu" id="mobile-menu">
+                
+                    <a class="menu-item" href="/archives">Posts</a>
+                
+                    <a class="menu-item" href="/category">Categories</a>
+                
+                    <a class="menu-item" href="/tag">Tags</a>
+                
+                    <a class="menu-item" href="/about">About</a>
+                
+            </div>
+        </div>
+    </nav>
+
+</header>
+<script>
+    var mobileBtn = function f() {
+        var toggleMenu = document.getElementsByClassName("menu-toggle")[0];
+        var mobileMenu = document.getElementById("mobile-menu");
+        if(toggleMenu.classList.contains("active")){
+           toggleMenu.classList.remove("active")
+            mobileMenu.classList.remove("active")
+        }else{
+            toggleMenu.classList.add("active")
+            mobileMenu.classList.add("active")
+        }
+    }
+</script>
+        <div class="main">
+            <div class="container">
+    
+    
+        <div class="post-toc">
+    <div class="tocbot-list">
+    </div>
+    <div class="tocbot-list-menu">
+        <a class="tocbot-toc-expand" onclick="expand_toc()">Expand all</a>
+        <a onclick="go_top()">Back to top</a>
+        <a onclick="go_bottom()">Go to bottom</a>
+    </div>
+</div>
+
+<script>
+    document.ready(
+        function () {
+            tocbot.init({
+                tocSelector: '.tocbot-list',
+                contentSelector: '.post-content',
+                headingSelector: 'h1, h2, h3, h4, h5',
+                collapseDepth: 1,
+                orderedList: false,
+                scrollSmooth: true,
+            })
+        }
+    )
+
+    function expand_toc() {
+        var b = document.querySelector(".tocbot-toc-expand");
+        tocbot.init({
+            tocSelector: '.tocbot-list',
+            contentSelector: '.post-content',
+            headingSelector: 'h1, h2, h3, h4, h5',
+            collapseDepth: 6,
+            orderedList: false,
+            scrollSmooth: true,
+        });
+        b.setAttribute("onclick", "collapse_toc()");
+        b.innerHTML = "Collapse all"
+    }
+
+    function collapse_toc() {
+        var b = document.querySelector(".tocbot-toc-expand");
+        tocbot.init({
+            tocSelector: '.tocbot-list',
+            contentSelector: '.post-content',
+            headingSelector: 'h1, h2, h3, h4, h5',
+            collapseDepth: 1,
+            orderedList: false,
+            scrollSmooth: true,
+        });
+        b.setAttribute("onclick", "expand_toc()");
+        b.innerHTML = "Expand all"
+    }
+
+    function go_top() {
+        window.scrollTo(0, 0);
+    }
+
+    function go_bottom() {
+        window.scrollTo(0, document.body.scrollHeight);
+    }
+
+</script>
+    
+
+    
+    <article class="post-wrap">
+        <header class="post-header">
+            <h1 class="post-title">Python(3.x) Transaction 事物的管理</h1>
+            
+                <div class="post-meta">
+                    
+                        Author: <a itemprop="author" rel="author" href="/">Darren Du</a>
+                    
+
+                    
+                        <span class="post-time">
+                        Date: <a href="#">July 2, 2017&nbsp;&nbsp;17:35:31</a>
+                        </span>
+                    
+                    
+                        <span class="post-category">
+                    Category:
+                            
+                                <a href="/categories/Python3/">Python3</a>
+                            
+                        </span>
+                    
+                </div>
+            
+        </header>
+
+        <div class="post-content">
+            <p>本例以Windows, Python 3.4 为基础，来演示使用Python对事物的管理，当发生异常回滚提交。</p>
+<h2 id="相关"><a href="#相关" class="headerlink" title="相关"></a>相关</h2><p>创建并：<br><a target="_blank" rel="noopener" href="https://www.proliu.com/2017/06/25/python3-x-create-table-%e5%88%9b%e5%bb%ba%e8%a1%a8/">Python(3.x) Create Table 创建表</a></p>
+<p>创建SQL：</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">CREATE</span> <span class="keyword">TABLE</span> STUDENT (</span><br><span class="line">    ID TINYINT UNSIGNED <span class="keyword">NOT</span> <span class="keyword">NULL</span> AUTO_INCREMENT,</span><br><span class="line">    NAME <span class="type">VARCHAR</span> (<span class="number">50</span>) <span class="keyword">DEFAULT</span> <span class="string">&#x27;&#x27;</span> <span class="keyword">NOT</span> <span class="keyword">NULL</span>,</span><br><span class="line">    AGE TINYINT <span class="keyword">DEFAULT</span> <span class="keyword">NULL</span>,</span><br><span class="line">    BRD <span class="type">date</span> <span class="keyword">DEFAULT</span> <span class="keyword">NULL</span>,</span><br><span class="line">    CREATEDT datetime <span class="keyword">DEFAULT</span> <span class="keyword">NULL</span>,</span><br><span class="line">    <span class="keyword">PRIMARY</span> KEY (ID)</span><br><span class="line">)</span><br></pre></td></tr></table></figure>
+
+<h2 id="Transaction-事物的管理"><a href="#Transaction-事物的管理" class="headerlink" title="Transaction 事物的管理"></a>Transaction 事物的管理</h2><p>一次提交多条数据，当发生异常时回滚整个事务，取消提交。</p>
+<p><em>my_sql_transaction.py</em></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> mysql.connector</span><br><span class="line"><span class="keyword">from</span> datetime <span class="keyword">import</span> datetime</span><br><span class="line"><span class="keyword">from</span> datetime <span class="keyword">import</span> date</span><br><span class="line"></span><br><span class="line"><span class="comment">#insert many records , roll back the commit when get exception </span></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">main</span>(<span class="params">config</span>):</span><br><span class="line">    conn = mysql.connector.Connect(**config)</span><br><span class="line">    </span><br><span class="line">    cur = conn.cursor()</span><br><span class="line">    </span><br><span class="line">    tbl = <span class="string">&quot;STUDENT&quot;</span></span><br><span class="line">    <span class="comment">#insert data</span></span><br><span class="line">    created = datetime.now()</span><br><span class="line">    <span class="comment">#has one age is to long , the age is invalid</span></span><br><span class="line">    students = ((<span class="string">&quot;Jack&quot;</span>, <span class="number">27</span>, date(<span class="number">1990</span>, <span class="number">3</span>, <span class="number">27</span>), created), (<span class="string">&quot;Zhao San&quot;</span>, <span class="number">21</span>, date(<span class="number">1995</span>, <span class="number">10</span>, <span class="number">21</span>), created),</span><br><span class="line">                (<span class="string">&quot;Zhao San&quot;</span>, <span class="number">1122</span>, date(<span class="number">1995</span>, <span class="number">10</span>, <span class="number">21</span>), created))</span><br><span class="line">    </span><br><span class="line">    stmt_insert = <span class="string">&quot;Insert into &#123;0&#125; (name, age, brd, CREATEDT) values (%s, %s, %s, %s)&quot;</span>.<span class="built_in">format</span>(tbl)</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">try</span>:</span><br><span class="line">        cur.executemany(stmt_insert, students)</span><br><span class="line">    <span class="keyword">except</span> (mysql.connector.errors.Error, TypeError) <span class="keyword">as</span> exc:</span><br><span class="line">        conn.rollback()</span><br><span class="line">        <span class="built_in">print</span>(<span class="string">&quot;Roll Back, Insert has error :&quot;</span>, exc)</span><br><span class="line">    <span class="keyword">else</span>:</span><br><span class="line">        conn.commit()</span><br><span class="line">    <span class="keyword">finally</span>:</span><br><span class="line">        cur.close()</span><br><span class="line">        conn.close()</span><br><span class="line">        </span><br><span class="line">        </span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">&#x27;__main__&#x27;</span>:</span><br><span class="line">    config = &#123;</span><br><span class="line">                <span class="string">&#x27;host&#x27;</span>: <span class="string">&#x27;localhost&#x27;</span>,</span><br><span class="line">                <span class="string">&#x27;port&#x27;</span>: <span class="number">3306</span>,</span><br><span class="line">                <span class="string">&#x27;database&#x27;</span>: <span class="string">&#x27;test&#x27;</span>,</span><br><span class="line">                <span class="string">&#x27;user&#x27;</span>: <span class="string">&#x27;root&#x27;</span>,</span><br><span class="line">                <span class="string">&#x27;password&#x27;</span>: <span class="string">&#x27;!qaz2wsx&#x27;</span>,</span><br><span class="line">                <span class="string">&#x27;charset&#x27;</span>: <span class="string">&#x27;utf8&#x27;</span>,</span><br><span class="line">                <span class="string">&#x27;use_unicode&#x27;</span>: <span class="literal">True</span>,</span><br><span class="line">                <span class="string">&#x27;get_warnings&#x27;</span>: <span class="literal">True</span>,</span><br><span class="line">            &#125;   </span><br><span class="line">    main(config)</span><br></pre></td></tr></table></figure>
+
+<p>运行结果：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Roll Back, Insert has error : 1264 (22003): Out of range value for column &#x27;AGE&#x27; at row 3</span><br></pre></td></tr></table></figure>
+        </div>
+
+        
+            <section class="post-copyright">
+                
+                    <p class="copyright-item">
+                        <span>Author:</span>
+                        <span>Darren Du</span>
+                    </p>
+                
+                
+                
+                    <p class="copyright-item">
+                        <span>License:</span>
+                        <span>Copyright (c) 2019 MIT LICENSE</span>
+                    </p>
+                
+                
+
+            </section>
+        
+        <section class="post-tags">
+            <div>
+                <span>Tag(s):</span>
+                <span class="tag">
+                    
+                    
+                        <a href="/tags/Python3/"># Python3</a>
+                    
+                        
+                </span>
+            </div>
+            <div>
+                <a href="javascript:window.history.back();">back</a>
+                <span>· </span>
+                <a href="/">home</a>
+            </div>
+        </section>
+        <section class="post-nav">
+            
+                <a class="prev" rel="prev" href="/2017/07/16/Hibernate5-Many-To-Many-%E5%A4%9A%E5%AF%B9%E5%A4%9A-Demo-Annotation/">Hibernate5 Many-To-Many 多对多 Demo (Annotation)</a>
+            
+            
+            <a class="next" rel="next" href="/2017/07/02/Python(3.x)%20Prepared%20Statements%20%E9%A2%84%E5%A4%84%E7%90%86%E6%93%8D%E4%BD%9C/">Python(3.x) Prepared Statements 预处理操作</a>
+            
+        </section>
+
+
+    </article>
+</div>
+
+        </div>
+        <footer id="footer" class="footer">
+    <div class="copyright">
+        <span>© Darren Du | Powered by <a href="https://hexo.io" target="_blank">Hexo</a> & <a href="https://github.com/Siricee/hexo-theme-Chic" target="_blank">Chic</a></span>
+    </div>
+</footer>
+
+    </div>
+</body>
+</html>
